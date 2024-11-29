@@ -10,10 +10,9 @@
             </div>
         </div>
     </div>
+    @endif
 
     
-        
-    @endif
     @if ($errors->any())
     <div class="pt-3">
         <div class="alert alert-danger">
@@ -38,7 +37,7 @@
     @endif
     <!-- START FORM -->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <div>
+        <div wire:poll.5s>
             {{ now() }}
         </div>
         <div class="row">

@@ -37,7 +37,7 @@ class TimbanganKeluar extends Component
     public $katakunciout;
     public $trscaleSelectedID = [];
     public $sortColumn = 'jam_in';
-    public $sortDirection = 'asc';
+    public $sortDirection = 'desc';
     public $selected ='';
     public $custName;
     public $transpName;
@@ -59,16 +59,57 @@ class TimbanganKeluar extends Component
     
     public function timbang()
     {
+        $this->timbangout = '';
+        $this->netto = '';
+        try {
+            switch ($this->timbanganoutID) {
+                case 1:
+                    $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
+                    break;
+                
+                case '2':
+                    $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+                    break;   
+
+                case '3':
+                    $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
+                    break; 
+
+                default:
+                    
+                    break;
+            }
+
+                $client= new Client();
+                // $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+                $response = $client->request('GET',$data);
+                $content =  $response->getBody()->getContents();
+                $contentarray = json_decode($content,true);
+            //    dd($contentarray['weight']);
+                 $this->timbangout = $contentarray['weight'];
+                 $this->timbangin;
         
-        $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganoutID)->value('IP');
-        $this->timbangin;
-        $this->timbangout = 10000;
-        $this->netto = $this->timbangin - $this->timbangout; 
-        if ($this->netto < 0)
-        {
+            $this->netto = $this->timbangin - $this->timbangout; 
+            if ($this->netto < 0)
+            {
+            
+                $this->netto = $this->timbangout - $this->timbangin; 
+            } 
+
+        } catch (\Throwable $th) {
+            session()->flash('error', 'Pastikan Timbangan yg dipilih sesuai');
+            return;
+        }
+        
+        // $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganoutID)->value('IP');
+        // $this->timbangin;
+        // // $this->timbangout = 10000;
+        // $this->netto = $this->timbangin - $this->timbangout; 
+        // if ($this->netto < 0)
+        // {
            
-            $this->netto = $this->timbangout - $this->timbangin; 
-        } 
+        //     $this->netto = $this->timbangout - $this->timbangin; 
+        // } 
        
     }
     
@@ -196,7 +237,9 @@ class TimbanganKeluar extends Component
             
             
         } catch (Exception $e) {
-            session()->flash('error', 'failed to update data');
+            
+            // session()->flash('error', 'failed to update data');
+            throw $e;
             return;
         }
        
@@ -214,6 +257,7 @@ class TimbanganKeluar extends Component
         $this->updateData = false;
         $this->id_trscale = '';
         $this->trscaleSelectedID = [];
+        $this->timbangout = '';
         
        
         

@@ -39,7 +39,7 @@
     <!-- START FORM -->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         {{-- @include('layouts.navbar') --}}
-        <div wire:poll.1s>
+        <div wire:poll.5s>
             {{ now() }}
             </div>
         <div class="row">

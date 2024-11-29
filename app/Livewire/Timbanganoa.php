@@ -9,6 +9,7 @@ use App\Models\Transporter;
 use App\Models\Trscale;
 use Carbon\Carbon;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -32,7 +33,7 @@ class Timbanganoa extends Component
     public $katakunci;
     public $trscaleSelectedID = [];
     public $sortColumn = 'jam_in';
-    public $sortDirection = 'asc';
+    public $sortDirection = 'desc';
     public $selected ='';
     public $custName;
     public $transpName;
@@ -48,10 +49,58 @@ class Timbanganoa extends Component
     
     public function timbang()
     {
-        
-        $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganID)->value('IP');
+        $this->timbangin = '';
+        try {
+
+             // $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganID)->value('IP');
        
-        $this->timbangin = 8888;
+                // $this->timbangin = 8888;
+                
+                // dd($this->timbanganID);
+                
+                // if ($this->timbanganID == 1) {
+                //     // dd('10');
+                //     $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
+                // } elseif ($this->timbanganID == 2) {
+                //     // dd('9');
+                //     $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+                // } else {
+                //     // dd('8');
+                //     $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
+                // }
+
+                switch ($this->timbanganID) {
+                    case 1:
+                        $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
+                        break;
+                    
+                    case '2':
+                        $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+                        break;   
+
+                    case '3':
+                        $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
+                        break; 
+
+                    default:
+                        
+                        break;
+                }
+                
+                
+
+                $client= new Client();
+                // $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+                $response = $client->request('GET',$data);
+                $content =  $response->getBody()->getContents();
+                $contentarray = json_decode($content,true);
+            //    dd($contentarray['weight']);
+                 $this->timbangin = $contentarray['weight'];
+        } catch (\Throwable $th) {
+            session()->flash('error', 'Pastikan Timbangan yg dipilih sesuai');
+            return;
+        }
+        
        
     }
     
@@ -105,7 +154,8 @@ class Timbanganoa extends Component
 
         } catch (Exception $e) {
             
-            session()->flash('error', 'failed to store data');
+            throw $e;
+            // session()->flash('error', 'failed to store data');
             return;
         }
 
@@ -184,6 +234,7 @@ class Timbanganoa extends Component
         $this->updateData = false;
         $this->id_trscale = '';
         $this->trscaleSelectedID = [];
+        $this->timbangin = '';
         
        
         

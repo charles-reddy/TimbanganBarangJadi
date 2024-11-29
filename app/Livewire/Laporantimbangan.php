@@ -18,7 +18,7 @@ class Laporantimbangan extends Component
     use WithPagination;
     public $katakunciout;
     public $sortColumn = 'jam_in';
-    public $sortDirection = 'asc';
+    public $sortDirection = 'desc';
     public $trscaleSelectedID = [];
     public $tglin ;
 
@@ -43,7 +43,7 @@ class Laporantimbangan extends Component
 
     public function render()
     {
-        $tglawal=date('d-m-Y',strtotime(Carbon::now()->subDay(4)));
+        $tglawal=date('m-d-Y',strtotime(Carbon::now()->subDay(4)));
         
 
         if (($this->katakunciout )  !=null) {
@@ -60,6 +60,7 @@ class Laporantimbangan extends Component
         } else {
              
             $this->tglin = $tglawal;
+            // dd($tglawal, $this->jam_in);
             $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         
         }

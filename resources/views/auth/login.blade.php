@@ -9,7 +9,7 @@
         <div>
             <x-input-label for="id_user" :value="__('Email or Username')" />
             <x-text-input id="id_user" class="block mt-1 w-full" type="text" name="id_user" :value="old('id_user')" required autofocus autocomplete="id_user" />
-            <x-input-error :messages="$errors->get('id_user')" class="mt-2" />
+            <x-input-error :messages="$errors->get('id_user')" class="mt-2" /> 
         </div>
 
         <!-- Password -->
