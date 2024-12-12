@@ -13,6 +13,7 @@
         "livewire/livewire": "^3.5",
         "maatwebsite/excel": "^3.1",
         "mpdf/mpdf": "^8.2",
+        "riskihajar/terbilang": "^2.0",
         "spatie/laravel-permission": "^6.9"
     },
     "require-dev": {

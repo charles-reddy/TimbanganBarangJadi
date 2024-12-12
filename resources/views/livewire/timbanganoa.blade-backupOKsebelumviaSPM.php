@@ -39,7 +39,7 @@
     <!-- START FORM -->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         {{-- @include('layouts.navbar') --}}
-        <div wire:poll.30s>
+        <div wire:poll.5s>
             {{ now() }}
             </div>
         <div class="row">
@@ -51,62 +51,68 @@
             </div>
         </div>
         <form>
-            <div class="row"> 
+            <div class="row">
                 <div class="col">
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label">Driver</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control w-50" wire:model="driver">
+                        </div>
+                    </div>
                     <div class="mb-3 row">
-                        <label for="custID" class="col-sm-2 col-form-label">SPM No</label>
+                        <label for="carID" class="col-sm-2 col-form-label">Car ID</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control w-25" wire:model="carID">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="custID" class="col-sm-2 col-form-label">Customer</label>
                         <div class="col-sm-10" wire:ignore>
-                            <select   class="js-example-basic-single w-50" id="my-spmNo"  wire:model ="spmNo"  >
+                            <select   class="js-example-basic-single w-50" id="my-custID"  wire:model="custID"  >
                                 <option></option>
-                                @foreach ($dataspm as $item)
-                                    <option value="{{ $item->id }}" >{{ $item->spmNo }}</option>
+                                @foreach ($customer as $item)
+                                    <option value="{{ $item->custID }}" selected >{{ $item->custName }}</option>
                                 @endforeach
                                 
                             </select>
                             {{-- <input type="text" class="form-control w-50 mt-2" wire:model="custName" disabled> --}}
                         </div>
                     </div>
-                    <div class="mb-3 mt-3 row">
-                        <label for="nama" class="col-sm-2 col-form-label">Driver</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control w-50" wire:model="driver" disabled>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="carID" class="col-sm-2 col-form-label">Car ID</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control w-25" wire:model="carID" disabled>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="carID" class="col-sm-2 col-form-label">Customer</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control w-50" wire:model="custID" disabled>
-                        </div>
-                    </div>
                     
                     <div class="mb-3 row">
-                        <label for="carID" class="col-sm-2 col-form-label">Transporter</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control w-50" wire:model="transpID" disabled>
+                        <label for="transpID" class="col-sm-2 col-form-label">Transporter</label>
+                        <div class="col-sm-10" wire:ignore>
+                            <select class="js-example-basic-single w-50" id="my-transpID" wire:model="transpID">
+                                <option></option>
+                                @foreach ($transporter as $item)
+                                    <option value="{{ $item->transpID }}">{{ $item->transpName }}</option>
+                                @endforeach
+                            </select>
+                            {{-- <input type="text" class="form-control w-50 mt-2" wire:model="transpName" disabled> --}}
                         </div>
-                    </div> 
+                    </div>  
                     <div class="mb-3 row">
-                        <label for="carID" class="col-sm-2 col-form-label">Item Desc.</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control w-50" wire:model="itemCode" disabled>
+                        <label for="itemCode" class="col-sm-2 col-form-label">Item Code</label>
+                        <div class="col-sm-10" wire:ignore>
+                            <select class="js-example-basic-single w-50"  id="my-itemCode" wire:model="itemCode">
+                                <option></option>
+                                @foreach ($product as $item)
+                                    <option value="{{ $item->itemCode }}">{{ $item->itemName }}</option>
+                                @endforeach
+                            </select>
+                            {{-- <input type="text" class="form-control w-50 mt-2" wire:model="itemName" disabled> --}}
                         </div>
-                    </div> 
+                    </div>
                     <div class="mb-3 row">
-                        <label for="doNo" class="col-sm-2 col-form-label">DO No</label>
+                        <label for="doNo" class="col-sm-2 col-form-label">DO / SPPB No </label>
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" wire:model='doNo' disabled>
+                            <input type="text" class="form-control" wire:model='doNo'>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="poNo" class="col-sm-2 col-form-label">po No</label>
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" wire:model='poNo' disabled>
+                            <input type="text" class="form-control" wire:model='poNo'>
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -236,9 +242,6 @@
                     @this.set('custID',data);
                 })
 
-            
-               
-
 
                 // $(document).ready(function() {
                 //     $('#my-custID').select2({
@@ -254,17 +257,10 @@
                     @this.set('transpID',data);
                 })
 
-                $('#my-spmNo').on('change',function(e) {
-                    var data = $('#my-spmNo').select2("val");
-                    @this.set('spmNo',data);
-                })
-
                 $('#my-itemCode').on('change',function(e) {
                     var data = $('#my-itemCode').select2("val");
                     @this.set('itemCode',data);
                 })
-
-                
 
                 
             });

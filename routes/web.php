@@ -27,11 +27,11 @@ Route::get('/dashboard', function () {
 
 Route::get('/timmasuk', function () {
     return view('timmasuk');
-})->middleware(['auth', 'verified'])->name('timmasuk');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('timmasuk');
 
 Route::get('/timkeluar', function () {
     return view('timkeluar');
-})->middleware(['auth', 'verified'])->name('timkeluar');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('timkeluar');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -39,35 +39,39 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-route::get('/cek1', function (){
-    return '<h1> Cek1 </h1>';
-})->middleware(['auth', 'verified']);
 
-
-route::get('/cek2', [CekController::class,'index'])->middleware(['auth', 'verified']);
-
-route::get('admin', function() {
-    return '<h1> Helo Admin </h1>';
-})->middleware(['auth', 'verified', 'role:admin']);
-
-
-route::get('penulis', function() {
-    return '<h1> Helo Penulis </h1>';
-})->middleware(['auth', 'verified', 'role:penulis|admin']);
-
-
-
-route::get('tulisan', function() {
-    return view('tulisan');
-})->middleware(['auth', 'verified', 'role_or_permission:lihat-tulisan|admin']);
-
-route::get('/cetakout/{id}',[ScaleController::class,'cetakout']);
-route::any('/export',[ScaleController::class,'export_out']);
+route::get('/cetakout/{id}',[ScaleController::class,'cetakout'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi']);
+route::get('/cetakspm/{id}',[ScaleController::class,'cetakspm'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi']);
+route::any('/export',[ScaleController::class,'export_out'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi']);
 
 Route::get('/laptim', function () {
     return view('laptim');
-})->middleware(['auth', 'verified'])->name('laptim');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('laptim');
 
+
+Route::get('/createspm', function () {
+    return view('createspm');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi'])->name('createspm');
+
+
+Route::get('/createsppb', function () {
+    return view('createsppb');
+})->middleware(['auth', 'verified', 'verified','role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi'])->name('createsppb');
+
+Route::get('/inputkarung', function () {
+    return view('inputkarung');
+})->middleware(['auth', 'verified', 'verified','role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('inputkarung');
+
+Route::get('/appavgkarung', function () {
+    return view('appavgkarung');
+})->middleware(['auth', 'verified', 'verified','role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('appavgkarung');
+
+
+Route::get('/lapsj', function () {
+    return view('lapsj');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('lapsj');
+
+route::get('/cetaksj/{id}',[ScaleController::class,'cetaksj'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-b10|supervisor-b10']);
 
 
 require __DIR__.'/auth.php';

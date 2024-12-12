@@ -37,7 +37,7 @@ class TimbanganKeluar extends Component
     public $katakunciout;
     public $trscaleSelectedID = [];
     public $sortColumn = 'jam_in';
-    public $sortDirection = 'desc';
+    public $sortDirection = 'desc'; 
     public $selected ='';
     public $custName;
     public $transpName;
@@ -53,6 +53,9 @@ class TimbanganKeluar extends Component
     public $jam_out;
     public $userIDOUT;
     public $usernameOUT;
+    public $avgKarung;
+    public $b10QtyKarung;
+    public $isApp;
     
     
     
@@ -61,55 +64,57 @@ class TimbanganKeluar extends Component
     {
         $this->timbangout = '';
         $this->netto = '';
-        try {
-            switch ($this->timbanganoutID) {
-                case 1:
-                    $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
-                    break;
+        // try {
+        //     switch ($this->timbanganoutID) {
+        //         case 1:
+        //             $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
+        //             break;
                 
-                case '2':
-                    $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
-                    break;   
+        //         case '2':
+        //             $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+        //             break;   
 
-                case '3':
-                    $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
-                    break; 
+        //         case '3':
+        //             $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
+        //             break; 
 
-                default:
+        //         default:
                     
-                    break;
-            }
+        //             break;
+        //     }
 
-                $client= new Client();
-                // $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
-                $response = $client->request('GET',$data);
-                $content =  $response->getBody()->getContents();
-                $contentarray = json_decode($content,true);
-            //    dd($contentarray['weight']);
-                 $this->timbangout = $contentarray['weight'];
-                 $this->timbangin;
+        //         $client= new Client();
+        //         // $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+        //         $response = $client->request('GET',$data);
+        //         $content =  $response->getBody()->getContents();
+        //         $contentarray = json_decode($content,true);
+        //     //    dd($contentarray['weight']);
+        //          $this->timbangout = $contentarray['weight'];
+        //          $this->timbangin;
         
-            $this->netto = $this->timbangin - $this->timbangout; 
-            if ($this->netto < 0)
-            {
+        //     $this->netto = $this->timbangin - $this->timbangout; 
+        //     if ($this->netto < 0)
+        //     {
             
-                $this->netto = $this->timbangout - $this->timbangin; 
-            } 
+        //         $this->netto = $this->timbangout - $this->timbangin; 
+        //     } 
 
-        } catch (\Throwable $th) {
-            session()->flash('error', 'Pastikan Timbangan yg dipilih sesuai');
-            return;
-        }
+        // } catch (Exception $e) {
+        //     session()->flash('error', 'Pastikan Timbangan yg dipilih sesuai');
+        //     return;
+        // }
         
-        // $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganoutID)->value('IP');
-        // $this->timbangin;
-        // // $this->timbangout = 10000;
-        // $this->netto = $this->timbangin - $this->timbangout; 
-        // if ($this->netto < 0)
-        // {
+        $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganoutID)->value('IP');
+        $this->timbangin;
+        $this->timbangout = 8888;
+        $this->netto = $this->timbangin - $this->timbangout; 
+        if ($this->netto < 0)
+        {
            
-        //     $this->netto = $this->timbangout - $this->timbangin; 
-        // } 
+            $this->netto = $this->timbangout - $this->timbangin; 
+        } 
+
+        $this->avgKarung = $this->netto / $this->b10QtyKarung;
        
     }
     
@@ -169,6 +174,7 @@ class TimbanganKeluar extends Component
         $this->custID = $data->custID;
         $this->doNo = $data->doNo;
         $this->poNo = $data->poNo;
+        $this->isApp = $data->isApp;
         $this->remarks = $data->remarks;
         $this->timbangin = $data->timbangin;
         $this->transID = $id;
@@ -182,58 +188,171 @@ class TimbanganKeluar extends Component
         $this->itemName = $itemC;
         $this->updateData = true;
         $this->id_trscale = $id;
-
-       
-        
-       
-        
+        $this->b10QtyKarung = $data->b10QtyKarung;
+ 
     }
 
     public function update()
     {
         $userIDOUT = Auth::user()->id;
         $usernameOUT = Auth::user()->username;
+        // dd($this->isApp);
         try {
-        // dd($this->timbangout, $this->netto, $this->timbanganoutID);
-            $this->jam_out = Carbon::now();
-            $this->userIDOUT = $userIDOUT; 
-            $this->usernameOUT = $usernameOUT;
-            $rules = [
-                'driver' => 'required',
-                'carID' => 'required|max:10',
-               
-                'doNo' => 'nullable',
-                'poNo' => 'nullable',
+            if ($this->avgKarung >= 50.01 and $this->avgKarung < 50.25) {
+            //    dd('1');         
+               DB::connection('sqlsrv')->table('trscale')->where('id',$this->id_trscale)->update([
+                'avgKarung' => $this->avgKarung,
                 
-                'timbangout' => 'required',
-                'netto' => 'required',
-                'timbanganoutID' => 'required',
-                'remarks' => 'nullable',
-                'jam_out' => 'required',
-                'userIDOUT' => 'required',
-                'usernameOUT' => 'required',
-            ];
-            $pesan = [
+                ]);
                 
-                'timbangout.required' => 'data timbang out kosong',
-                'netto.required' => 'data netto kosong',
-                'timbanganoutID.required' => 'ID timbangan kosong',
-                'driver.required' => 'driver wajib diisi',
-                'carID.required' => 'car id wajib diisi',
-                'carID.max' => 'carid data max 10 digit',
+                $this->jam_out = Carbon::now();
+                $this->userIDOUT = $userIDOUT; 
+                $this->usernameOUT = $usernameOUT;
+                $rules = [
+                    'driver' => 'required',
+                    'carID' => 'required|max:10',
+                    'doNo' => 'nullable',
+                    'poNo' => 'nullable',
+                    'timbangout' => 'required',
+                    'netto' => 'required',
+                    'timbanganoutID' => 'required',
+                    'remarks' => 'nullable',
+                    'jam_out' => 'required',
+                    'userIDOUT' => 'required',
+                    'usernameOUT' => 'required',
+                ];
+                $pesan = [
+                    
+                    'timbangout.required' => 'data timbang out kosong',
+                    'netto.required' => 'data netto kosong',
+                    'timbanganoutID.required' => 'ID timbangan kosong',
+                    'driver.required' => 'driver wajib diisi',
+                    'carID.required' => 'car id wajib diisi',
+                    'carID.max' => 'carid data max 10 digit',
+                    
+                    
+                ];
+                $validated = $this->validate($rules, $pesan);
+                $data = Trscale::find($this->id_trscale);
+                $id=$this->id_trscale;
+                $combineid = '/cetakout/'. $id ;
+                $data->update($validated);
+                // dd($combineid);
+                session()->flash('message', 'Data berhasil diperbaharui');
+                redirect($combineid);
+                // $this->clear();
+            
+            } else if ( ($this->isApp)  == 1 and  ($this->avgKarung >= 50.25)   ) {
+                    // dd($this->timbangout, $this->netto, $this->timbanganoutID);
+                    //  dd('2');
+                    DB::connection('sqlsrv')->table('trscale')->where('id',$this->id_trscale)->update([
+                        'avgKarung' => $this->avgKarung,
+                        
+                    ]);
+                        $this->jam_out = Carbon::now();
+                        $this->userIDOUT = $userIDOUT; 
+                        $this->usernameOUT = $usernameOUT;
+                        $rules = [
+                            'driver' => 'required',
+                            'carID' => 'required|max:10',
+                           
+                            'doNo' => 'nullable',
+                            'poNo' => 'nullable',
+                            
+                            'timbangout' => 'required',
+                            'netto' => 'required',
+                            'timbanganoutID' => 'required',
+                            'remarks' => 'nullable',
+                            'jam_out' => 'required',
+                            'userIDOUT' => 'required',
+                            'usernameOUT' => 'required',
+                        ];
+                        $pesan = [
+                            
+                            'timbangout.required' => 'data timbang out kosong',
+                            'netto.required' => 'data netto kosong',
+                            'timbanganoutID.required' => 'ID timbangan kosong',
+                            'driver.required' => 'driver wajib diisi',
+                            'carID.required' => 'car id wajib diisi',
+                            'carID.max' => 'carid data max 10 digit',
+                            
+                            
+                        ];
+                        $validated = $this->validate($rules, $pesan);
+                     
+                        $data = Trscale::find($this->id_trscale);
+                        $id=$this->id_trscale;
+                        $combineid = '/cetakout/'. $id ;
+                        $data->update($validated);
+                        // dd($combineid);
+                        session()->flash('message', 'Data berhasil diperbaharui');
+                        redirect($combineid);
+                        // $this->clear();
+            
+                        return;
+                    } else if ( (($this->isApp)  == 1) and ($this->avgKarung < 50.01)   ) {
+                        // dd($this->timbangout, $this->netto, $this->timbanganoutID);
+                        //  dd('3');
+                        DB::connection('sqlsrv')->table('trscale')->where('id',$this->id_trscale)->update([
+                            'avgKarung' => $this->avgKarung,
+                            
+                        ]);
+                            $this->jam_out = Carbon::now();
+                            $this->userIDOUT = $userIDOUT; 
+                            $this->usernameOUT = $usernameOUT;
+                            $rules = [
+                                'driver' => 'required',
+                                'carID' => 'required|max:10',
+                               
+                                'doNo' => 'nullable',
+                                'poNo' => 'nullable',
+                                
+                                'timbangout' => 'required',
+                                'netto' => 'required',
+                                'timbanganoutID' => 'required',
+                                'remarks' => 'nullable',
+                                'jam_out' => 'required',
+                                'userIDOUT' => 'required',
+                                'usernameOUT' => 'required',
+                            ];
+                            $pesan = [
+                                
+                                'timbangout.required' => 'data timbang out kosong',
+                                'netto.required' => 'data netto kosong',
+                                'timbanganoutID.required' => 'ID timbangan kosong',
+                                'driver.required' => 'driver wajib diisi',
+                                'carID.required' => 'car id wajib diisi',
+                                'carID.max' => 'carid data max 10 digit',
+                                
+                                
+                            ];
+                            $validated = $this->validate($rules, $pesan);
+                         
+                            $data = Trscale::find($this->id_trscale);
+                            $id=$this->id_trscale;
+                            $combineid = '/cetakout/'. $id ;
+                            $data->update($validated);
+                            // dd($combineid);
+                            session()->flash('message', 'Data berhasil diperbaharui');
+                            redirect($combineid);
+                            // $this->clear();
                 
+                            return;
+                } else {
                 
-            ];
-            $validated = $this->validate($rules, $pesan);
-         
-            $data = Trscale::find($this->id_trscale);
-            $id=$this->id_trscale;
-            $combineid = '/cetakout/'. $id ;
-            $data->update($validated);
-            // dd($combineid);
-            // session()->flash('message', 'Data berhasil diperbaharui');
-            redirect($combineid);
-            // $this->clear();
+                // dd('4');
+                DB::connection('sqlsrv')->table('trscale')->where('id',$this->id_trscale)->update([
+                    'avgKarung' => $this->avgKarung,
+                    
+                ]);
+                session()->flash('error', 'Avg Karung tidak sesuai range');
+            
+                return;
+
+            }
+
+            
+            
             
             
         } catch (Exception $e) {
@@ -308,8 +427,8 @@ class TimbanganKeluar extends Component
             $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNull('netto')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
             $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         } else {
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wherenull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wherenull('netto')->whereNotNull('b10QtyKarung')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->whereNotNull('netto')->whereNotNull('b10QtyKarung')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
             // dd($sdhout);
         }
         $timbangan = JembatanTimbang::all();

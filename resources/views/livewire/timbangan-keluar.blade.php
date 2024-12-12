@@ -57,6 +57,12 @@
                         </div>
                     </div>
                     <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>approval</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="input" class="form-control w-50" wire:model="isApp" hidden >
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">Driver</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control w-50" wire:model="driver" disabled>
@@ -91,7 +97,7 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="doNo" class="col-sm-2 col-form-label">DO No</label>
+                        <label for="doNo" class="col-sm-2 col-form-label">DO / SPPB No</label>
                         <div class="col-sm-5">
                             <input type="text" class="form-control" wire:model="doNo" disabled>
                         </div>
@@ -102,6 +108,14 @@
                             <input type="text" class="form-control" wire:model="poNo" disabled>
                         </div>
                     </div>
+
+                    <div class="mb-3 row">
+                        <label for="b10QtyKarung" class="col-sm-2 col-form-label">Jumlah Karung</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" wire:model="b10QtyKarung" disabled>
+                        </div>
+                    </div>
+                    
                     <div class="mb-3 row">
                         <label for="remarks" class="col-sm-2 col-form-label">Remarks</label>
                         <div class="col-sm-10">
@@ -141,6 +155,10 @@
                                         <label for="">Bobot Bersih</label>
                                         <input type="text" class="form-control w-50" value="{{ $netto }}" disabled>
                                     </div>
+                                    <div class="col">
+                                        <label for="">Avg Berat Karung</label>
+                                        <input type="text" class="form-control w-50" value="{{ $avgKarung }}" disabled>
+                                    </div>
                                     
                                 </div>
                                 
@@ -166,11 +184,11 @@
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
-                    @if ($updateData == false)
+                    {{-- @if ($updateData == false)
                         <button type="button" class="btn btn-primary" name="submit" wire:click="store()">SIMPAN</button>
-                    @else
+                    @else --}}
                         <button type="button" class="btn btn-primary" name="submit" wire:click="update()"  wire:confirm="Yakin simpan data?"  >UPDATE</button>
-                    @endif
+                    {{-- @endif --}}
                         <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
                     
                 </div>
@@ -205,6 +223,8 @@
                     <th class="col-md-1 sort desc @if($sortColumn=='itemCode') {{ $sortDirection }}   @endif" wire:click="sort('itemCode')" >Item Name </th>
                     <th class="col-md-1 sort desc @if($sortColumn=='timbangin') {{ $sortDirection }}   @endif" wire:click="sort('timbangin')" >Bobot IN </th>
                     <th class="col-md-2 sort desc @if($sortColumn=='jam_in') {{ $sortDirection }}   @endif" wire:click="sort('jam_in')" >Date IN </th>
+                    <th class="col-md-2 sort desc @if($sortColumn=='avgKarung') {{ $sortDirection }}   @endif" wire:click="sort('avgKarung')" >Rata2 Berat / Karung </th>
+                    <th class="col-md-2 sort desc"  >Approval </th>
                     
                 </tr>
             </thead>
@@ -221,6 +241,8 @@
                     <td>{{ $value->itemName }}</td>
                     <td>{{ $value->timbangin }}</td>
                     <td>{{ date('d-m-Y H:i',strtotime($value->jam_in)) }}</td>
+                    <td>{{ number_format($value->avgKarung,2) }}</td>
+                    <td>{{ $value->isApp }}</td>
                     
                     <td>
                         <a wire:click="edit({{ $value->id }})" class="btn btn-primary btn-sm">Timbang Keluar</a>

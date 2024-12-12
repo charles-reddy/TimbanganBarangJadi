@@ -73,4 +73,4 @@ class Laporantimbangan extends Component
        
         return view('livewire.laporantimbangan',['datascaleout' => $sdhout, 'customer' => $pelanggan, 'transporter' => $angkutan, 'product' => $barang, 'timbangan' => $timbangan]);
     }
-}
+} 

@@ -1,7 +1,7 @@
 <div>
     <!-- START DATA Timbangan masuk-->
     <div class="my-3 p-3 bg-body rounded shadow-sm"  >
-        <h1>Data Timbang </h1>
+        <h1>Data Surat Jalan </h1>
         <div class="row">
             <div class="col-sm-4" > 
                 <label for="">Search</label>
@@ -32,14 +32,12 @@
                     <th class="col-md">No</th>
                     <th class="col-md-1 sort @if($sortColumn=='driver') {{ $sortDirection }}   @endif" wire:click="sort('driver')" >Driver</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Car ID</th>
-                    <th class="col-md-1 sort desc @if($sortColumn=='custName') {{ $sortDirection }}   @endif" wire:click="sort('custName')" >Customer</th>
-                    <th class="col-md-1 sort desc @if($sortColumn=='transpID') {{ $sortDirection }}   @endif" wire:click="sort('transpID')" >Transporter</th>
-                    <th class="col-md-1 sort desc @if($sortColumn=='itemCode') {{ $sortDirection }}   @endif" wire:click="sort('itemCode')" >Item Name </th>
-                    <th class="col-md-1 sort desc @if($sortColumn=='timbangin') {{ $sortDirection }}   @endif" wire:click="sort('timbangin')" >Bobot IN </th>
-                    <th class="col-md-1 sort desc @if($sortColumn=='timbangout') {{ $sortDirection }}   @endif" wire:click="sort('timbangout')" >Bobot OUT </th>
-                    <th class="col-md-1 sort desc @if($sortColumn=='netto') {{ $sortDirection }}   @endif" wire:click="sort('netto')" >Netto </th>
-                    <th class="col-md-2 sort desc @if($sortColumn=='jam_in') {{ $sortDirection }}   @endif" wire:click="sort('jam_in')" >Date IN </th>
-                    <th class="col-md-2 sort desc @if($sortColumn=='jam_out') {{ $sortDirection }}   @endif" wire:click="sort('jam_out')" >Date Out </th>
+                    <th class="col-md-2 sort desc @if($sortColumn=='custName') {{ $sortDirection }}   @endif" wire:click="sort('custName')" >Customer</th>
+                    <th class="col-md-1 sort desc @if($sortColumn=='qtyKg') {{ $sortDirection }}   @endif" wire:click="sort('qtyKg')" >Bobot SPM </th>
+                    <th class="col-md-2 sort desc @if($sortColumn=='spmNo') {{ $sortDirection }}   @endif" wire:click="sort('spmNo')" >SJ No </th>
+                    <th class="col-md-2 sort desc @if($sortColumn=='sppbNo') {{ $sortDirection }}   @endif" wire:click="sort('sppbNo')" >SPPB No </th>
+                    <th class="col-md-1 sort desc @if($sortColumn=='tglSpm') {{ $sortDirection }}   @endif" wire:click="sort('tglSpm')" >Tgl SPM </th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -51,33 +49,16 @@
                     <td>{{ $value->driver }}</td>
                     <td>{{ $value->carID }}</td>
                     <td>{{ $value->custName }}</td>
-                    <td>{{ $value->transpName }}</td>
-                    <td>{{ $value->itemName }}</td>
-                    <td>{{ $value->timbangin }}</td>
-                    <td>{{ $value->timbangout }}</td>
-                    <td>{{ $value->netto }}</td>
-                    <td>
-                        @php
-                        if (is_null($value->jam_in)) {
-                            echo '-';
-                        } else {
-                            echo date('d-m-Y H:i',strtotime($value->jam_in)) ;
-                        }
-                            
-                        @endphp
-                    </td>
-                    <td>
-                        @php
-                            if (is_null($value->jam_out)) {
-                                echo '-';
-                            } else {
-                                echo date('d-m-Y H:i',strtotime($value->jam_out));
-                            }
-                            
-                        @endphp
-                    <td>
+                    <td>{{ $value->qtyKg }}</td>
+                    <td>{{ $value->spmNo }}</td>
+                    <td>{{ $value->sppbNo }}</td>
+                    <td>{{ date('d-m-Y ',strtotime($value->tglSpm)) }}</td>
+                   
                         {{-- <a wire:click="edit({{ $value->id }})" class="btn btn-primary btn-sm">Timbang Keluar</a> --}}
                         {{-- <a wire:click="deleteConfirmation({{ $value->id }})" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Del</a> --}}
+                    </td>
+                    <td>
+                        <a href="/cetaksj/{{ $value->id }} " class="btn btn-primary" >Cetak Surat Jalan</a>
                     </td>
                 </tr>
                 @endforeach
@@ -85,5 +66,5 @@
             </tbody> 
         </table>
     </div>
-    <!-- AKHIR DATA Timbangan masuk -->
+    <!-- AKHIR DATA Timbangan masuk --> 
 </div>

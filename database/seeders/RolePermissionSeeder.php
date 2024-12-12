@@ -14,30 +14,63 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        Permission::create(['name'=>'tambah-user']);
-        Permission::create(['name'=>'edit-user']);
-        Permission::create(['name'=>'hapus-user']);
-        Permission::create(['name'=>'lihat-user']);
+        Permission::create(['name'=>'create-spm']);
+        Permission::create(['name'=>'create-sppb']);
+        Permission::create(['name'=>'timbang-masuk']);
+        Permission::create(['name'=>'timbang-keluar']);
+        Permission::create(['name'=>'input-karung']);
+        Permission::create(['name'=>'approval-avg-berat-karung']);
+        
 
-        Permission::create(['name'=>'tambah-tulisan']);
-        Permission::create(['name'=>'edit-tulisan']);
-        Permission::create(['name'=>'hapus-tulisan']);
-        Permission::create(['name'=>'lihat-tulisan']);
+        Role::create(['name' => 'operator-registrasi']);
+        Role::create(['name' => 'operator-timbangan']);
+        Role::create(['name' => 'operator-b10']);
+        Role::create(['name' => 'supervisor-timbangan-registrasi']);
+        Role::create(['name' => 'supervisor-b10']);
+        Role::create(['name' => 'manager-logistik']);
+        Role::create(['name' => 'administrator']);
 
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'penulis']);
+        $roleAdmin = Role::findByName('administrator');
+        $roleAdmin->givePermissionTo('create-spm');
+        $roleAdmin->givePermissionTo('create-sppb');
+        $roleAdmin->givePermissionTo('timbang-masuk');
+        $roleAdmin->givePermissionTo('timbang-keluar');
+        $roleAdmin->givePermissionTo('input-karung');
+        $roleAdmin->givePermissionTo('approval-avg-berat-karung');
 
-        $roleAdmin = Role::findByName('admin');
-        $roleAdmin->givePermissionTo('tambah-user');
-        $roleAdmin->givePermissionTo('edit-user');
-        $roleAdmin->givePermissionTo('hapus-user');
-        $roleAdmin->givePermissionTo('lihat-user');
+        $rolemanagerlogistik = Role::findByName('manager-logistik');
+        $rolemanagerlogistik->givePermissionTo('create-spm');
+        $rolemanagerlogistik->givePermissionTo('create-sppb');
+        $rolemanagerlogistik->givePermissionTo('timbang-masuk');
+        $rolemanagerlogistik->givePermissionTo('timbang-keluar');
+        $rolemanagerlogistik->givePermissionTo('input-karung');
+        $rolemanagerlogistik->givePermissionTo('approval-avg-berat-karung');
 
-        $rolePenulis = Role::findByName('penulis');
-        $rolePenulis->givePermissionTo('tambah-tulisan');
-        $rolePenulis->givePermissionTo('edit-tulisan');
-        $rolePenulis->givePermissionTo('hapus-tulisan');
-        $rolePenulis->givePermissionTo('lihat-tulisan');
+        $rolesupervisortimbanganregistrasi = Role::findByName('supervisor-timbangan-registrasi');
+        $rolesupervisortimbanganregistrasi->givePermissionTo('create-spm');
+        $rolesupervisortimbanganregistrasi->givePermissionTo('create-sppb');
+        $rolesupervisortimbanganregistrasi->givePermissionTo('timbang-masuk');
+        $rolesupervisortimbanganregistrasi->givePermissionTo('timbang-keluar');
+
+        $rolesupervisorb10 = Role::findByName('supervisor-b10');
+        $rolesupervisorb10->givePermissionTo('input-karung');
+        $rolesupervisorb10->givePermissionTo('approval-avg-berat-karung');
+
+        $roleoperatorregistrasi = Role::findByName('operator-registrasi');
+        $roleoperatorregistrasi->givePermissionTo('create-spm');
+        $roleoperatorregistrasi->givePermissionTo('create-sppb');
+
+        $roleoperatortimbangan = Role::findByName('operator-timbangan');
+        $roleoperatortimbangan->givePermissionTo('timbang-masuk');
+        $roleoperatortimbangan->givePermissionTo('timbang-keluar');
+
+        $roleoperatorb10 = Role::findByName('operator-b10');
+        $roleoperatorb10->givePermissionTo('input-karung');
+        
+       
+        
+
+        
 
     }
 }
