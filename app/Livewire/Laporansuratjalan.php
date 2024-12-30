@@ -43,17 +43,20 @@ class Laporansuratjalan extends Component
         if (($this->katakunciout )  !=null) {
             
             //  dd('satu');   
-            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->where('trscale.driver','like','%' . $this->katakunciout . '%')->orwhere('trscale.carID','like','%' . $this->katakunciout . '%')->wheredate('trscale.jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            
+            // $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->where('trscale.driver','like','%' . $this->katakunciout . '%')->orwhere('trscale.carID','like','%' . $this->katakunciout . '%')->wheredate('trscale.jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $sdhout = DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('trscale', 'trscale.spmID', 'createspms.id')->where('trscale.driver','like','%' . $this->katakunciout . '%')->orwhere('trscale.carID','like','%' . $this->katakunciout . '%')->wheredate('trscale.jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+           
         } elseif (($this->tglin  )  !=null) {
             // dd('dua'); 
-            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->wheredate('trscale.jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            // $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->wheredate('trscale.jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $sdhout = DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('trscale', 'trscale.spmID', 'createspms.id')->wheredate('trscale.jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+           
         } else {
              
             $this->tglin = $tglawal;
             // dd($tglawal, $this->jam_in);
             // $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->join('createsppbs','createsppbs.id', 'trscale.doNo')->wheredate('trscale.jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            $sdhout = DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $sdhout = DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('trscale', 'trscale.spmID', 'createspms.id')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
             //  dd($sdhout);
         
         }

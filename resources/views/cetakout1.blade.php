@@ -8,10 +8,13 @@
     
     <style>
         @media print {
-  #print {
-    display: none;
-  }
-}
+            #print {
+                display: none;
+            }
+        }
+ 
+       
+
     </style>
 </head>
 
@@ -30,73 +33,107 @@
             </div>
             <hr>
             <br><br>
-
+            </div>
+            <table >
+                <tr>
+                    <td>
+                        <h4>No Sequence  : {{ $item->id }}</h4><br>
+                    </td>
+                    
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td >
+                        <h4 >Nama Produk : {{ $item->itemName }}</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4 >Tgl Masuk : {{ date('d-m-Y ',strtotime($item->jam_in)) }}</h4><br> 
+                        
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td >
+                        <h4>Gross : {{ number_format($item->timbangout) }}</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4 >Tgl Keluar : {{ date('d-m-Y ',strtotime($item->jam_out)) }}</h4>
+                        
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td >
+                        <h4>Berat Kendaraan : {{ number_format($item->timbangin) }}</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>No Kendaraan : {{ $item->carID }}</h4>
+                        
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td >
+                        <h4>Netto : {{ number_format($item->netto) }}</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                         <h4 >Nama Customer : {{ $item->custName }}</h4>
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <h4 >Remarks : {{ $item->remarks }}</h4>
+                    </td>
+                </tr>
+                
+            </table>
+            
             
 
-            <div class="row justify-content-around">
-                <div class="col-4">
-                    <h5>Tgl Masuk : {{ date('d-m-Y H:i',strtotime($item->jam_in)) }}</h5>
-                </div>
-                <div class="col-4">
-                    <h5>Nama Customer : {{ $item->custName }}</h5>
-                </div>
-            </div>
-            <div class="row justify-content-around">
-                <div class="col-4">
-                    <h5>Tgl Keluar : {{ date('d-m-Y H:i',strtotime($item->jam_out)) }}</h5>
-                </div>
-                <div class="col-4 ">
-                    <h5>Nama Produk : {{ $item->itemName }}</h5>
-                </div>
-            </div>
-
-            <div class="row justify-content-around">
-                
-                <div class="col-4 ">
-                    <h5>No Kendaraan : {{ $item->carID }}</h5>
-                </div>
-                <div class="col-4">
-                    <h5>Berat Kendaraan : {{ $item->timbangin }}</h5>
-                </div>
-            </div>
-
-            <div class="row justify-content-around">
-                
-                <div class="col-4 ">
-                    <h5>Gross : {{ $item->timbangout }}</h5>
-                </div>
-                <div class="col-4">
-                    <h5>Netto : {{ $item->netto }}</h5>
-                </div>
-            </div>
             <hr>
             <br><br>
+            <table>
+                <tr>
+                    <td>Dibuat</td>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td>Driver</td>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td>Diperiksa</td>
+                </tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr>
+                    <td>{{ Auth::user()->name }}</td>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td>{{ $item->driver }}</td>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td>____________</td>
+                </tr>
+            </table>
 
-            <div class="row justify-content-around">
-                <div class="col-4">
-                    <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dibuat</h5>
-                </div>
-                <div class="col-4">
-                    <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Driver</h5>
-                </div>
-                <div class="col-4">
-                   <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Diperiksa</h5>
-                </div>
-    
-            </div>
-            <br><br><br><br>
-            <div class="row align-items-center">
-                <div class="col">
-                    <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ Auth::user()->name }}</h5>
-                </div>
-                <div class="col">
-                    <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $item->driver }}</h5>
-                </div>
-                <div class="col">
-                    <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ____________</h5>
-                </div>
-    
-            </div>
+            
         </div>
         
 

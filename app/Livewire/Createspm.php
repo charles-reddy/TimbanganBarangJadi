@@ -25,7 +25,7 @@ class Createspm extends Component
     public $bulan;
     public $nomor;
     public $tahun;
-    #[Validate('required', message: 'tiket No dibutuhkan')]
+    // #[Validate('required', message: 'tiket No dibutuhkan')]
     public $tiketID;
 
     #[Validate('required', message: 'SPPB No dibutuhkan')]
@@ -39,7 +39,7 @@ class Createspm extends Component
     public $kontainerNo;
     #[Validate('required', message: 'Pilih Item Barang')]
     public $itemCode;
-    #[Validate('required', message: 'Pilih Transporter')]
+    // #[Validate('required', message: 'Pilih Transporter')]
     public $transpID;
     #[Validate('required', message: 'qty  harus diisi')]
     #[Validate('integer', message: 'qty harus dalam angka')]
@@ -55,7 +55,7 @@ class Createspm extends Component
     #[Validate('required', message: 'Pilih Kemasan')]
     public $packingID;
 
-   
+    
 
     public function store()
     {
@@ -158,7 +158,7 @@ class Createspm extends Component
         if ($this->katakunci !=null) {
             $data = DB::connection('sqlsrv')->table('createspms')->join('transporters', 'transporters.transpID', 'createspms.transpID')->join('products', 'products.itemCode', 'createspms.itemCode')->where('sppbNo','like','%' . $this->katakunci . '%')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         } else {
-            $data = DB::connection('sqlsrv')->table('createspms')->join('transporters', 'transporters.transpID', 'createspms.transpID')->join('products', 'products.itemCode', 'createspms.itemCode')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('createspms')->join('products', 'products.itemCode', 'createspms.itemCode')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         }
 
         if ($this->sppbNo !=null)
@@ -181,7 +181,8 @@ class Createspm extends Component
         $tiket = DB::connection('mysql')->table('tb_reservasi')->select('no','nodo','stts','tgldaf','token','cust')->where('stts','=','Daftar')->where('tgldaf','=',$tglskr)->get();
         //  dd($tiket);
         $angkutan = Transporter::all();
-        $barang = Product::all();
+        $barang = Product::where('itemName','like','%gkr%')->orwhere('itemName','like','%gkp%')->orwhere('itemName','like','%mola%')->get();
+        // dd($barang);
         $paking = packing::all();
         $getsppb = DB::connection('sqlsrv')->table('createsppbs')->join('customers', 'customers.custID', 'createsppbs.custID')->select('id','sppbNo','custName')->where('openQtyKg','>',0)->get();
         //   dd($getsppb);

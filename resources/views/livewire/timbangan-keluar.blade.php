@@ -219,7 +219,6 @@
                     <th class="col-md-1 sort @if($sortColumn=='driver') {{ $sortDirection }}   @endif" wire:click="sort('driver')" >Driver</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Car ID</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='custName') {{ $sortDirection }}   @endif" wire:click="sort('custName')" >Customer</th>
-                    <th class="col-md-1 sort desc @if($sortColumn=='transpID') {{ $sortDirection }}   @endif" wire:click="sort('transpID')" >Transporter</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='itemCode') {{ $sortDirection }}   @endif" wire:click="sort('itemCode')" >Item Name </th>
                     <th class="col-md-1 sort desc @if($sortColumn=='timbangin') {{ $sortDirection }}   @endif" wire:click="sort('timbangin')" >Bobot IN </th>
                     <th class="col-md-2 sort desc @if($sortColumn=='jam_in') {{ $sortDirection }}   @endif" wire:click="sort('jam_in')" >Date IN </th>
@@ -237,7 +236,7 @@
                     <td>{{ $value->driver }}</td>
                     <td>{{ $value->carID }}</td>
                     <td>{{ $value->custName }}</td>
-                    <td>{{ $value->transpName }}</td>
+                    
                     <td>{{ $value->itemName }}</td>
                     <td>{{ $value->timbangin }}</td>
                     <td>{{ date('d-m-Y H:i',strtotime($value->jam_in)) }}</td>
@@ -279,7 +278,6 @@
                     <th class="col-md-1 sort @if($sortColumn=='driver') {{ $sortDirection }}   @endif" wire:click="sort('driver')" >Driver</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Car ID</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='custName') {{ $sortDirection }}   @endif" wire:click="sort('custName')" >Customer</th>
-                    <th class="col-md-1 sort desc @if($sortColumn=='transpID') {{ $sortDirection }}   @endif" wire:click="sort('transpID')" >Transporter</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='itemCode') {{ $sortDirection }}   @endif" wire:click="sort('itemCode')" >Item Name </th>
                     <th class="col-md-1 sort desc @if($sortColumn=='timbangin') {{ $sortDirection }}   @endif" wire:click="sort('timbangin')" > IN (kg) </th>
                     <th class="col-md-1 sort desc @if($sortColumn=='timbangout') {{ $sortDirection }}   @endif" wire:click="sort('timbangout')" > OUT (kg) </th>
@@ -298,7 +296,6 @@
                     <td>{{ $valueout->driver }}</td>
                     <td>{{ $valueout->carID }}</td>
                     <td>{{ $valueout->custName }}</td>
-                    <td>{{ $valueout->transpName }}</td>
                     <td>{{ $valueout->itemName }}</td>
                     <td>{{ $valueout->timbangin }}</td>
                     <td>{{ $valueout->timbangout }}</td>
@@ -343,10 +340,7 @@
         $(document).ready(function() {
             $('.js-example-basic-single').select2();
 
-            $('#my-custID').on('change',function(e) {
-                var data = $('#my-custID').select2("val");
-                @this.set('custID',data);
-            })
+           
 
 
             // $(document).ready(function() {
@@ -358,16 +352,9 @@
             //     });
             // });
 
-            $('#my-transpID').on('change',function(e) {
-                var data = $('#my-transpID').select2("val");
-                @this.set('transpID',data);
-            })
+            
 
-            $('#my-itemCode').on('change',function(e) {
-                var data = $('#my-itemCode').select2("val");
-                @this.set('itemCode',data);
-            })
-
+            
             
         });
         

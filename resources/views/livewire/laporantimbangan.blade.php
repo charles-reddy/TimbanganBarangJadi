@@ -33,7 +33,6 @@
                     <th class="col-md-1 sort @if($sortColumn=='driver') {{ $sortDirection }}   @endif" wire:click="sort('driver')" >Driver</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Car ID</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='custName') {{ $sortDirection }}   @endif" wire:click="sort('custName')" >Customer</th>
-                    <th class="col-md-1 sort desc @if($sortColumn=='transpID') {{ $sortDirection }}   @endif" wire:click="sort('transpID')" >Transporter</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='itemCode') {{ $sortDirection }}   @endif" wire:click="sort('itemCode')" >Item Name </th>
                     <th class="col-md-1 sort desc @if($sortColumn=='timbangin') {{ $sortDirection }}   @endif" wire:click="sort('timbangin')" >Bobot IN </th>
                     <th class="col-md-1 sort desc @if($sortColumn=='timbangout') {{ $sortDirection }}   @endif" wire:click="sort('timbangout')" >Bobot OUT </th>
@@ -51,7 +50,7 @@
                     <td>{{ $value->driver }}</td>
                     <td>{{ $value->carID }}</td>
                     <td>{{ $value->custName }}</td>
-                    <td>{{ $value->transpName }}</td>
+                    
                     <td>{{ $value->itemName }}</td>
                     <td>{{ $value->timbangin }}</td>
                     <td>{{ $value->timbangout }}</td>

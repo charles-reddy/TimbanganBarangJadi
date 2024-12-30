@@ -41,7 +41,7 @@ class Inputkarung extends Component
     public $timbanganID;
     public $timbangout;
     public $transID;
-    public $netto;
+    public $netto; 
     public $timbanganoutID;
     public $custN;
     public $jam_out;
@@ -67,7 +67,8 @@ class Inputkarung extends Component
         $this->validate();
          
         try {
-               
+                $tes=DB::connection('sqlsrv')->table('trscale')->where('id',$this->transID)->get();
+            //    dd($tes);
                 DB::connection('sqlsrv')->table('trscale')->where('id',$this->transID)->update([
                     'b10QtyKarung' => $this->b10QtyKarung,
                     'b10BatchNo' => $this->b10BatchNo,
@@ -116,7 +117,9 @@ class Inputkarung extends Component
     {   
        
         // $data = Trscale::find($id);
-        $data = DB::connection('sqlsrv')->table('createspms')->join('trscale','trscale.spmID','createspms.id' )->where('trscale.id',$id)->first();
+
+        // dd($id);
+        $data = DB::connection('sqlsrv')->table('createspms')->join('trscale', 'trscale.spmID', 'createspms.id')->where('trscale.id',$id)->first();
         // dd($data);
         $this->driver = $data->driver;
         $this->carID = $data->carID;
@@ -126,9 +129,9 @@ class Inputkarung extends Component
         $this->transID = $id;
         $custN = Customer::where('custID', $this->custID)->value('custName');
         $this->custName = $custN;
-        $this->transpID = $data->transpID;
-        $transpN = Transporter::where('transpID', $this->transpID)->value('transpName');
-        $this->transpName = $transpN;
+        // $this->transpID = $data->transpID;
+        // $transpN = Transporter::where('transpID', $this->transpID)->value('transpName');
+        // $this->transpName = $transpN;
         $this->itemCode = $data->itemCode;
         $itemC = Product::where('itemCode', $this->itemCode)->value('ItemName');
         $this->itemName = $itemC;
@@ -153,11 +156,17 @@ class Inputkarung extends Component
     public function render()
     {
         if (($this->katakunci or $this->katakunciout)  !=null) {
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNull('netto')->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNull('netto')->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNull('netto')->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            // dd($data);
         } else {
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id','trscale.spmID' )->wherenull('netto')->wherenull('b10QtyKarung')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-        //    dd($data);
+            // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id','trscale.spmID' )->wherenull('netto')->wherenull('b10QtyKarung')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('createspms')->join('trscale', 'trscale.spmID', 'createspms.id')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->wherenull('netto')->wherenull('b10QtyKarung')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+        
+            //    dd($data);
         }
+
+        
         $timbangan = JembatanTimbang::all();
         $pelanggan = Customer::all();
         $angkutan = Transporter::all();

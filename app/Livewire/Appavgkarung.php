@@ -118,9 +118,9 @@ class Appavgkarung extends Component
         $this->transID = $id;
         $custN = Customer::where('custID', $this->custID)->value('custName');
         $this->custName = $custN;
-        $this->transpID = $data->transpID;
-        $transpN = Transporter::where('transpID', $this->transpID)->value('transpName');
-        $this->transpName = $transpN;
+        // // $this->transpID = $data->transpID;
+        // // $transpN = Transporter::where('transpID', $this->transpID)->value('transpName');
+        // $this->transpName = $transpN;
         $this->itemCode = $data->itemCode;
         $itemC = Product::where('itemCode', $this->itemCode)->value('ItemName');
         $this->itemName = $itemC;
@@ -132,9 +132,13 @@ class Appavgkarung extends Component
     public function render()
     {
         if (($this->katakunci or $this->katakunciout)  !=null) {
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->where('isApp','<>', 1)->wherenull('netto')->where('avgKarung','<', 50.01)->orwhere('avgKarung','>', 50.25)->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->where('isApp','<>', 1)->wherenull('netto')->where('avgKarung','<', 50.01)->orwhere('avgKarung','>', 50.25)->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->where('isApp','<>', 1)->wherenull('netto')->where('avgKarung','<', 50.01)->orwhere('avgKarung','>', 50.25)->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+       
         } else {
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('isApp',false)->wherenull('netto')->WhereNotBetween('avgKarung',[50.01, 50.25])->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('isApp',false)->wherenull('netto')->WhereNotBetween('avgKarung',[50.01, 50.25])->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('isApp',false)->wherenull('netto')->WhereNotBetween('avgKarung',[50.01, 50.25])->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+        
         }
         $timbangan = JembatanTimbang::all();
         $pelanggan = Customer::all();

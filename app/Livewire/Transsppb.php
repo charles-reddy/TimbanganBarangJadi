@@ -164,7 +164,7 @@ class Transsppb extends Component
         //  dd($data1, $tglawal,$tglakhir);
 
         $angkutan = Transporter::all();
-        $barang = Product::all();
+        $barang = Product::where('itemName','like','%gkr%')->orwhere('itemName','like','%gkp%')->orwhere('itemName','like','%mola%')->get();
         $pelanggan = Customer::all();
        
         

@@ -198,7 +198,7 @@
                     <th class="col-ms-1 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Plat No</th>
                     <th class="col-ms-1 sort desc @if($sortColumn=='sppbNo') {{ $sortDirection }}   @endif" wire:click="sort('sppbNo')" >No SPPB</th>
                     <th class="col-ms-1 sort desc @if($sortColumn=='itemName') {{ $sortDirection }}   @endif" wire:click="sort('itemName')" >Nama Barang</th>
-                    <th class="col-ms-1 sort desc @if($sortColumn=='transpName') {{ $sortDirection }}   @endif" wire:click="sort('transpName')" >Nama Transporter </th>
+                    {{-- <th class="col-ms-1 sort desc @if($sortColumn=='transpName') {{ $sortDirection }}   @endif" wire:click="sort('transpName')" >Nama Transporter </th> --}}
                     <th class="col-ms-1 sort desc @if($sortColumn=='qtyKg') {{ $sortDirection }}   @endif" wire:click="sort('qtyKg')" >Qty Kg </th>
                     <th class="col-ms-1 sort desc @if($sortColumn=='qtyKarung') {{ $sortDirection }}   @endif" wire:click="sort('qtyKarung')" >Qty Karung </th>
                     
@@ -215,7 +215,7 @@
                     <td>{{ $value->carID }}</td>
                     <td>{{ $value->sppbNo }}</td>
                     <td>{{ $value->itemName }}</td>
-                    <td>{{ $value->transpName }}</td>
+                    {{-- <td>{{ $value->transpName }}</td> --}}
                     <td>{{ $value->qtyKg }}</td>
                     <td>{{ $value->qtyKarung }}</td>
                     <td>

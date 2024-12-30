@@ -1,33 +1,5 @@
 
 <div > 
-    <style>
-        .webcam-capture,
-        .webcam-capture video{
-            display: inline-block;
-            width: 100% !important;
-            margin: auto;
-            height: 300px !important;
-            
-            border-radius: 15px;
-        
-        }
-
-       
-
-        /* .webcam-capture1,
-        .webcam-capture1 video{
-            display: inline-block;
-            width: 100% !important;
-            margin: auto;
-            height: auto !important;
-            border-radius: 15px;
-        
-        } */
-
-
-
-    </style>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     
     @if (session('error'))
     <div class="pt-3">
@@ -67,7 +39,7 @@
     <!-- START FORM -->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         {{-- @include('layouts.navbar') --}}
-        <div >
+        <div wire:poll.30s>
             {{ now() }}
             </div>
         <div class="row">
@@ -171,11 +143,10 @@
                                         </select>
                                     </div>
 
-                                    <div class="mb-3 mt-3 row">
+                                    {{-- <div class="mb-3 mt-3 row">
                                         
                                         <div class="col-sm-10">
-                                            <img  src="http://10.20.12.208/cgi-bin/encoder?USER=apps&PWD=Tebumas12&GET_STREAM" id="video" crossOrigin='anonymous' >
-                                            <!-- <img src="/proxy-image" id="video" crossorigin="anonymous"> -->
+                                            <img  src="http://10.20.12.208/cgi-bin/encoder?USER=apps&PWD=Tebumas12&GET_STREAM" id="video"  >
                                             <button id="take-snapshot" wire:click.prevent>take snapshot</button>
                                             
                                         </div>
@@ -188,35 +159,8 @@
                                             <div id="dataurl-header">Image Data url</div>
                                             <textarea id="dataurl" readonly></textarea>
                                         </div>
-                                    </div> 
+                                    </div> --}}
                                     
-                                     <!-- web cam start -->
-                                    <div class="mb-3 mt-3 row">
-                                        <div class="col-sm-10">
-                                            <input type="input" disabled id="lokasi">
-                                            <div class="webcam-capture"></div>
-                                        </div>
-                                        
-                                    </div>
-                                
-                                    <div class="row">
-                                        <div class="col">
-                                                <button id="takeabsen" class= "btn btn-primary btn-block" wire:click.prevent>
-                                                    <ion-icon name="camera-outline"></ion-icon>    
-                                                    capture
-                                                </button>
-                                        </div>
-
-                                        <div class="mb-3 mt-3 row">
-                                        
-                                            <div class="col-sm-10" >
-                                                <canvas id="canvas1" ></canvas>
-                                                <div id="dataurl-header1">Image Data url</div>
-                                                <textarea id="dataurl1" readonly></textarea>
-                                            </div>
-                                        </div> 
-                                    </div>
-                                    <!-- web cam start -->
                                 </div>
                                 
                             </div>
@@ -388,99 +332,15 @@
             let canvas = document.getElementById("canvas");
             let dataurl = document.querySelector("#dataurl");
             let dataurl_container =  document.querySelector("#dataurl-container");
-            // canvas.crossOrigin= 'anonymous';
+            canvas.crossOrigin= 'anonymous';
             btn_take_snapshot.addEventListener('click', function() {
                 canvas.getContext('2d').drawImage(video,0,0, canvas.width, canvas.height);
                 let image_data_url = canvas.toDataURL('image/png');
                 
                 var data = image_data_url.getImageData(0,0,0,0);
-                console.log(image_data_url);
-                dataurl.value = image_data_url;
-                
+                dataurl.value = data;
                 dataurl_container.style.display = 'block';
             });
-
-            
-        </script>
-
-        <script>
-            let video1 = document.querySelector(".webcam-capture");
-            let btn_take_snapshot1 = document.querySelector("#takeabsen");
-            let canvas1 = document.getElementById("canvas1");
-            let dataurl1 = document.querySelector("#dataurl1");
-            let dataurl_container1 =  document.querySelector("#dataurl-container1");
-            canvas1.crossOrigin= 'anonymous';
-            btn_take_snapshot1.addEventListener('click', function() {
-                canvas1.getContext('2d').drawImage(video1,0,0, canvas1.width, canvas1.height);
-                let image_data_url = canvas1.toDataURL('image/png');
-                
-                var data = image_data_url.getImageData(0,0,0,0);
-                dataurl1.value = data;
-                dataurl_container1.style.display = 'block';
-            });
-
-            
-        </script>
-
-        <script>
-            
-            // web cam start
-            Webcam.set({
-                height: 480
-                ,  width: 640
-                ,  image_format: 'jpeg'
-                ,  jpeg_quality: 80
-                , constraints: {
-                    facingMode: 'environment'
-                    }
-
-            });
-
-            Webcam.attach('.webcam-capture');
-            // web cam start
-            $('#takeabsen').on('click', take_snapshot);
-            
-            function take_snapshot()
-            {
-                
-                $("#takeabsen").click(function(e) {
-                    Webcam.snap(function(data_uri) {
-
-                    var canvas = document.getElementById('canvas1');
-                    var context = canvas.getContext('2d');
-                    var img = new Image();
-                    img.onload = function() {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        context.drawImage(img, 0, 0);
-                    };
-                    img.src = data_uri;
-                    console.log(data_uri);
-                    document.getElementById('dataurl1').value = data_uri;
-                    });
-                    
-                    
-                });
-
-             }
-
-
-            function capture() {
-                    Webcam.snap(function(data_uri) {
-
-                        var canvas = document.getElementById('canvas1');
-                        var context = canvas.getContext('2d');
-                        var img = new Image();
-                        img.onload = function() {
-                            canvas.width = img.width;
-                            canvas.height = img.height;
-                            context.drawImage(img, 0, 0);
-                        };
-                        img.src = data_uri;
-
-                        document.getElementById('dataurl1').value = data_uri;
-                    });
-                }
         </script>
 
     </div>

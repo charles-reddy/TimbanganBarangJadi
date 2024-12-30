@@ -64,60 +64,60 @@ class TimbanganKeluar extends Component
     {
         $this->timbangout = '';
         $this->netto = '';
-        // try {
-        //     switch ($this->timbanganoutID) {
-        //         case 1:
-        //             $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
-        //             break;
+        try {
+            switch ($this->timbanganoutID) {
+                case 1:
+                    $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
+                    break;
                 
-        //         case '2':
-        //             $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
-        //             break;   
+                case '2':
+                    $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+                    break;   
 
-        //         case '3':
-        //             $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
-        //             break; 
+                case '3':
+                    $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
+                    break; 
 
-        //         default:
+                default:
                     
-        //             break;
-        //     }
+                    break;
+            }
 
-        //         $client= new Client();
-        //         // $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
-        //         $response = $client->request('GET',$data);
-        //         $content =  $response->getBody()->getContents();
-        //         $contentarray = json_decode($content,true);
-        //     //    dd($contentarray['weight']);
-        //          $this->timbangout = $contentarray['weight'];
-        //          $this->timbangin;
+                $client= new Client();
+                // $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+                $response = $client->request('GET',$data);
+                $content =  $response->getBody()->getContents();
+                $contentarray = json_decode($content,true);
+            //    dd($contentarray['weight']);
+                 $this->timbangout = $contentarray['weight'];
+                 $this->timbangin;
         
-        //     $this->netto = $this->timbangin - $this->timbangout; 
-        //     if ($this->netto < 0)
-        //     {
+            $this->netto = $this->timbangin - $this->timbangout; 
+            if ($this->netto < 0)
+            {
             
-        //         $this->netto = $this->timbangout - $this->timbangin; 
-        //     } 
+                $this->netto = $this->timbangout - $this->timbangin; 
+            } 
 
-        // } catch (Exception $e) {
-        //     session()->flash('error', 'Pastikan Timbangan yg dipilih sesuai');
-        //     return;
-        // }
-        
-        $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganoutID)->value('IP');
-        $this->timbangin;
-        $this->timbangout = 8888;
-        $this->netto = $this->timbangin - $this->timbangout; 
-        if ($this->netto < 0)
-        {
+        } catch (Exception $e) {
+            session()->flash('error', 'Pastikan Timbangan yg dipilih sesuai');
+            return;
+        }
+// *************** testing timbangan *******************
+        // $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganoutID)->value('IP');
+        // $this->timbangin;
+        // $this->timbangout = 8888;
+        // $this->netto = $this->timbangin - $this->timbangout; 
+        // if ($this->netto < 0)
+        // {
            
-            $this->netto = $this->timbangout - $this->timbangin; 
-        } 
-
+        //     $this->netto = $this->timbangout - $this->timbangin; 
+        // } 
+// *************** testing timbangan *******************  
         $this->avgKarung = $this->netto / $this->b10QtyKarung;
        
     }
-    
+
 
     // public function store()
     // {
@@ -240,6 +240,7 @@ class TimbanganKeluar extends Component
                 // dd($combineid);
                 session()->flash('message', 'Data berhasil diperbaharui');
                 redirect($combineid);
+                
                 // $this->clear();
             
             } else if ( ($this->isApp)  == 1 and  ($this->avgKarung >= 50.25)   ) {
@@ -424,17 +425,17 @@ class TimbanganKeluar extends Component
     public function render()
     {   
         if (($this->katakunci or $this->katakunciout)  !=null) {
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNull('netto')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNull('netto')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         } else {
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wherenull('netto')->whereNotNull('b10QtyKarung')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->whereNotNull('netto')->whereNotNull('b10QtyKarung')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            // dd($sdhout);
+            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->wherenull('netto')->whereNotNull('b10QtyKarung')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->whereNotNull('netto')->whereNotNull('b10QtyKarung')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            //  dd($data);
         }
         $timbangan = JembatanTimbang::all();
         $pelanggan = Customer::all();
         $angkutan = Transporter::all();
-        $barang = Product::all();
+        $barang = Product::where('itemName','like','%gkr%')->orwhere('itemName','like','%mola%')->get();
         return view('livewire.timbangan-keluar', ['datascaleout' => $sdhout,'datascale' => $data, 'customer' => $pelanggan, 'transporter' => $angkutan, 'product' => $barang, 'timbangan' => $timbangan]); 
     }
 }

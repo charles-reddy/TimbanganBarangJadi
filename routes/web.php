@@ -73,5 +73,25 @@ Route::get('/lapsj', function () {
 
 route::get('/cetaksj/{id}',[ScaleController::class,'cetaksj'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-b10|supervisor-b10']);
 
+route::get('/testcapture', function () {
+    return view('testcapture');
+});
+
+route::get('/mastercustomer', function () {
+    return view('mastercustomer');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|supervisor-timbangan-registrasi'])->name('mastercustomer');
+
+
+Route::get('/timbanganmasukb19', function () {
+    return view('timbanganmasukb19');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('timbanganmasukb19');
+
+
+Route::get('/proxy-image', function () {
+    $imageUrl = "http://10.20.12.208/cgi-bin/encoder?USER=apps&PWD=Tebumas12&GET_STREAM";
+    return response()->streamDownload(function () use ($imageUrl) {
+        echo file_get_contents($imageUrl);
+    }, 'stream.jpg');
+});
 
 require __DIR__.'/auth.php';

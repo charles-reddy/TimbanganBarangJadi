@@ -14,7 +14,7 @@
             </div>
             <div>
                 <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
-                <button type="button" class="btn-primary" wire:click="export_out()">Export</button> 
+                {{-- <button type="button" class="btn-primary" wire:click="export_out()">Export</button>  --}}
             </div>
         </div>
 
@@ -58,7 +58,7 @@
                         {{-- <a wire:click="deleteConfirmation({{ $value->id }})" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Del</a> --}}
                     </td>
                     <td>
-                        <a href="/cetaksj/{{ $value->id }} " class="btn btn-primary" >Cetak Surat Jalan</a>
+                        <a href="/cetaksj/{{ $value->id }} " class="btn btn-primary" target="_blank" >Cetak Surat Jalan</a>
                     </td>
                 </tr>
                 @endforeach
