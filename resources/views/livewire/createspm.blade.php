@@ -53,45 +53,68 @@
             <div class="row">
                 <div class="col">
                     <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>ID Transaction</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control w-50" wire:model="transID" hidden>
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">SPM No</label>
                         <div class="col-sm-10">
+                        @if ( $isDisabled  == true)
+                            <input type="text" class="form-control w-50" wire:model="spmNo1" disabled>
+                        @else
                             <input type="text" class="form-control w-50" wire:model="spmNo" disabled>
+                        @endif
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="" class="col-sm-2 col-form-label">No Tiket Muat</label>
+                        <div class="col-sm-10"  >
+                        @if ( $isDisabled  == true)
+                            <input type="text" class="form-control w-50 mt-2" wire:model="tiketMuat1" disabled>
+                        @else
+                            <select class="js-example-basic-single w-50"  id="my-tiketMuat" wire:model="tiketMuat">
+
+                                <option></option>
+                                @foreach ($datatm as $item)
+                                    <option value="{{ $item->id }}">{{ $item->pendfNo }} - {{ $item->tmTranspName }} </option>
+                                @endforeach
+                            </select>
+                        @endif
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="itemCode" class="col-sm-2 col-form-label">SPPB No</label>
-                        <div class="col-sm-10" wire:ignore>
-                            <select class="js-example-basic-single w-50"  id="my-sppbNo" wire:model="sppbNo">
-                                <option></option>
-                                @foreach ($listsppb as $item)
-                                    <option value="{{ $item->id }}">{{ $item->sppbNo }} - {{ $item->custName }}</option>
-                                @endforeach
-                            </select>
-                            {{-- <input type="text" class="form-control w-50 mt-2" wire:model="itemName" disabled> --}}
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control w-50 mt-2" wire:model="sppbID" hidden> 
+                            <input type="text" class="form-control w-50 mt-2" wire:model="sppbNo" disabled> 
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <label for="" class="col-sm-2 col-form-label">No Registrasi</label>
-                        <div class="col-sm-10" wire:ignore>
-                            <select class="js-example-basic-single w-50"  id="my-tiketID" wire:model="tiketID">
-                                <option></option>
-                                @foreach ($antrian as $item)
-                                    <option value="{{ $item->no }}">{{ $item->token }} - {{ $item->nodo }} - {{ $item->cust }}</option>
-                                @endforeach
-                            </select>
-                            {{-- <input type="text" class="form-control w-50 mt-2" wire:model="itemName" disabled> --}}
-                        </div>
-                    </div>
+                    
                     <div class="mb-3 mt-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">Plat No</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control w-50" wire:model="carID" autocomplete="off">
+                            <input type="text" class="form-control w-50" wire:model="carID" autocomplete="off" disabled>
                         </div>
                     </div>
                     <div class="mb-3 mt-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">Driver</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control w-50" wire:model="driver" >
+                          <input type="text" class="form-control w-50" wire:model="driver" disabled >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="itemCode" class="col-sm-2 col-form-label">Customer</label>
+                        <div class="col-sm-10" >
+                            <input type="text" class="form-control w-50 mt-2" wire:model="custID" hidden>
+                            <input type="text" class="form-control w-50 mt-2" wire:model="custName" disabled>
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label">DN No</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control w-50" wire:model="dnNo" autocomplete="off">
                         </div>
                     </div>
                     <div class="mb-3 mt-3 row">
@@ -110,66 +133,127 @@
                     <div class="mb-3 row">
                         <label for="itemCode" class="col-sm-2 col-form-label">Item Code</label>
                         <div class="col-sm-10" >
-                            <select class="js-example-basic-single w-50"  id="my-itemCode" wire:model="itemCode">
-                                <option></option>
-                                @foreach ($product as $item)
-                                    <option value="{{ $item->itemCode }}">{{ $item->itemName }}</option>
-                                @endforeach
-                            </select>
-                            {{-- <input type="text" class="form-control w-50 mt-2" wire:model="itemName" disabled> --}}
+                            <input type="text" class="form-control w-50 mt-2" wire:model="itemCode" hidden>
+                            <input type="text" class="form-control w-50 mt-2" wire:model="itemName" disabled>
+                            <input type="text" class="form-control w-50 mt-2" wire:model="itemType" disabled>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="packingID" class="col-sm-2 col-form-label">Kemasan</label>
-                        <div class="col-sm-10" >
-                            <select class="js-example-basic-single w-50"  id="my-packingID" wire:model="packingID">
+                        <div class="col-sm-10"  >
+                        @if ( $isDisabled  == true)
+                            <input type="text" class="form-control w-50 mt-2" wire:model="packingID" disabled>
+                        @else
+                            <select class="js-example-basic-single w-50"  id="my-packingID" wire:model="packingID" style="border-radius: 10px;">
                                 <option></option>
                                 @foreach ($kemasan as $item)
                                     <option value="{{ $item->packingID }}">{{ $item->packingName }}</option>
                                 @endforeach
                             </select>
-                            {{-- <input type="text" class="form-control w-50 mt-2" wire:model="itemName" disabled> --}}
+                        @endif
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <label for="transpID" class="col-sm-2 col-form-label">Transporter</label>
-                        <div class="col-sm-10" wire:ignore>
-                            <select class="js-example-basic-single w-50" id="my-transpID" wire:model="transpID">
-                                <option></option>
-                                @foreach ($transporter as $item)
-                                    <option value="{{ $item->transpID }}">{{ $item->transpName }}</option>
-                                @endforeach
+                    <div class="mb-3  row">
+                        <label for="isApp" class="col-sm-2 col-form-label">Local / Export</label>
+                        <div class="col-sm-10" >
+                        
+                            <select class="js-example-basic-single w-50"  id="my-isExport" wire:model="isExport" style="border-radius: 10px;">
+                                    <option >---Local / Export---</option>
+                                    <option value="1">Local</option>
+                                    <option value="2">Export</option>
                             </select>
-                            {{-- <input type="text" class="form-control w-50 mt-2" wire:model="transpName" disabled> --}}
+                        
                         </div>
-                    </div> 
+                    </div>
+                    
                     <div class="mb-3 mt-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">Qty (Kg)</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control w-50" wire:model="qtyKg" autocomplete="off">
+                        @if($itemType == 'FG-L')
+                            <input type="text" class="form-control w-50" wire:model="qtyKg"  autocomplete="off" >
+                        @else
+                            <input type="text" class="form-control w-50" wire:model="qtyKg"  autocomplete="off" disabled >
+                        @endif
                         </div>
                     </div>
                     <div class="mb-3 mt-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">Qty (Karung)</label>
                         <div class="col-sm-10">
-                            <input type="text" id="input" class="form-control w-50" wire:model="qtyKarung" autocomplete="off">
+                            @if($itemType == 'FG-L')
+                                <input type="text" id="input" class="form-control w-50" wire:model="qtyKarung" autocomplete="off" >
+                            @else
+                                <input type="text" id="input" class="form-control w-50" wire:model="qtyKarung" autocomplete="off" disabled >
+                            @endif
+                                
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3 row" >
+                        <label  class="col-sm-2 col-form-label">Jenis Truk</label>
+                        <div class="col-sm-10" >
+                        
+                            <select class="js-example-basic-single w-50"  id="tmJenisTruk" wire:model="tmJenisTruk" style="border-radius: 10px;">
+                                <option></option>
+                                @foreach ($jenistruk as $item)
+                                    <option value="{{ $item->id }}" selected>{{ $item->jenisTruk }}</option>
+                                @endforeach
+                            </select>
+                        
+                        </div>
+                    </div>
+
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden >Open Qty (Kg)</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control w-50" wire:model="openQtyKg"  autocomplete="off" disabled hidden>
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>Open Qty (Karung)</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="input" class="form-control w-50" wire:model="openQtyKarung" autocomplete="off" disabled hidden>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden> qty SPM awal (Kg)</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control w-50" wire:model="AwalQtyKg" autocomplete="off" disabled hidden>
+                        
+                        </div>
+                    </div>
+
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>Open Qty awal (Kg)</label>
+                        <div class="col-sm-10">
+                        
+                            <input type="text" class="form-control w-50" wire:model="AwalOpenQtyKg"  autocomplete="off" disabled hidden>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>Qty SPM (Karung)</label>
+                        <div class="col-sm-10">
+                        
+                            <input type="text" id="input" class="form-control w-50" wire:model="AwalQtyKarung" autocomplete="off" disabled hidden>
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>Open Qty Awal (Karung)</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="input" class="form-control w-25" wire:model="AwalOpenQtyKarung" autocomplete="off" disabled hidden>
                         </div>
                     </div>
                     
-                    
-
-                </div>
-                
             </div>
 
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
-                    {{-- @if ($updateData == false) --}}
+                     @if ($updateData == false)
                         <button type="button" class="btn btn-primary" name="submit" wire:click="store()">SIMPAN</button>
-                    {{-- @else
+                    @else
                         <button type="button" class="btn btn-primary" name="submit" wire:click="update()">UPDATE</button>
-                    @endif --}}
+                    @endif
                         <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
                     
                 </div>
@@ -194,6 +278,8 @@
                     <th></th>
                     <th class="col-ms-1">No</th>
                     <th class="col-ms-1 sort @if($sortColumn=='spmNo') {{ $sortDirection }}   @endif" wire:click="sort('spmNo')" >No SPM</th>
+                    <th class="col-ms-1" >Tiket Muat</th>
+                    <th class="col-ms-1 sort desc @if($sortColumn=='tglSpm') {{ $sortDirection }}   @endif" wire:click="sort('isExport')" >Local/Export</th>
                     <th class="col-ms-1 sort desc @if($sortColumn=='tglSpm') {{ $sortDirection }}   @endif" wire:click="sort('tglSpm')" >Tgl SPM</th>
                     <th class="col-ms-1 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Plat No</th>
                     <th class="col-ms-1 sort desc @if($sortColumn=='sppbNo') {{ $sortDirection }}   @endif" wire:click="sort('sppbNo')" >No SPPB</th>
@@ -201,6 +287,7 @@
                     {{-- <th class="col-ms-1 sort desc @if($sortColumn=='transpName') {{ $sortDirection }}   @endif" wire:click="sort('transpName')" >Nama Transporter </th> --}}
                     <th class="col-ms-1 sort desc @if($sortColumn=='qtyKg') {{ $sortDirection }}   @endif" wire:click="sort('qtyKg')" >Qty Kg </th>
                     <th class="col-ms-1 sort desc @if($sortColumn=='qtyKarung') {{ $sortDirection }}   @endif" wire:click="sort('qtyKarung')" >Qty Karung </th>
+                    
                     
                 </tr>
             </thead>
@@ -211,6 +298,11 @@
                     <td></td>
                     <td>{{ $dataspm->firstItem() + $key }}</td>
                     <td>{{ $value->spmNo }}</td>
+                    <td>{{ $value->pendfNo }}</td>
+                    <td>@php
+                        echo (($value->isExport) == 1 ?  'local' :  'Export');
+                        @endphp
+                     </td>
                     <td>{{ date('d-m-Y H:i',strtotime($value->tglSpm)) }}</td>
                     <td>{{ $value->carID }}</td>
                     <td>{{ $value->sppbNo }}</td>
@@ -218,8 +310,12 @@
                     {{-- <td>{{ $value->transpName }}</td> --}}
                     <td>{{ $value->qtyKg }}</td>
                     <td>{{ $value->qtyKarung }}</td>
+                    
                     <td>
-                        <a href="/cetakspm/{{ $value->id }} " class="btn btn-primary" target="_blank" >cetak</a>
+                        <a href="/cetakspm/{{ $value->id }} " class="btn btn-primary" target="_blank" >cetak</a> 
+                        @if (auth()->user()->hasrole('administrator') || auth()->user()->hasrole('supervisor-timbangan-registrasi') || auth()->user()->hasrole('manager-logistik'))
+                            <a wire:click="edit({{ $value->id }})" class="btn btn-warning btn-sm">Edit</a>
+                        @endif
                     </td>
                 </tr> 
                 @endforeach
@@ -235,9 +331,9 @@
                     @this.set('custID',data);
                 })
 
-                $('#my-sppbNo').on('change',function(e) {
-                    var data = $('#my-sppbNo').select2("val");
-                    @this.set('sppbNo',data);
+                $('#my-tiketMuat').on('change',function(e) {
+                    var data = $('#my-tiketMuat').select2("val");
+                    @this.set('tiketMuat',data);
                 })
 
                 $('#my-tiketID').on('change',function(e) {
@@ -259,6 +355,11 @@
                 $('#my-itemCode').on('change',function(e) {
                     var data = $('#my-itemCode').select2("val");
                     @this.set('itemCode',data);
+                })
+
+                $('#my-isExport').on('change',function(e) {
+                    var data = $('#my-isExport').select2("val");
+                    @this.set('isExport',data);
                 })
 
                 

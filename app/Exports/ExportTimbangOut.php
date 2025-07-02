@@ -38,21 +38,22 @@ class ExportTimbangOut implements FromCollection, WithHeadings, WithMapping
         $tglawal=date('d-m-Y',strtotime(Carbon::now()->subDay(4)));
         
 
-        if (($this->katakunciout )  !=null) {
+        if (($this->katakunciout )  !=null) { 
             
             //  dd('satu');   
-            $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->wheredate('jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->get();
-        
-            
-
+            // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->wheredate('jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->get();
+            $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->wheredate('jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->get();
             
         } elseif (($this->tglin  )  !=null) {
             // dd('dua'); 
-            $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
+            // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
+            $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
+        
         } else {
              
             $this->tglin = $tglawal;
-            $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
+            // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
+            $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
         
         }
         return $hasil;
@@ -66,7 +67,6 @@ class ExportTimbangOut implements FromCollection, WithHeadings, WithMapping
                 'Driver',
                 'Car ID',
                 'Customer',
-                'Transporter',
                 'Item Name',
                 'Bobot IN',
                 'Bobot OUT',
@@ -85,7 +85,6 @@ class ExportTimbangOut implements FromCollection, WithHeadings, WithMapping
                 $hasil->driver,
                 $hasil->carID,
                 $hasil->custName,
-                $hasil->transpName,
                 $hasil->itemName,
                 $hasil->timbangin,
                 $hasil->timbangout,
@@ -93,14 +92,6 @@ class ExportTimbangOut implements FromCollection, WithHeadings, WithMapping
                 date('d-m-Y H:i:s',strtotime( $hasil->jam_in)),
                 date('d-m-Y H:i:s',strtotime( $hasil->jam_out)),
                 
-                
-                
-
-
-              
-                
-                
-                
-            ];
+                ];
         }
 }

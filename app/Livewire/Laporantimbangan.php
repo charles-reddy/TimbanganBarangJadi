@@ -31,7 +31,7 @@ class Laporantimbangan extends Component
     public function sort($columnName)
     {
         $this->sortColumn = $columnName;
-        $this->sortDirection = $this->sortDirection == 'asc'?'desc' : 'asc';
+        $this->sortDirection = $this->sortDirection == 'asc'?'desc' : 'asc'; 
         
     }
 
@@ -41,7 +41,7 @@ class Laporantimbangan extends Component
         $this->tglin = '';
     }
 
-    public function render()
+    public function render() 
     {
         $tglawal=date('m-d-Y',strtotime(Carbon::now()->subDay(4)));
         
@@ -52,7 +52,7 @@ class Laporantimbangan extends Component
             $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->wheredate('jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         
             
-
+ 
             
         } elseif (($this->tglin  )  !=null) {
             // dd('dua'); 

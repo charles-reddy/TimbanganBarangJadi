@@ -16,7 +16,7 @@
                 <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
                 {{-- <button type="button" class="btn-primary" wire:click="export_out()">Export</button>  --}}
             </div>
-        </div>
+        </div> 
 
         @if ($trscaleSelectedID)
             {{-- <a wire:click="deleteConfirmation('')" class="btn btn-danger btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Del {{ count($trscaleSelectedID) }}  Data</a>   --}}
@@ -33,6 +33,7 @@
                     <th class="col-md-1 sort @if($sortColumn=='driver') {{ $sortDirection }}   @endif" wire:click="sort('driver')" >Driver</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Car ID</th>
                     <th class="col-md-2 sort desc @if($sortColumn=='custName') {{ $sortDirection }}   @endif" wire:click="sort('custName')" >Customer</th>
+                    <th class="col-md-1 sort desc @if($sortColumn=='qtyKg') {{ $sortDirection }}   @endif" wire:click="sort('itemName')" >Barang </th>
                     <th class="col-md-1 sort desc @if($sortColumn=='qtyKg') {{ $sortDirection }}   @endif" wire:click="sort('qtyKg')" >Bobot SPM </th>
                     <th class="col-md-2 sort desc @if($sortColumn=='spmNo') {{ $sortDirection }}   @endif" wire:click="sort('spmNo')" >SJ No </th>
                     <th class="col-md-2 sort desc @if($sortColumn=='sppbNo') {{ $sortDirection }}   @endif" wire:click="sort('sppbNo')" >SPPB No </th>
@@ -49,6 +50,7 @@
                     <td>{{ $value->driver }}</td>
                     <td>{{ $value->carID }}</td>
                     <td>{{ $value->custName }}</td>
+                    <td>{{ $value->itemName }}</td>
                     <td>{{ $value->qtyKg }}</td>
                     <td>{{ $value->spmNo }}</td>
                     <td>{{ $value->sppbNo }}</td>

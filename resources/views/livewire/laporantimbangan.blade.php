@@ -1,7 +1,7 @@
 <div>
     <!-- START DATA Timbangan masuk-->
     <div class="my-3 p-3 bg-body rounded shadow-sm"  >
-        <h1>Data Timbang </h1>
+        <h1>Data Timbang (FG) </h1>
         <div class="row">
             <div class="col-sm-4" > 
                 <label for="">Search</label>
@@ -14,7 +14,7 @@
             </div>
             <div>
                 <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
-                <button type="button" class="btn-primary" wire:click="export_out()">Export</button> 
+                <button type="button" class="btn-primary" wire:click="export_out()">Export</button>  
             </div>
         </div>
 

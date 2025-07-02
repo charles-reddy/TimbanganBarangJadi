@@ -20,6 +20,7 @@ class Mastercustomer extends Component
     public $sortDirection = 'desc';
     public $updateData = false;
     public $transID;
+    public $katakunci;
 
 
     public function store()
@@ -97,15 +98,15 @@ class Mastercustomer extends Component
     public function render()
     {
 
-        // if (($this->katakunci or $this->katakunciout)  !=null) {
+        if ($this->katakunci   !=null) {
             // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNull('netto')->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
             // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNull('netto')->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            // dd($data);
-        // } else {
+            $data = DB::connection('sqlsrv')->table('customers')->where('custName','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+        } else {
             $data = DB::connection('sqlsrv')->table('customers')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         
             //    dd($data);
-        // }
+        }
         return view('livewire.mastercustomer', ['mcustomer' => $data]); 
     }
 }

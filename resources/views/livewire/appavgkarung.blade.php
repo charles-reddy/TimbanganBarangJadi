@@ -55,6 +55,13 @@
                         </div>
                     </div>
                     <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>ID SPM</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control w-50" wire:model="spmID" hidden>
+                            <input type="text" class="form-control w-50" wire:model="spmNo" hidden>
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">Driver</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control w-50" wire:model="driver" disabled>
@@ -107,24 +114,45 @@
                         </div>
                     </div>
                     
-                    <div class="mb-3 row">
-                        <label for="isApp" class="col-sm-2 col-form-label">Average Approval</label>
-                        <div class="col-sm-10" wire:ignore >
-                            <select class="js-example-basic-single w-50"  id="my-isApp" wire:model="isApp">
-                                    <option >---approval---</option>
-                                    <option value="1">Approved</option>
-                                    
-                               
-                            </select>
-                            {{-- <input type="text" class="form-control w-50 mt-2" wire:model="itemName" disabled> --}}
-                        </div>
-                    </div>
-                
 
 
                 </div>
                
             </div>
+
+                    <div class="card text-center">
+                        <div class="card-body offset-2">
+                            <div class="mb-3 mt-3 row ">
+                                            <div class="col-lg-4">
+                                                    <div class="card border-primary mb-3" style="max-width: 150rem;">
+                                                        <div class="card-header  text-center">Bukti Cek ulang 1</div>
+                                                        <div class="card-body text-primary">
+                                                            <img class="rounded float-start" style="width: 750px" src="{{ $buktiAppKarung1}}">
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="card border-primary mb-3" style="max-width: 150rem;">
+                                                        <div class="card-header  text-center">Bukti Cek ulang 2</div>
+                                                            <div class="card-body text-primary">
+                                                                    <img class="rounded float-start" style="width: 750px" src="{{ $buktiAppKarung2}}"  >
+                                                            </div>
+                                                        </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="card border-primary mb-3" style="max-width: 150rem;">
+                                                        <div class="card-header  text-center">Bukti Cek ulang 3</div>
+                                                            <div class="card-body text-primary">
+                                                                    <img class="rounded float-start" style="width: 750px" src="{{ $buktiAppKarung3}}"  >
+                                                            </div>
+                                                        </div>
+                                            </div>
+
+                                
+
+                            </div>
+                        </div>
+                    </div>
             
            
             
@@ -137,7 +165,7 @@
                     {{-- @if ($updateData == false)
                         <button type="button" class="btn btn-primary" name="submit" wire:click="store()">SIMPAN</button>
                     @else --}}
-                        <button type="button" class="btn btn-primary" name="submit" wire:click="update()"  wire:confirm="Yakin simpan data?"  >UPDATE</button>
+                        <button type="button" class="btn btn-primary" name="submit" wire:click="update()"  wire:confirm="Yakin simpan data?"  >APPROVE</button>
                     {{-- @endif --}}
                         <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
                     
@@ -150,9 +178,9 @@
     <!-- START DATA Timbangan masuk-->
     <div class="my-3 p-3 bg-body rounded shadow-sm"  >
         <h1>Data Timbang Masuk</h1>
-        <div class="pb-3 pt-3">
+        {{-- <div class="pb-3 pt-3">
             <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... driver" wire:model.live="katakunci">
-        </div>
+        </div> --}}
 
         @if ($trscaleSelectedID)
             {{-- <a wire:click="deleteConfirmation('')" class="btn btn-danger btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Del {{ count($trscaleSelectedID) }}  Data</a>   --}}
@@ -169,7 +197,7 @@
                     <th class="col-md-1 sort @if($sortColumn=='driver') {{ $sortDirection }}   @endif" wire:click="sort('driver')" >Driver</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Car ID</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='custName') {{ $sortDirection }}   @endif" wire:click="sort('custName')" >Customer</th>
-                    {{-- <th class="col-md-1 sort desc @if($sortColumn=='transpID') {{ $sortDirection }}   @endif" wire:click="sort('transpID')" >Transporter</th> --}}
+                    <th class="col-md-1 sort desc @if($sortColumn=='transpID') {{ $sortDirection }}   @endif" wire:click="sort('transpID')" >Avg</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='itemCode') {{ $sortDirection }}   @endif" wire:click="sort('itemCode')" >Item Name </th>
                     <th class="col-md-1 sort desc @if($sortColumn=='timbangin') {{ $sortDirection }}   @endif" wire:click="sort('timbangin')" >Bobot IN </th>
                     <th class="col-md-2 sort desc @if($sortColumn=='jam_in') {{ $sortDirection }}   @endif" wire:click="sort('jam_in')" >Date IN </th>
@@ -185,7 +213,7 @@
                     <td>{{ $value->driver }}</td>
                     <td>{{ $value->carID }}</td>
                     <td>{{ $value->custName }}</td>
-                    {{-- <td>{{ $value->transpName }}</td> --}}
+                    <td>{{ number_format($value->avgKarung,3) }}</td>
                     <td>{{ $value->itemName }}</td>
                     <td>{{ $value->timbangin }}</td>
                     <td>{{ date('d-m-Y H:i',strtotime($value->jam_in)) }}</td>

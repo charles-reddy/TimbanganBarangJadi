@@ -94,6 +94,7 @@
                         <div class="col-sm-10"  id="my-itemCode" wire:model="itemCode" disabled>
                                
                             <input type="text" class="form-control w-50 mt-2" wire:model="itemName" disabled>
+                            <input type="text" class="form-control w-50 mt-2" wire:model="itemType" disabled>
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -201,7 +202,7 @@
     <div class="my-3 p-3 bg-body rounded shadow-sm"  >
         <h1>Data Timbang Masuk</h1>
         <div class="pb-3 pt-3">
-            <input type="text" class="form-control mb-3 w-25" placeholder="Searching ..." wire:model.live="katakunci">
+            <input type="text" class="form-control mb-3 w-25" placeholder="Searching driver / car ID..." wire:model.live="katakunci">
         </div>
 
         @if ($trscaleSelectedID)
@@ -223,6 +224,7 @@
                     <th class="col-md-1 sort desc @if($sortColumn=='timbangin') {{ $sortDirection }}   @endif" wire:click="sort('timbangin')" >Bobot IN </th>
                     <th class="col-md-2 sort desc @if($sortColumn=='jam_in') {{ $sortDirection }}   @endif" wire:click="sort('jam_in')" >Date IN </th>
                     <th class="col-md-2 sort desc @if($sortColumn=='avgKarung') {{ $sortDirection }}   @endif" wire:click="sort('avgKarung')" >Rata2 Berat / Karung </th>
+                    <th class="col-md-2 sort desc @if($sortColumn=='b10QtyKarung') {{ $sortDirection }}   @endif" wire:click="sort('b10QtyKarung')" >Jumlah Karung </th>
                     <th class="col-md-2 sort desc"  >Approval </th>
                     
                 </tr>
@@ -241,6 +243,7 @@
                     <td>{{ $value->timbangin }}</td>
                     <td>{{ date('d-m-Y H:i',strtotime($value->jam_in)) }}</td>
                     <td>{{ number_format($value->avgKarung,2) }}</td>
+                    <td>{{ $value->b10QtyKarung }}</td>
                     <td>{{ $value->isApp }}</td>
                     
                     <td>
@@ -260,7 +263,7 @@
     <div  class="my-3 p-3 bg-body rounded shadow-sm"  >
         <h1>Data Timbang Keluar</h1>
         <div class="pb-3 pt-3">
-            <input type="text" class="form-control mb-3 w-25" placeholder="Searching ..." wire:model.live="katakunciout">
+            <input type="text" class="form-control mb-3 w-25" placeholder="Searching driver / car ID..." wire:model.live="katakunciout">
         </div>
 
         @if ($trscaleSelectedID)
@@ -297,7 +300,7 @@
                     <td>{{ $valueout->carID }}</td>
                     <td>{{ $valueout->custName }}</td>
                     <td>{{ $valueout->itemName }}</td>
-                    <td>{{ $valueout->timbangin }}</td>
+                    <td>{{ $valueout->timbangin }}</td> 
                     <td>{{ $valueout->timbangout }}</td>
                     <td>{{ $valueout->netto }}</td>
                     <td>{{ date('d-m-Y H:i',strtotime($valueout->jam_in)) }}</td>

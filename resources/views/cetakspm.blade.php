@@ -60,7 +60,7 @@
                                                          <div class="row">
                                                             <div class="col-sm-5">
                                                               <h4 align="center"><b>SURAT PERINTAH MUAT</b></h4>
-                                                            <h4>   <b>    nopol :   {{$item->carID}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nomor : {{$item->sppbNo}} </b></h4>
+                                                            <h4>   <b>    nopol :   {{$item->carID}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nomor : {{$item->sppbNo}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      No DN : {{$item->dnNo}} </b></h4>
                                                                                                  
                                                             </div>
                                                             
@@ -74,19 +74,20 @@
                                                                         @endphp
                                                                         
                                                             <tr>
-                                                                <td class="border border-dark border-5"><h4><b> No. </h4></td>
-                                                                <td class="border border-dark border-5" ><h4><b>Nama Barang</h4></td>
-                                                                <td class="border border-dark border-5"><h4><b>Jumlah Karung</h4></td>
-                                                                <td  class="border border-dark border-5" ><h4><b>Keterangan</h4></td>
+                                                                <td class="col-sm-1" style="width:10%"><h4><b> No. </h4></td>
+                                                                <td class="col-md-1" colspan="2"  style="width:25%"><h4><b>Nama Barang</h4></td>
+                                                                <td class="col-md-1" style="width:20%"><h4><b>Jumlah Karung</h4></td>
+                                                                <td class="col-md-1"><h4><b>Susunan Muatan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></td>
+                                                                <td class="col-md-1"  ><h4><b>Kondisi Bak/Box  </h4></td>
                                                             </tr>
                                                             </thead>
                                                             <tr>
-                                                                <td class="border border-dark border-5"><h4><b>@php echo $no;  @endphp </h4></td>
-                                                                <td class="border border-dark border-5" ><h4><b>{{$item->itemName}} </h4>
+                                                                <td ><h4><b>@php echo $no;  @endphp </h4></td>
+                                                                <td colspan="2"  ><h4><b>{{$item->itemName}} </h4>
                                                                 <h4><b>{{$item->custName}} </h4>
                                                                 <h4><b> {{$item->remarks}}</h4>
                                                                 </td>
-                                                                <td class="border border-dark border-5"><h4><b> @php 
+                                                                <td ><h4><b> @php 
                                                                     $karung = number_format($item->qtyKarung);
                                                                     $kg = number_format($item->qtyKg);
                                                                     
@@ -98,37 +99,39 @@
                                                                     } @endphp</h4>
                                                     
                                                                 </td>
+                                                                <td>
+                                                                  1. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6. &nbsp;&nbsp;&nbsp; <br>
+                                                                  2. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7. &nbsp;&nbsp;&nbsp;<br>
+                                                                  3. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8. &nbsp;&nbsp;&nbsp;<br>
+                                                                  4. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9. &nbsp;&nbsp;&nbsp;<br>
+                                                                  5. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10. &nbsp;&nbsp;&nbsp;<br>
+                                                                </td>
                                                     
-                                                                <td class="border border-dark border-5"><h4><b>
-                                                                    Kondisi Kendaraan <br>
-                                                                    
-                                                                          <input type="checkbox" >  Bersih&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                          <input type="checkbox" >  Kering&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp; 
-                                                                          <input type="checkbox" >  Alas&nbsp;&nbsp;&nbsp;     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                                                                   
-                                                                          <br>Kondisi Kemasan / Karung <br>
-                                                                          <input type="checkbox" >  Bersih&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                                                                          <input type="checkbox" >  Kering&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;
-                                                                          <input type="checkbox" >  Utuh&nbsp;&nbsp;&nbsp;   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                          </h4>
+                                                                <td ><h4><b>
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                  <td class="border border-dark border-5"></td>
-                                                                  <td class="border border-dark border-5" ><h4><b>
+                                                                  <td ></td>
+                                                                  <td colspan="2"  ><h4><b>
                                                                   Jumlah </h4>
                                                                   </td>
-                                                                    <td class="border border-dark border-5"><h4><b>
+                                                                    <td ><h4><b>
                                                                     @php echo number_format($item->qtyKarung) @endphp </h4>
                                                                     
                                                                     </td>
-                                                                    <td class="border border-dark border-5"></td>
+                                                                    <td   >Tanggal Produksi:   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </td>
+                                                                    <td   >Lot No:</td>
                                                                     
                                                                     
                                                             </tr>
                                                             <tr>
-                                                                  <td colspan="5" class="border border-dark border-5">
-                                                                  <h4><b>Terbilang : {{$item->terbilangkarung}}</h4>
+                                                                  <td colspan="3" >
+                                                                  <h4><b>Terbilang : {{$item->terbilangkarung}} </h4>
+                                                                  </td>
+                                                                  <td colspan="3" >
+                                                                  <h4><b> Kondisi Produk: &nbsp;&nbsp;&nbsp;&nbsp; Bersih  &nbsp;&nbsp;&nbsp; Kering &nbsp;&nbsp;&nbsp;  Utuh &nbsp;&nbsp;&nbsp;</h4>
+                                                                  
                                                                   </td>
                                                                     
                                                                     
@@ -139,33 +142,34 @@
                                                      
                                                     
                                                         <tr   >
-                                                                  <td  class="border border-dark border-5" ><h4><b>
+                                                                  <td style="width:32%" ><h4><b>
                                                                       disetujui oleh
                                                                       <br><br><br><br>
                                                                         Kepala Admin Gudang </h4>
                                                                   </td>
-                                                                    <td class="border border-dark border-5"><h4><b>
+                                                                    <td style="width:18%"  ><h4><b>
                                                                       disaksikan oleh
                                                                       <br><br><br><br>
-                                                                      &nbsp;Pemeriksa / security&nbsp;</h4>
+                                                                      Pemeriksa/security</h4>
                                                                     </td>
-                                                                    <td class="border border-dark border-5"><h4><b>
+                                                                    <td style="width:20%"  ><h4><b>
                                                                       dibuat oleh
                                                                       <br><br><br><br>
                                                                       &nbsp;Admin Gudang&nbsp;</h4>
                                                                     </td>
-                                                                    <td class="border border-dark border-5"><h4><b>
-                                                                      diserahkan oleh&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                      <br><br><br>
+                                                                    <td style="width:20%"  ><h4><b>
+                                                                      diserahkan oleh  
+                                                                      <br><br><br><br>
                                                                       Petugas Gudang</h4>
                                                                     </td>
                                                                     
-                                                               </tr>
-                                                                <tr>
-                                                                  <td colspan="8" class="border border-dark border-5"><h4><b>
-                                                                  Putih Gudang   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   Merah Admin Gudang  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Biru Laboratorium <br>Seal No = {{$item->sealNo}}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kontainer No = {{$item->kontainerNo}} 
-                                                                  </td>
-                                                                  </h4>
+                                                                    
+                                                        </tr>
+                                                        <tr>
+                                                                  <td colspan="4" ><h4><b>
+                                                                  Putih Gudang   &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; Merah Admin Gudang  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Biru Laboratorium <br>Seal No = {{$item->sealNo}}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kontainer No = {{$item->kontainerNo}} 
+                                                                  </h4></td>
+                                                                  
                                                         </tr>
                                                            
                                                     

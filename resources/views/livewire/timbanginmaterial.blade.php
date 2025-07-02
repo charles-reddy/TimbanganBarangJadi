@@ -1,6 +1,4 @@
-
-<div > 
-    
+<div>
     @if (session('error'))
     <div class="pt-3">
         <div class="alert alert-danger">
@@ -36,6 +34,7 @@
     </div>
         
     @endif
+
     <!-- START FORM -->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         {{-- @include('layouts.navbar') --}}
@@ -46,20 +45,26 @@
         <div class="row">
             <div class="col">
                 <div class="card m-auto   mt-3 text-white text-center bg-primary" style="max-width: 18rem;">
-                    <h2>TIMBANG MASUK</h2>
+                    <h2>TIMBANG MASUK MATERIAL</h2>
                 </div>
             </div>
         </div>
         <form>
             <div class="row"> 
                 <div class="col">
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>ID Transaction</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control w-50" wire:model="transID" hidden>
+                        </div>
+                    </div>
                     <div class="mb-3 row">
-                        <label for="custID" class="col-sm-2 col-form-label">SPM No</label>
+                        <label for="custID" class="col-sm-2 col-form-label">No Registrasi</label>
                         <div class="col-sm-10" wire:ignore>
-                            <select   class="js-example-basic-single w-50" id="my-spmNo"  wire:model ="spmNo"  >
+                            <select   class="js-example-basic-single w-50" id="my-regNo"  wire:model ="regNo"  >
                                 <option></option>
-                                @foreach ($dataspm as $item)
-                                    <option value="{{ $item->id }}" >{{ $item->spmNo }}</option>
+                                @foreach ($datareg1 as $item)
+                                    <option value="{{ $item->id }}" >{{ $item->carID }} - {{ $item->suppName }} </option>
                                 @endforeach
                                 
                             </select>
@@ -81,18 +86,13 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="carID" class="col-sm-2 col-form-label">Customer</label>
+                        <label for="carID" class="col-sm-2 col-form-label">Supplier</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control w-50" wire:model="custID" disabled>
+                            <input type="text" class="form-control w-50" wire:model="suppID" disabled>
                         </div>
                     </div>
                     
-                    <div class="mb-3 row">
-                        <label for="carID" class="col-sm-2 col-form-label">Transporter</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control w-50" wire:model="transpID" disabled>
-                        </div>
-                    </div> 
+                    
                     <div class="mb-3 row">
                         <label for="carID" class="col-sm-2 col-form-label">Item Desc.</label>
                         <div class="col-sm-10">
@@ -175,6 +175,7 @@
                     </div>
                     
                 </div>
+                
             </div>
             
            
@@ -184,6 +185,7 @@
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
+                    
                     @if ($updateData == false)
                         <button type="button" class="btn btn-primary" name="submit" wire:click="store()">SIMPAN</button>
                     @else
@@ -195,7 +197,7 @@
             </div>
         </form>
     </div>
-    <!-- AKHIR FORM -->
+    <!-- AKHIR FORM --> 
 
     <!-- START DATA -->
     <div class="my-3 p-3 bg-body rounded shadow-sm"  >
@@ -209,7 +211,7 @@
             <a wire:click="delete()" wire:confirm="Yakin Hapus data?"  class="btn btn-danger btn-sm mb-3">{{ count($trscaleSelectedID) }}  Data</a>
         @endif
 
-        {{ $datascale->links() }}
+        {{ $datatim->links() }}
         <table class="table table-striped table-sortable">
             <thead>
                 <tr>
@@ -217,24 +219,24 @@
                     <th class="col-md-1">No</th>
                     <th class="col-md-2 sort @if($sortColumn=='driver') {{ $sortDirection }}   @endif" wire:click="sort('driver')" >Driver</th>
                     <th class="col-md-2 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Car ID</th>
-                    <th class="col-md-2 sort desc @if($sortColumn=='custName') {{ $sortDirection }}   @endif" wire:click="sort('custName')" >Customer</th>
-                    {{-- <th class="col-md-2 sort desc @if($sortColumn=='transpID') {{ $sortDirection }}   @endif" wire:click="sort('transpID')" >Transporter</th> --}}
+                    <th class="col-md-2 sort desc @if($sortColumn=='suppName') {{ $sortDirection }}   @endif" wire:click="sort('suppName')" >Supplier</th>
                     <th class="col-md-2 sort desc @if($sortColumn=='itemCode') {{ $sortDirection }}   @endif" wire:click="sort('itemCode')" >Item Name </th>
+                    <th class="col-md-2 sort desc @if($sortColumn=='jam_in') {{ $sortDirection }}   @endif" wire:click="sort('jam_in')" >Tgl Masuk </th>
                     <th class="col-md-2 sort desc @if($sortColumn=='timbangin') {{ $sortDirection }}   @endif" wire:click="sort('timbangin')" >Bobot IN </th>
                     
                 </tr>
             </thead>
             <tbody> 
-                @foreach ($datascale as $key => $value)
+                @foreach ($datatim as $key => $value)
                 <tr>
                     {{-- <td><input type="checkbox" wire:key="{{ $value->id }}" value="{{ $value->id }}" wire:model.live="trscaleSelectedID"></td> --}}
                     <td></td>
-                    <td>{{ $datascale->firstItem() + $key }}</td>
+                    <td>{{ $datatim->firstItem() + $key }}</td>
                     <td>{{ $value->driver }}</td>
                     <td>{{ $value->carID }}</td>
-                    <td>{{ $value->custName }}</td>
-                    {{-- <td>{{ $value->transpName }}</td> --}}
+                    <td>{{ $value->suppName }}</td>
                     <td>{{ $value->itemName }}</td>
+                    <td>{{ date('d-m-Y H:i',strtotime($value->jam_in)) }}</td>
                     <td>{{ $value->timbangin }}</td>
                     
                     <td>
@@ -247,7 +249,7 @@
             </tbody>
         </table>
         <script>
-            $(document).ready(function() {
+                       $(document).ready(function() {
                 $('.js-example-basic-single').select2();
 
                 // $('#my-custID').on('change',function(e) {
@@ -273,10 +275,10 @@
                 //     @this.set('transpID',data);
                 // })
 
-                // $('#my-spmNo').on('change',function(e) {
-                //     var data = $('#my-spmNo').select2("val");
-                //     @this.set('spmNo',data);
-                // })
+                 $('#my-regNo').on('change',function(e) {
+                     var data = $('#my-regNo').select2("val");
+                     @this.set('regNo',data);
+                 })
 
                 // $('#my-itemCode').on('change',function(e) {
                 //     var data = $('#my-itemCode').select2("val");
@@ -345,10 +347,8 @@
 
     </div>
     <!-- AKHIR DATA -->
-    
- 
-  
-  <!-- Modal -->
+
+    <!-- Modal -->
   <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -366,6 +366,6 @@
       </div>
     </div>
   </div>
+
+
 </div>
-
-

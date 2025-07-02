@@ -9,6 +9,7 @@ use App\Models\Transporter;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -43,6 +44,7 @@ class Transsppb extends Component
     public $transID;
     #[Validate('required', message: 'PO No harus diisi')]
     public $poNo;
+    public $itemType;
 
 
 
@@ -83,14 +85,24 @@ class Transsppb extends Component
         $this->sppbNo = $data->sppbNo;
          $this->kontrakNo = $data->kontrakNo;
          $this->itemName = $data->itemName;
+         $this->itemType = $data->type;
+         
+         if($data->type == 'FG-L') {
+            $this->sppbQtyKarung = 1;
+            
+         } else {
+            $this->sppbQtyKarung = $data->sppbQtyKarung;
+         };
+         
          $this->custName = $data->custName;
          $this->updateData = true;
          $this->sppbQtyKg = $data->sppbQtyKg;
-         $this->sppbQtyKarung = $data->sppbQtyKarung;
+        //  $this->sppbQtyKarung = $data->sppbQtyKarung;
          $this->transID = $id;
          $this->poNo = $data->poNo;
+         
 
-        //  dd($this->sppbNo);
+        //  dd($this->sppbNo); 
         
     }
 
@@ -111,6 +123,8 @@ class Transsppb extends Component
                 'custID' => $this->custID,
                 'sppbQtyKg' => $this->sppbQtyKg,
                 'sppbQtyKarung' => $this->sppbQtyKarung,
+                // 'openQtyKg' => $this->sppbQtyKg,
+                // 'openQtyKarung' => $this->sppbQtyKarung,
                 'poNo' => $this->poNo,
             ]);
             session()->flash('message', 'Data berhasil dimasukkan');
@@ -143,6 +157,21 @@ class Transsppb extends Component
 
     }
 
+    #[Computed()]
+    public function cekliquid()
+    { 
+        
+        $data = DB::connection('sqlsrv')->table('products')->where('itemCode',$this->itemCode)->first();
+       if($data->type == 'FG-L') {
+            $this->sppbQtyKarung = 1;
+            $this->itemType = $data->type;
+       } else {
+            $this->itemType = $data->type;
+            $this->sppbQtyKarung = '';
+       }
+           
+    }
+
     
     public function render()
     {
@@ -162,6 +191,12 @@ class Transsppb extends Component
         // $sppbNo = 'SPPB/'. $nomor .'/' . $bulan .'/' . $tahun;
         // $this->sppbNo = $sppbNo;
         //  dd($data1, $tglawal,$tglakhir);
+
+        //####### hitung kuota kg agar tidak over
+            if ($this->itemCode !=null)
+            {
+                $this->cekliquid();
+            }
 
         $angkutan = Transporter::all();
         $barang = Product::where('itemName','like','%gkr%')->orwhere('itemName','like','%gkp%')->orwhere('itemName','like','%mola%')->get();

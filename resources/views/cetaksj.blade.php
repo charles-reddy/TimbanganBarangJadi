@@ -93,8 +93,8 @@
 
                                                               <tr>
                                                                 
-                                                                <td class=" text-center w-25" >
-                                                                  <h5><b>{{$item->qtyKarung}} </b></h5>
+                                                                <td class=" text-center w-25"  >
+                                                                  <h5><b>{{number_format($item->qtyKarung)}} </b></h5>
                                                                   
                                                                 </td>
                                                                 
@@ -107,13 +107,21 @@
                                                                     @endif
                                                                 </td>
                                                                 <td class=" ">
-                                                                  <h5><b>&nbsp;Gula Pasir</b></h5>
+                                                                  <h5><b>&nbsp;
+                                                                  @if($item->type == 'FG-L') 
+                                                                    Molasses
+                                                                  @else 
+                                                                    Gula Pasir
+                                                                  @endif 
+                                                                    
+                                                                  
+                                                                  </b></h5>
                                                                 </td>
                                                               </tr>
 
                                                               <tr>
-                                                                <td  class=" text-center " >
-                                                                  <h5><b> {{$item->qtyKg}} </b></h5>
+                                                                <td  class=" text-center "  >
+                                                                  <h5><b> {{number_format($item->qtyKg)}} </b></h5>
                                                                 </td>
                                                                 <td class="  text-center" >
                                                                   <h5><b>Kg</b></h5>
@@ -127,34 +135,20 @@
 
                                                               <tr>
                                                                 <td class=" " rowspan="4">
-
+                                                                    
                                                                 </td>
                                                                 <td class=" " rowspan="4">
 
                                                                 </td>
-                                                                <td class="  w-100">
-                                                                 <h5> &nbsp;NO PO.    :   {{ $item->poNo }}</h5>
+                                                                <td class="w-100" style="height: 80px" >
+                                                                 <h5> &nbsp;NO PO.    :   {{ $item->poNo }}</h5><br>
+                                                                 <h5>&nbsp;NO KONTRAK.    :   {{ $item->kontrakNo }}</h5><br>
+                                                                 <h5>&nbsp;NO SEAL.    :   {{ $item->sealNo }}</h5><br>
+                                                                 <h5> &nbsp;NO CONTAINER.    :   {{ $item->kontainerNo }}</h5> <br>
                                                                 </td>
                                                               </tr>
 
-                                                              <tr>
-                                                                
-                                                                <td class="  w-100">
-                                                                  <h5>&nbsp;NO KONTRAK.    :   {{ $item->kontrakNo }}</h5>
-                                                                </td>
-                                                              </tr>
-                                                              <tr>
-                                                                
-                                                                <td class="  w-100">
-                                                                  <h5>&nbsp;NO SEAL.    :   {{ $item->sealNo }}</h5>
-                                                                </td>
-                                                              </tr>
-                                                              <tr>
-                                                                
-                                                                <td class="  w-100">
-                                                                 <h5> &nbsp;NO CONTAINER.    :   {{ $item->kontainerNo }}</h5>
-                                                                </td>
-                                                              </tr>
+                                                             
                                                             </tbody>
                                                         </table>
                                                         <br>
@@ -162,17 +156,17 @@
                                                           <tr>
                                                             <td>
                                                               <h4>Penerima</h4>
-                                                              <br><br><br><br>
+                                                              <br><br><br>
                                                               <h4>{{ $item->driver }}</h4>
                                                             </td>
                                                             <td>
                                                               <h4>Registrasi Barang Jadi</h4>
-                                                              <br><br><br><br>
+                                                              <br><br><br>
                                                               <h4>&nbsp;</h4>
                                                             </td>
                                                             <td>
                                                               <h4>Admin Gudang</h4>
-                                                              <br><br><br><br>
+                                                              <br><br><br>
                                                               <h4>&nbsp;</h4>
                                                               
                                                             </td>
@@ -180,9 +174,7 @@
                                                           
                                                         </table>
                                                         
-                                                        <h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <h6>
                                                         Note: Mohon Penerima mencantumkan nama jelas & Tgl terima barang </h6>
                                                           
                                                         

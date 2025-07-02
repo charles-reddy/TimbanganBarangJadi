@@ -87,6 +87,7 @@
                                 @endforeach
                             </select>
                             <input type="text" class="form-control w-50 mt-2" wire:model="itemName" disabled>
+                            <input type="text" class="form-control w-50 mt-2" wire:model="itemType" disabled>
                         </div>
                         
                     </div>
@@ -113,7 +114,12 @@
                     <div class="mb-3 mt-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">Qty (Karung)</label>
                         <div class="col-sm-10">
-                            <input type="text" id="input" class="form-control w-50" wire:model="sppbQtyKarung" autocomplete="off">
+                            @if ( $itemType  == 'FG-L')
+                                <input type="text" id="input" class="form-control w-50" wire:model="sppbQtyKarung" autocomplete="off" disabled>
+                            @else
+                                <input type="text" id="input" class="form-control w-50" wire:model="sppbQtyKarung" autocomplete="off">
+                            
+                            @endif
                         </div>
                     </div>
                     

@@ -11,12 +11,14 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
 
 class Appavgkarung extends Component
 {
-
+    use WithFileUploads;
     protected $paginationTheme = 'bootstrap';
     public $sortColumn = 'jam_in';
     public $sortDirection = 'desc';
@@ -26,6 +28,8 @@ class Appavgkarung extends Component
     public $poNo;
     public $remarks;
     public $custID;
+    public $spmID;
+    public $spmNo;
     public $transpID;
     public $itemCode;
     public $updateData = false;
@@ -48,12 +52,22 @@ class Appavgkarung extends Component
     public $jam_out;
     public $userIDOUT;
     public $usernameOUT;
-    #[Validate('required', message: 'qty Karung harus diisi')]
-    #[Validate('integer', message: 'qty Karung harus dalam angka')]
+    // #[Validate('required', message: 'qty Karung harus diisi')]
+    // #[Validate('integer', message: 'qty Karung harus dalam angka')]
     public $b10QtyKarung;
-    #[Validate('required', message: 'approval dibutuhkan')]
-    public $isApp;
     public $avgKarung;
+    // #[Rule('max:1024', message: 'Foto Bukti 1 maks 1 MB')]
+    // #[Validate('required', message: 'Silahkan Upload foto Bukti 1')]
+    // #[Validate('image', message: 'Bukti 1 harus image')]
+    public $buktiAppKarung1;
+    // #[Validate('required', message: 'Silahkan Upload foto Bukti 2')]
+    // #[Rule('max:1024', message: 'Foto Bukti 2 maks 1 MB')]
+    // #[Validate('image', message: 'Bukti 2 harus image')]
+    public $buktiAppKarung2;
+    // #[Rule('max:1024', message: 'Foto Bukti 3 maks 1 MB')]
+    // #[Rule('max:1024', message: 'Foto Bukti 3 maks 1 MB')]
+    // #[Validate('image', message: 'Bukti 3 harus image')]
+    public $buktiAppKarung3;
     
 
     public function update()
@@ -62,17 +76,44 @@ class Appavgkarung extends Component
         $tgl = Carbon::now();
         $userIDIN = Auth::user()->id;
         $usernameIN = Auth::user()->username;
+        $Bukti = str_replace("/","-",$this->spmNo);
+        $buktiApp1 = $Bukti . '-1.jpg';
+        $buktiApp2 = $Bukti . '-2.jpg';
+        $buktiApp3 = $Bukti . '-3.jpg';
        
-        $this->validate();
-         
+        // $this->validate();
+        //  $cek = DB::connection('sqlsrv')->table('trscale')->join('createspms','createspms.id', 'trscale.spmID')->where('trscale.spmID',$this->transID)->first();
+        //  dd($cek);
         try {
                
-                DB::connection('sqlsrv')->table('trscale')->where('id',$this->transID)->update([
-                    'isApp' => $this->isApp,
+                DB::connection('sqlsrv')->table('trscale')->join('createspms','createspms.id', 'trscale.spmID')->where('trscale.spmID',$this->transID)->update([
+                    'isApp' => 1,
                     'isAppID' => $userIDIN,
                     'isAppDate' => $tgl,
                     
                 ]);
+
+                
+
+                // DB::connection('sqlsrv')->table('createspms')->join('trscale','trscale.spmID','createspms.id' )->where('createspms.id',$this->spmID)->update([
+                    
+                //     'buktiAppKarung1' => 'uploads/appkarung/' . $buktiApp1,
+                //     'buktiAppKarung2' => 'uploads/appkarung/' . $buktiApp2,
+                //     'buktiAppKarung3' => 'uploads/appkarung/' . $buktiApp3,
+                    
+                // ]);
+
+                // if($this->buktiAppKarung1){
+                //     $this->buktiAppKarung1->storeAs('uploads/appkarung',$buktiApp1,'public');
+                // };
+
+                // if($this->buktiAppKarung2){
+                //     $this->buktiAppKarung2->storeAs('uploads/appkarung',$buktiApp2,'public');
+                // };
+
+                // if($this->buktiAppKarung3){
+                //     $this->buktiAppKarung3->storeAs('uploads/appkarung',$buktiApp3,'public');
+                // };
                 
                 session()->flash('message', 'Data berhasil dimasukkan');
                 $this->clear();
@@ -99,7 +140,7 @@ class Appavgkarung extends Component
         $this->itemCode = '';
         $this->doNo = '';
         $this->b10QtyKarung = '';
-        $this->isApp = '';
+        // $this->isApp = '';
         redirect('/appavgkarung');
     }
 
@@ -108,7 +149,10 @@ class Appavgkarung extends Component
     public function edit($id)
     {   
        
-        $data = Trscale::find($id);
+        // $data = Trscale::find($id);
+        // $data = DB::connection('sqlsrv')->table('createspms')->join('trscale', 'trscale.spmID', 'createspms.id')->where('trscale.id',$id)->first();
+        $data = DB::connection('sqlsrv')->table('createspms')->join('trscale', 'trscale.spmID', 'createspms.id')->where('trscale.spmID',$id)->first();
+        // dd($data);
         $this->driver = $data->driver;
         $this->carID = $data->carID;
         $this->custID = $data->custID;
@@ -126,20 +170,47 @@ class Appavgkarung extends Component
         $this->itemName = $itemC;
         $this->updateData = true;
         $this->id_trscale = $id;
+        $this->spmID = $data->spmID;
+        $this->spmNo = $data->spmNo;
+        $this->buktiAppKarung1 = $data->buktiAppKarung1;
+        $this->buktiAppKarung2 = $data->buktiAppKarung2;
+        $this->buktiAppKarung3 = $data->buktiAppKarung3;
 
+        if ($data->buktiAppKarung1 != null) {
+            $this->buktiAppKarung1 = '/storage/' . $data->buktiAppKarung1;
+            
+        } else {
+            $this->buktiAppKarung1 = '/storage/uploads/noimage.jpg';
+        }
+
+        if ($data->buktiAppKarung2 != null) {
+            $this->buktiAppKarung2 = '/storage/' . $data->buktiAppKarung2;
+            
+        } else {
+            $this->buktiAppKarung2 = '/storage/uploads/noimage.jpg';
+        }
+
+        if ($data->buktiAppKarung3 != null) {
+            $this->buktiAppKarung3 = '/storage/' . $data->buktiAppKarung3;
+            
+        } else {
+            $this->buktiAppKarung3 = '/storage/uploads/noimage.jpg';
+        }
+    // dd($this->buktiAppKarung1);
     }
 
     public function render()
     {
-        if (($this->katakunci or $this->katakunciout)  !=null) {
-            // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->where('isApp','<>', 1)->wherenull('netto')->where('avgKarung','<', 50.01)->orwhere('avgKarung','>', 50.25)->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->where('isApp','<>', 1)->wherenull('netto')->where('avgKarung','<', 50.01)->orwhere('avgKarung','>', 50.25)->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+        // if (($this->katakunci or $this->katakunciout)  !=null) {
+        //     // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->where('isApp','<>', 1)->wherenull('netto')->where('avgKarung','<', 50.01)->orwhere('avgKarung','>', 50.25)->wherenull('b10QtyKarung')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+        //     $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('type','<>','FG-L')->whereNotNull('avgKarung')->where('isApp',false)->where('driver','like','%' . $this->katakunci . '%')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
        
-        } else {
+        // } else {
             // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('isApp',false)->wherenull('netto')->WhereNotBetween('avgKarung',[50.01, 50.25])->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('isApp',false)->wherenull('netto')->WhereNotBetween('avgKarung',[50.01, 50.25])->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->where('type','<>','FG-L')->whereNotNull('avgKarung')->where('isApp',false)->wherenotNull('BuktiAppKarung1')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         
-        }
+        // }
+        // dd($data);
         $timbangan = JembatanTimbang::all();
         $pelanggan = Customer::all();
         $angkutan = Transporter::all();

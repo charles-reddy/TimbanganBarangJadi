@@ -32,9 +32,19 @@
                                                                 
             </div>
             <hr>
-            <br><br>
+            <br>
             </div>
             <table >
+                <tr>
+                    <td>
+                        <h4>SO  : {{ $item->sppbNo }}</h4><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>DN  : {{ $item->dnNo }}</h4><br>
+                    </td>
+                </tr>
                 <tr>
                     <td>
                         <h4>No Sequence  : {{ $item->id }}</h4><br>
@@ -49,7 +59,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <h4 >Tgl Masuk : {{ date('d-m-Y ',strtotime($item->jam_in)) }}</h4><br> 
+                        <h4 >Tgl Masuk : {{ date('d-m-Y H:i:s',strtotime($item->jam_in)) }}</h4><br> 
                         
                     </td>
                     <td>
@@ -61,7 +71,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <h4 >Tgl Keluar : {{ date('d-m-Y ',strtotime($item->jam_out)) }}</h4>
+                        <h4 >Tgl Keluar : {{ date('d-m-Y H:i:s',strtotime($item->jam_out)) }}</h4>
                         
                     </td>
                     <td>
@@ -91,8 +101,28 @@
                         &nbsp;
                     </td>
                     <td>
-                        <h4 >Remarks : {{ $item->remarks }}</h4>
+                        <h4 >Jumlah Karung : {{ $item->b10QtyKarung }}</h4>
                     </td>
+                </tr>
+                <tr>
+                    <td>
+                         <h4 >Remarks : {{ $item->remarks }}</h4>
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <!-- <td><h4>
+                        @php
+                            if(str_contains($item->itemName, '50Kg'))
+                            {
+                                echo 'Rata-rata Karung : ' . number_format($item->avgKarung,2);
+                            }
+
+                        @endphp
+                        
+                        </h4>
+                        
+                    </td> -->
                 </tr>
                 
             </table>
@@ -100,7 +130,7 @@
             
 
             <hr>
-            <br><br>
+            <br>
             <table>
                 <tr>
                     <td>Dibuat</td>

@@ -58,6 +58,7 @@
                         <label for="nama" class="col-sm-2 col-form-label" hidden>ID SPM</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control w-50" wire:model="spmID" hidden>
+                            <input type="text" class="form-control w-50" wire:model="spmNo" hidden>
                         </div>
                     </div>
                     <div class="mb-3 mt-3 row">
@@ -118,6 +119,27 @@
                             <input type="text" id="input" class="form-control w-50" wire:model="b10BatchNo" autocomplete="off">
                         </div>
                     </div>
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label">Nama Krani</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="input" class="form-control w-50" wire:model="krani" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="card offset-2 mb-2" style="width: 26rem;">
+                        <div class="col-sm-10">
+                            <div class="card-body">
+                                            
+                                <label for="nama" class="col-sm-8 col-form-label">Upload Form Loading</label>
+                                <input wire:model='imgFormLoading' accept="image/png, image/jpeg" type="file" id="imgFormLoading"  class="ring-a ring-inset ring-gray-300 bg-gray-100 text-gray-900 rounded block mb-4 mt-2  offset-0">
+                                @if($imgFormLoading)
+                                    <img class="img-thumbnail rounded float-start offset-2" style="width: 300px; height: 300px" src="{{ $imgFormLoading->temporaryUrl() }}" alt="">
+                                @endif
+                                <div wire:loading wire:target="imgFormLoading">
+                                    <span class="text-primary">Uploading ......</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 
 
 
@@ -169,6 +191,7 @@
                     <th class="col-md-1 sort desc @if($sortColumn=='carID') {{ $sortDirection }}   @endif" wire:click="sort('carID')" >Car ID</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='custName') {{ $sortDirection }}   @endif" wire:click="sort('custName')" >Customer</th>
                     {{-- <th class="col-md-1 sort desc @if($sortColumn=='transpID') {{ $sortDirection }}   @endif" wire:click="sort('transpID')" >Transporter</th> --}}
+                    <th class="col-md-1 sort desc @if($sortColumn=='itemCode') {{ $sortDirection }}   @endif" wire:click="sort('itemCode')" >Item Code</th>
                     <th class="col-md-1 sort desc @if($sortColumn=='itemCode') {{ $sortDirection }}   @endif" wire:click="sort('itemCode')" >Item Name </th>
                     <th class="col-md-1 sort desc @if($sortColumn=='timbangin') {{ $sortDirection }}   @endif" wire:click="sort('timbangin')" >Bobot IN </th>
                     <th class="col-md-2 sort desc @if($sortColumn=='jam_in') {{ $sortDirection }}   @endif" wire:click="sort('jam_in')" >Date IN </th>
@@ -185,6 +208,7 @@
                     <td>{{ $value->carID }}</td>
                     <td>{{ $value->custName }}</td>
                     {{-- <td>{{ $value->transpName }}</td> --}}
+                    <td>{{ $value->itemCode }}</td>
                     <td>{{ $value->itemName }}</td>
                     <td>{{ $value->timbangin }}</td>
                     <td>{{ date('d-m-Y H:i',strtotime($value->jam_in)) }}</td>

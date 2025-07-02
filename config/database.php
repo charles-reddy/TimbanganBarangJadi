@@ -65,7 +65,7 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '10.20.1.42'),
             'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'Timbangan_BarangJadi'),
+            'database' => env('DB_DATABASE', 'logistik_app'),
             'username' => env('DB_USERNAME', 'sa'),
             'password' => env('DB_PASSWORD', 'password#01'),
             'charset' => 'utf8',
