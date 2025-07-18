@@ -89,6 +89,9 @@
                             <x-dropdown-link :href="route('registrasimaterial')" active="request()->routeIs('dashboard')">
                                 {{ __('Registrasi timbang masuk') }}
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('listtmpersppb')" active="request()->routeIs('dashboard')">
+                                {{ __('Check SPPB-Tiket Muat-WB') }}
+                            </x-dropdown-link>
                            
                         </x-slot>
                     </x-dropdown>

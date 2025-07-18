@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 class ScaleController extends Controller
 {
@@ -17,7 +18,7 @@ class ScaleController extends Controller
         $tglnow=date('d-m-Y H:i',strtotime($tgl1));
         $tgl=date('Y-m-d',strtotime($tgl1));
         // $strukout =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('id',$id)->get();
-         $strukout =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms', 'createspms.id', 'trscale.spmID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->select('trscale.id','trscale.driver','trscale.carID','trscale.custID','trscale.transpID','trscale.itemCode','products.itemName','trscale.doNo','trscale.poNo','trscale.remarks','trscale.timbangout','trscale.netto','trscale.timbangin','trscale.timbanganID','trscale.timbanganoutID','trscale.grossBeforeDed','trscale.jam_in','trscale.jam_out','trscale.userIDIN','trscale.userIDOUT','trscale.usernameOUT','trscale.spmID','trscale.b10QtyKarung','trscale.b10BatchNo','trscale.avgKarung','trscale.isApp','trscale.isAppID','trscale.isAppDate','customers.custName','customers.custAdd','products.deduction','products.type','products.uom','createspms.spmNo','createsppbs.sppbNo','createspms.dnNo','createspms.sealNo','createspms.kontainerNo')->where('trscale.id',$id)->get();
+         $strukout =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms', 'createspms.id', 'trscale.spmID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->select('trscale.id','trscale.driver','trscale.carID','trscale.custID','trscale.transpID','trscale.itemCode','products.itemName','trscale.doNo','trscale.poNo','trscale.remarks','trscale.timbangout','trscale.netto','trscale.timbangin','trscale.timbanganID','trscale.timbanganoutID','trscale.grossBeforeDed','trscale.jam_in','trscale.jam_out','trscale.userIDIN','trscale.userIDOUT','trscale.usernameOUT','trscale.spmID','trscale.b10QtyKarung','trscale.b10BatchNo','trscale.avgKarung','trscale.isApp','trscale.isAppID','trscale.isAppDate','customers.custName','customers.custAdd','products.deduction','products.type','products.uom','createspms.spmNo','createsppbs.sppbNo','createspms.dnNo','createspms.sealNo','createspms.kontainerNo','createspms.buktiPGI')->where('trscale.id',$id)->get();
        
         // dd($strukout);
             // return view('cetakout1', compact('strukout'));
@@ -121,6 +122,22 @@ class ScaleController extends Controller
         $mpdf->Output();
     }
     
+
+    public function ttdstore(Request $request)
+    {
+        // dd($request->image1);
+                                    // ######### proses upload brix
+                                    $img1 = $request->image1;
+                                    $folderPath1 = "public/uploads/ttd/";
+                                    $formatName1 = 'ttdmanager'; 
+                                    $image_parts1 = explode(";base64", $img1);
+                                    $image_base641 = base64_decode($image_parts1[1]);
+                                    $fileName1 = $formatName1 . ".png";
+                                    $file1 = $folderPath1 . $fileName1;
+                                    Storage::put($file1, $image_base641);
+                                    // ######### proses upload brix
+                                    return view('dashboard');
+    }
 
 
     

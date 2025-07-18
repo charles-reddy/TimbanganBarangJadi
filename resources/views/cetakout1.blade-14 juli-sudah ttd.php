@@ -153,24 +153,18 @@
                     <td></td>
                     <td></td>
                         
-                    
-
-
-                     @if($item->buktiPGI)
-                                                            <td> @php
-                                                                  $img = "storage/ttd/aof.jpg";
-                                                                  if($item->buktiPGI)
-                                                                  {
-                                                                    $formloading = $img;
-                                                                  } else {
-                                                                    $formloading = $img;
-                                                                  }
+                    @if($item->buktiPGI  !=null)
+                        <td class="justify-left">
+                            @php
+                            if ($item->buktiPGI) {
+                                $img = "storage/ttd/aof.jpg";
+                                                                //   $segel1 = $img . $item->fotoSealNo1;
+                            }
                                                                   
                                                                   @endphp
-                                                              <img class="rounded mx-auto d-block" style="width: 20%" src="{{$formloading}}"   >
-                                                            </td>
-                                                            @else
-                                                            @endif
+                            <img style="width: 15%" src="{{$img}}"   >
+                        </td>
+                    @else
                         
                         
                         <td>
@@ -179,7 +173,7 @@
                         </td>
                         
                         
-                   
+                    @endif
                    
                     
                     
@@ -198,7 +192,7 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </td>
                     @if($item->buktiPGI  !=null)
-                        <td>Anuchit Kromthamma</td>
+                        <td>____________</td>
                         
                     @else
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;____________</td>

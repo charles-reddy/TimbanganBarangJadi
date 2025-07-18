@@ -124,6 +124,34 @@
                         </div>
                     </div>
 
+                    <div class="mb-3 row">
+                        <label for="b10QtyKarung" class="col-sm-2 col-form-label" hidden>SPPB ID</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" wire:model="sppbID" disabled hidden>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="b10QtyKarung" class="col-sm-2 col-form-label" hidden>tiket muat KG</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" wire:model="tmQtyKg" disabled hidden>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="b10QtyKarung" class="col-sm-2 col-form-label" hidden>SPPB open</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" wire:model="openQtyKg" disabled hidden>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="b10QtyKarung" class="col-sm-2 col-form-label" hidden>SPPB open akhir</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" wire:model="hasilOpenQtyKg" disabled hidden>
+                        </div>
+                    </div>
+
 
                 </div>
                 <div class="col">

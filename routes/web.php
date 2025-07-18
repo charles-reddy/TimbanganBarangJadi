@@ -153,7 +153,7 @@ Route::get('/cardregistered', function () {
 
 Route::get('/createpgi', function () {
     return view('createpgi');
-})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-registrasi|supervisor-timbangan-registrasi|marketing'])->name('createpgi');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-registrasi|supervisor-timbangan-registrasi'])->name('createpgi');
 
 Route::get('/ttdstruktimbangmgr', function () {
     return view('ttdstruktimbangmgr');
@@ -166,6 +166,11 @@ Route::get('/cardpgi', function () {
 Route::get('/truktransaction', function () {
     return view('truktransaction');
 })->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-registrasi|supervisor-timbangan-registrasi|marketing'])->name('truktransaction');
+
+
+Route::get('/listtmpersppb', function () {
+    return view('listtmpersppb');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi|marketing'])->name('listtmpersppb');
  
 
 
@@ -194,6 +199,8 @@ Route::get('/segeltruk', function () {
 })->middleware(['auth', 'verified', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10'])->name('segeltruk');
 
 route::get('/cetaktiket/{id}',[scalecontroller::class,'cetaktiket'])->name('cetaktiket');
+
+route::post('/ttdstore',[scalecontroller::class,'ttdstore'])->name('ttdstore');
 
 
 // Route::get('/proxy-image', function () {

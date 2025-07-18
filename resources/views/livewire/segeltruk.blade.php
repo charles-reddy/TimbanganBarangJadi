@@ -119,6 +119,8 @@
                                                     <input type="text" class="form-control w-50 offset-3" wire:model="sealNo1"  >
                                             @elseif ( $jenisTruk1  == 6)
                                                     <input type="text" class="form-control w-50 offset-3" wire:model="sealNo1"  >
+                                            @elseif ( $jenisTruk1  == 7)
+                                                    <input type="text" class="form-control w-50 offset-3" wire:model="sealNo1"  >
                                             @else
                                                 <input type="text" class="form-control w-50 offset-3" wire:model="sealNo1" disabled >
                                             @endif
@@ -150,6 +152,8 @@
                                                 @elseif ( $jenisTruk1  == 5)
                                                     <input type="text" class="form-control w-50 offset-4" wire:model="sealNo2"  >
                                                 @elseif ( $jenisTruk1  == 6)
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo2"  >
+                                                @elseif ( $jenisTruk1  == 7)
                                                     <input type="text" class="form-control w-50 offset-4" wire:model="sealNo2"  >
                                                 @elseif ( $jenisTruk1  == 0)
                                                     <input type="text" class="form-control w-50 offset-4" wire:model="sealNo2" disable >
@@ -183,6 +187,8 @@
                                                 @elseif ( $jenisTruk1  == 5)
                                                     <input type="text" class="form-control w-50 offset-4" wire:model="sealNo3"  >
                                                 @elseif ( $jenisTruk1  == 6)
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo3"  >
+                                                @elseif ( $jenisTruk1  == 7)
                                                     <input type="text" class="form-control w-50 offset-4" wire:model="sealNo3"  >
                                                 @else
                                                     <input type="text" class="form-control w-50 offset-4" wire:model="sealNo3"  disabled>
@@ -224,6 +230,8 @@
                                                     <input type="text" class="form-control w-50 offset-4" wire:model="sealNo4"  >
                                                 @elseif ( $jenisTruk1  == 6)
                                                     <input type="text" class="form-control w-50 offset-4" wire:model="sealNo4"  >
+                                                @elseif ( $jenisTruk1  == 7)
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo4"   disabled>
                                                 @else
                                                     <input type="text" class="form-control w-50 offset-4" wire:model="sealNo4"  disabled>
                                                 @endif
@@ -246,19 +254,21 @@
                                         
                                                 
                                                 @if ( $jenisTruk1 == 1)
-                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo" disabled >
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo5" disabled >
                                                 @elseif ( $jenisTruk1  == 2)
-                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo"  disabled>
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo5"  disabled>
                                                 @elseif ( $jenisTruk1  == 3)
-                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo"   disabled>
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo5"   disabled>
                                                 @elseif ( $jenisTruk1  == 4)
-                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo"   disabled>
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo5"   disabled>
                                                 @elseif ( $jenisTruk1  == 5)
-                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo"  >
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo5"  >
                                                 @elseif ( $jenisTruk1  == 6)
-                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo"  >
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo5"  >
+                                                @elseif ( $jenisTruk1  == 7)
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo5"   disabled>
                                                 @else
-                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo"  disabled>
+                                                    <input type="text" class="form-control w-50 offset-4" wire:model="sealNo5"  disabled>
                                                 @endif
                                                 <input wire:model='fotoSealNo5' accept="image/png, image/jpeg" type="file" id="fotoSealNo5"  class="ring-a ring-inset ring-gray-300 bg-gray-100 text-gray-900 rounded block mb-4 mt-2  offset-0">
                                                 @if($fotoSealNo5)

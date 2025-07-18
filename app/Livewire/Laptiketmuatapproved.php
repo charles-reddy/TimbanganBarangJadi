@@ -17,6 +17,8 @@ class Laptiketmuatapproved extends Component
     public $katakunci;
     public $altImg;
     public $transID;
+    public $katacust;
+    public $tglMuat;
 
 
     public function store()
@@ -87,9 +89,12 @@ class Laptiketmuatapproved extends Component
     {
         if ($this->katakunci  !=null) {
             $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('customers', 'customers.custID', 'create_t_m_s.custID')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','sppbNo','tmCarID','isMktApp','tglMuat','custName','isSecCek')->where('isMktApp','1')->where('pendfNo','like','%' . $this->katakunci . '%')->orderBy('id','desc')->paginate(10);
-        
+        } elseif ($this->katacust  !=null) {
+            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('customers', 'customers.custID', 'create_t_m_s.custID')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','sppbNo','tmCarID','isMktApp','tglMuat','custName','isSecCek')->where('isMktApp','1')->where('custName','like','%' . $this->katacust . '%')->orderBy('id','desc')->paginate(10);
+        } elseif ($this->tglMuat  !=null) {
+            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('customers', 'customers.custID', 'create_t_m_s.custID')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','sppbNo','tmCarID','isMktApp','tglMuat','custName','isSecCek')->where('isMktApp','1')->wheredate('tglMuat','=', $this->tglMuat)->orderBy('id','desc')->paginate(10);
         } else {
-         $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('customers', 'customers.custID', 'create_t_m_s.custID')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','sppbNo','tmCarID','isMktApp','tglMuat','custName','isSecCek')->where('isMktApp','1')->orderBy('id','desc')->paginate(10);
+            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('customers', 'customers.custID', 'create_t_m_s.custID')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','sppbNo','tmCarID','isMktApp','tglMuat','custName','isSecCek')->where('isMktApp','1')->orderBy('id','desc')->paginate(10);
         // dd($data);
         }
         return view('livewire.laptiketmuatapproved',['datatiketmuat' => $data]);

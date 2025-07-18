@@ -7,10 +7,9 @@
                 <label for=""></label>
                     <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Plat no" wire:model.live="katakunci">
                 </div>
-                <!-- <div class="col-sm-2 ms-2">
-                        <label for="">Filter by Date IN</label>
-                        <input type="date" id="tglmuat" class="form-control  mb-3 w-50"  wire:model.live="tglmuat">
-                </div> -->
+                <div class="col-sm-4">
+                    <input type="text" class="form-control mb-3 w-50" placeholder="Search base customer ..." wire:model.live="katacust">
+                </div>
         
         </div>
         <div class="card-body table-responsive p-0">

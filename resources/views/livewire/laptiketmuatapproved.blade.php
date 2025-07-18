@@ -101,9 +101,20 @@
                         </div>
                     </div>
                             
-                            <div class="pb-3 pt-3">
-                                <input type="text" class="form-control mb-3 w-75" placeholder="Search base Tiket Muat ..." wire:model.live="katakunci">
-                    
+                            <div class="row mt-4">
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control mb-3 w-50" placeholder="Search base Tiket Muat ..." wire:model.live="katakunci">
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control mb-3 w-50" placeholder="Search base customer ..." wire:model.live="katacust">
+                                </div>
+                                <div class="col-sm-1">
+                                    <label for="">Filter Tgl Muat</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="date" id="tglin" class="form-control  mb-3 w-50"  wire:model.live="tglMuat">
+                                </div>
+                          
                             </div>
 
                 

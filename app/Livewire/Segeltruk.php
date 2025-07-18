@@ -185,6 +185,8 @@ class Segeltruk extends Component
             $this->fototruk = '/truk/5.png';
         } else if($this->jenisTruk1 == 6) {
             $this->fototruk = '/truk/6.png';
+        } else if($this->jenisTruk1 == 7) {
+            $this->fototruk = '/truk/7.png';
         } else {
             $this->fototruk = '/storage/uploads/noimage.jpg';
         }

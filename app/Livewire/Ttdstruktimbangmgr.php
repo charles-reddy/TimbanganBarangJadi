@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Str;
 
 
 class Ttdstruktimbangmgr  extends Component 
@@ -19,12 +20,21 @@ class Ttdstruktimbangmgr  extends Component
     public $itemName;
     public $qtyKg;
     public $signature;
+    public $sig1;
+    public $sig2;
+
+
+    public function submit()
+    {
+        dd($this->sig1, $this->sig2);
+        \Storage::put('signatures/signature.png', base64_decode(Str::of($this->signature)->after(',')));
+    }
     
 
 
     public function store()
     {
-        dd($this->signature);
+        dd($this->sign);
        
     //     $this->validate();
 

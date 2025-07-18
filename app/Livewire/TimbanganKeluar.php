@@ -58,7 +58,10 @@ class TimbanganKeluar extends Component
     public $b10QtyKarung;
     public $isApp;
     public $itemType;
-    
+    public $sppbID;
+    public $tmQtyKg;
+    public $hasilOpenQtyKg;
+    public $openQtyKg;
     
     
     
@@ -71,7 +74,7 @@ class TimbanganKeluar extends Component
             // *************** testing timbangan *******************
         $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganoutID)->value('IP');
         $this->timbangin;
-        $this->timbangout = 10;
+        $this->timbangout = 80555;
         $this->netto = $this->timbangin - $this->timbangout; 
         if ($this->netto < 0)
         {
@@ -128,7 +131,7 @@ class TimbanganKeluar extends Component
             
         }
         
-       
+       $this->hasilOpenQtyKg = $this->openQtyKg + ($this->tmQtyKg - $this->netto);
     }
 
 
@@ -182,6 +185,12 @@ class TimbanganKeluar extends Component
         $this->netto = '';
         $this->timbangout = '';
         $data = Trscale::find($id);
+        // dd($data->spmID);
+        $dataspm = DB::connection('sqlsrv')->table('createsppbs')->join('createspms','createspms.sppbNo','createsppbs.id')->join('create_t_m_s','create_t_m_s.tmSppbID','createsppbs.id')->where('createspms.id',$data->spmID)->select('createsppbs.id','createsppbs.openQtyKg','create_t_m_s.tmQtyKg')->first();
+        // dd($dataspm);
+        $this->sppbID = $dataspm->id;
+        $this->tmQtyKg = $dataspm->tmQtyKg;
+        $this->openQtyKg = $dataspm->openQtyKg;
         $this->driver = $data->driver;
         $this->carID = $data->carID;
         $this->custID = $data->custID;
@@ -258,6 +267,12 @@ class TimbanganKeluar extends Component
                             $id=$this->id_trscale;
                             $combineid = '/cetakout/'. $id ;
                             $data->update($validated);
+                            
+                            DB::connection('sqlsrv')->table('createsppbs')->where('id',$this->sppbID)->update([
+                            'openQtyKg' => $this->hasilOpenQtyKg,
+                            
+                            ]);
+
                             // dd($combineid);
                             session()->flash('message', 'Data berhasil diperbaharui');
                             redirect($combineid);

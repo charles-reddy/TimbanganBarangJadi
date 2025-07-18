@@ -177,7 +177,7 @@ class Uploadappkarung extends Component
     public function render()
     {
         
-        $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->where('type','<>','FG-L')->whereNotNull('avgKarung')->where('isApp',false)->whereNull('BuktiAppKarung1')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+        $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->where('type','<>','FG-L')->whereNotNull('avgKarung')->where('isApp',false)->whereNull('BuktiAppKarung1')->whereBetween('trscale.created_at',[Carbon::now()->addDays(-3), Carbon::now()  ])->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         // dd($data);
         $timbangan = JembatanTimbang::all();
         $pelanggan = Customer::all();

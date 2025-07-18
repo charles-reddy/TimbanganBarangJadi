@@ -242,7 +242,7 @@
                     <td>{{ date('d-m-Y H:i',strtotime($value->jam_in)) }}</td>
                     
                     <td>
-                        <a wire:click="edit({{ $value->id }})" class="btn btn-primary btn-sm">Approval</a>
+                        <a wire:click="edit({{ $value->id }})" class="btn btn-primary btn-sm">Konfirmasi</a>
                         {{-- <a wire:click="deleteConfirmation({{ $value->id }})" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Del</a> --}}
                     </td>
                 </tr>

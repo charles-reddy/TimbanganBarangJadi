@@ -121,7 +121,11 @@
 
                                                               <tr>
                                                                 <td  class=" text-center "  >
-                                                                  <h5><b> {{number_format($item->qtyKg)}} </b></h5>
+                                                                  @if($item->type == 'FG-L') 
+                                                                    <h5><b> {{number_format($item->netto)}} </b></h5>
+                                                                  @else
+                                                                    <h5><b> {{number_format($item->qtyKg)}} </b></h5>
+                                                                  @endif
                                                                 </td>
                                                                 <td class="  text-center" >
                                                                   <h5><b>Kg</b></h5>
