@@ -68,65 +68,66 @@ class Timbanganoa extends Component
     
     public function timbang()
     {
+        // dd(request()->ip());
         $this->timbangin = '';
         try {
 
              $iptimbangan = JembatanTimbang::where('timbanganID', '=',$this->timbanganID)->value('IP');
        // *************** testing timbangan *******************
-                $this->timbangin = 88888;
+                // $this->timbangin = 88888;
                 
-                // // dd($this->timbanganID);
+                // // // dd($this->timbanganID);
                 
-                if ($this->timbanganID == 1) {
-                    // dd('10');
-                    $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
-                } elseif ($this->timbanganID == 2) {
-                    // dd('9');
-                    $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
-                } else {
-                    // dd('8');
-                    $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
-                }
+                // if ($this->timbanganID == 1) {
+                //     // dd('10');
+                //     $data = "http://10.20.1.63:3000/api/weight/SCALE_10";
+                // } elseif ($this->timbanganID == 2) {
+                //     // dd('9');
+                //     $data = "http://10.20.1.63:3000/api/weight/SCALE_09";
+                // } else {
+                //     // dd('8');
+                //     $data = "http://10.20.1.63:3000/api/weight/SCALE_08";
+                // }
 
                 // dd($this->output);
         // *************** testing timbangan *******************
 
-            //     switch ($this->timbanganID) {
-            //         case 1:
-            //             $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
-            //             break;
+                switch ($this->timbanganID) {
+                    case 1:
+                        $data = "http://10.20.1.63:3000/api/weight/SCALE_10";
+                        break;
                     
-            //         case '2':
-            //             $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
-            //             break;   
+                    case '2':
+                        $data = "http://10.20.1.63:3000/api/weight/SCALE_09";
+                        break;   
 
-            //         case '3':
-            //             $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
-            //             break; 
+                    case '3':
+                        $data = "http://10.20.1.63:3000/api/weight/SCALE_08";
+                        break; 
 
                     
-            //         case '5':
-            //             $data = "http://10.20.1.49:3000/api/weight/SCALE_02";
-            //             break; 
+                    case '5':
+                        $data = "http://10.20.1.63:3000/api/weight/SCALE_02";
+                        break; 
 
-            //         default:
+                    default:
                         
-            //             break;
-            //     }
+                        break;
+                }
             
-            //     // $client= new Client();
-            //     // $data = http::withToken('2|B9T6zBskrf1Dg5TNKpLFRTvWWC4svqUYh0Ck1Myz60c3a92f')->get("http://localhost:8000/api/ttaDigunakan");
-            //     // // $data1 = $data->json_decode(key: 'petak');
-            //     // dd($data->json()['data']);
+                // $client= new Client();
+                // $data = http::withToken('2|B9T6zBskrf1Dg5TNKpLFRTvWWC4svqUYh0Ck1Myz60c3a92f')->get("http://localhost:8000/api/ttaDigunakan");
+                // // $data1 = $data->json_decode(key: 'petak');
+                // dd($data->json()['data']);
                 
 
-            //     $client= new Client();
-            //     // $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
-            //     $response = $client->request('GET',$data);
-            //     $content =  $response->getBody()->getContents();
-            //     $contentarray = json_decode($content,true);
-            // //    dd($contentarray['weight']);
-            //      $this->timbangin = $contentarray['weight'];
+                $client= new Client();
+                // $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
+                $response = $client->request('GET',$data);
+                $content =  $response->getBody()->getContents();
+                $contentarray = json_decode($content,true);
+            //    dd($contentarray['weight']);
+                 $this->timbangin = $contentarray['weight'];
         } catch (Exception $e) {
             session()->flash('error', 'Pastikan Timbangan yg dipilih sesuai');
             return;
@@ -386,7 +387,7 @@ class Timbanganoa extends Component
         $pelanggan = Customer::all();
         $angkutan = Transporter::all();
         $barang = Product::where('itemName','like','%gkr%')->orwhere('itemName','like','%mola%')->get();
-        $spmlist = DB::connection('sqlsrv')->table('createspms')->select('id','spmNo')->where('isIN',0)->whereDate('tglSpm','>', Carbon::now()->addDays(-5) )->orderBy('id','desc')->get();
+        $spmlist = DB::connection('sqlsrv')->table('createspms')->select('id','spmNo')->where('isIN',0)->whereNull('eksesMol')->whereDate('tglSpm','>', Carbon::now()->addDays(-5) )->orderBy('id','desc')->get();
         // dd($spmlist);
         return view('livewire.timbanganoa', ['datascale' => $data, 'dataspm' => $spmlist, 'customer' => $pelanggan, 'transporter' => $angkutan, 'product' => $barang, 'timbangan' => $timbangan]); 
     }

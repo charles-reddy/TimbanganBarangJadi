@@ -2,8 +2,11 @@
 
 namespace App\Console;
 
+use App\Imports\ImportSupplier;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Kernel extends ConsoleKernel
 {
@@ -12,7 +15,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+
+             $directory = 'temp'; // e.g., 'public/uploads' or 'private/documents'
+            $files = Storage::files($directory);
+            Excel::import(new ImportSupplier, storage_path('app/' . $files[0]));
+            Storage::delete($files[0]);
+
+        })->dailyAt('21:23');
     }
 
     /**

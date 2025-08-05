@@ -19,6 +19,7 @@ class Laptiketmuatapproved extends Component
     public $transID;
     public $katacust;
     public $tglMuat;
+    public $ip;
 
 
     public function store()
@@ -49,22 +50,47 @@ class Laptiketmuatapproved extends Component
 
     public function edit($id)
     {
+        $this->ip = substr(request()->ip(),0,2);
         $data = DB::connection('sqlsrv')->table('create_t_m_s')->where('id', $id)->first();
         // dd($data->simKtp);
         $this->tiketMuat = $data->pendfNo;
         $this->transID = $id;
         if ($data->simKtp != null) {
-            $this->simKtp = '/storage/' . $data->simKtp;
-            
+
+            if($this->ip == '10.20.3.9') {
+                // dd('local');
+                $this->simKtp = 'http://10.20.1.64:8104/storage/' . $data->simKtp;
+            } else {
+                // dd('outside');
+                $this->simKtp = 'http://180.250.143.206/storage/' . $data->simKtp;
+            }
+   
         } else {
-            $this->simKtp = '/storage/uploads/noimage.jpg';
+            if($this->ip == '10.20.3.9') {
+                // dd('local');
+                $this->simKtp = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
+            } else {
+                // dd('outside');
+                $this->simKtp = 'http://180.250.143.206/storage/uploads/noimage.jpg';
+            }
         }
 
         if ($data->stnk != null) {
-            $this->stnk = '/storage/' . $data->stnk;
+            if($this->ip == '10.20.3.9') {
+                // dd('local');
+                $this->stnk = 'http://10.20.1.64:8104/storage/' . $data->stnk;
+            } else {
+                $this->stnk = 'http://180.250.143.206/storage/' . $data->stnk;
+            }
             
         } else {
-            $this->stnk = '/storage/uploads/noimage.jpg';
+            if($this->ip == '10.20.3.9') {
+                // dd('local');
+                $this->stnk = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
+            } else {
+                // dd('outside');
+                $this->stnk = 'http://180.250.143.206/storage/uploads/noimage.jpg';
+            }
         }
         
        

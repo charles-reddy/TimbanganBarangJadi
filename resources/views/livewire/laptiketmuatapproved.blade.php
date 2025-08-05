@@ -40,7 +40,7 @@
 
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <div>
-            {{ now() }}
+            {{ now() }} - {{ request()->ip() }}
         </div>
         <div class="row">
             <div class="col">

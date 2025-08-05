@@ -157,11 +157,32 @@
                         <label for="isApp" class="col-sm-2 col-form-label">Local / Export</label>
                         <div class="col-sm-10" >
                         
-                            <select class="js-example-basic-single w-50"  id="my-isExport" wire:model="isExport" style="border-radius: 10px;">
+                            <select class="js-example-basic-single w-25"  id="my-isExport" wire:model="isExport" style="border-radius: 10px;">
                                     <option >---Local / Export---</option>
                                     <option value="1">Local</option>
                                     <option value="2">Export</option>
                             </select>
+                        
+                        </div>
+                    </div>
+
+                    <div class="mb-3  row">
+                        <label for="isApp" class="col-sm-2 col-form-label">Ekses SPPB Molases</label>
+                        <div class="col-sm-10" >
+                        
+                            @if($itemType == 'FG')
+                                <select class="js-example-basic-single w-25"  id="my-eksesMol" wire:model="eksesMol" style="border-radius: 10px;" disabled>
+                                    <option value="0" >---Ekses Molases---</option>
+                                        <option value="1">yes</option>
+                                        
+                                </select>
+                            @else
+                                <select class="js-example-basic-single w-25"  id="my-eksesMol" wire:model="eksesMol" style="border-radius: 10px;">
+                                        <option value="0" >---Ekses Molases---</option>
+                                        <option value="1">Yes</option>
+                                        
+                                </select>
+                            @endif
                         
                         </div>
                     </div>
@@ -360,6 +381,12 @@
                 $('#my-isExport').on('change',function(e) {
                     var data = $('#my-isExport').select2("val");
                     @this.set('isExport',data);
+                })
+
+
+                $('#my-eksesMol').on('change',function(e) {
+                    var data = $('#my-eksesMol').select2("val");
+                    @this.set('eksesMol',data);
                 })
 
                 

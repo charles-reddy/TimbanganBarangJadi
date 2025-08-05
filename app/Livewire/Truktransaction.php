@@ -2,16 +2,32 @@
 
 namespace App\Livewire;
 
+use App\Exports\exportTrukTransaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Truktransaction extends Component
 {
     use WithPagination;
     public $katakunci;
     public $tglout;
+
+
+    public function export_out()
+    {
+        
+        return Excel::download(new exportTrukTransaction($this->tglout, $this->katakunci), "Truktransaction-export.xlsx");
+    } 
+
+
+     public function clear()
+    {
+        
+        redirect('/truktransaction');
+    }
 
     public function render()
     {

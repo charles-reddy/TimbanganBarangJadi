@@ -22,7 +22,7 @@
 
                 
                     {{-- laporan sppb         --}}
-                        {{ $datasppb->links() }}
+                        {{-- {{ $datasppb->links() }} --}}
                     
                     <div class="d-flex justify-content-left">
                     
@@ -95,6 +95,8 @@
                                     <th></th>
                                     <th class="col-md-0">SPPB No</th>
                                     <th class="col-md-0">Tiket Muat</th>
+                                    <th class="col-md-0">SPM</th>
+                                    <th class="col-md-0">tgt Keluar</th>
                                     <th class="col-md-0">Netto</th>
                                     
                                     
@@ -107,6 +109,8 @@
                                     <td></td>
                                     <td>{{ $key->sppbNo }}</td>
                                     <td>{{ $key->pendfNo }}</td>
+                                    <td>{{ $key->spmNo }}</td>
+                                    <td>{{ date('d-m-Y H:i',strtotime($key->jam_out)) }}</td>
                                     @if($key->type == 'FG-L')
                                         <td>{{ number_format($key->netto) }}</td>
                                     @else
@@ -159,6 +163,7 @@
                                     <th></th>
                                     <th class="col-md-0">SPPB No</th>
                                     <th class="col-md-0">Tiket Muat</th>
+                                    <th class="col-md-0">Tgl Rencana Muat</th>
                                     <th class="col-md-0">Qty</th>
                                     
                                     
@@ -172,6 +177,7 @@
                                     <td></td>
                                     <td>{{ $key->sppbNo }}</td>
                                     <td>{{ $key->pendfNo }}</td>
+                                    <td>{{ $key->tglMuat }}</td>
                                     <td>{{ number_format($key->tmQtyKg)}}</td>
                                     
                                     

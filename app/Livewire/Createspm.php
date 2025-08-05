@@ -81,6 +81,7 @@ class Createspm extends Component
     #[Validate('required', message: 'Pilih Jenis Truk')]
     public $tmJenisTruk;
     public $itemType;
+    public $eksesMol;
 
     
 
@@ -94,11 +95,38 @@ class Createspm extends Component
         $this->terbilangKg = Terbilang::make($this->qtyKg);
         $this->terbilangKarung = Terbilang::make($this->qtyKarung);
         
-        //  dd($custID);
+        //  dd($this->eksesMol);
+         
         
         try {
             // dd($this->tiketID, $this->sppbNo);
-            DB::connection('sqlsrv')->table('createspms')->insert([
+            if($this->eksesMol) {
+                // dd('ada');
+                DB::connection('sqlsrv')->table('createspms')->insert([
+                'spmNo' => $this->spmNo,
+                'tglSPM' => $tgl,
+                'sppbNo' => $this->sppbID,
+                'tiketID' => $this->tiketMuat,
+                'carID' => $this->carID,
+                'driver' => $this->driver,
+                'sealNo' => $this->sealNo,
+                'kontainerNo' => $this->kontainerNo,
+                'itemCode' => $this->itemCode,
+                'transpID' => $this->transpID,
+                'custID' => $this->custID,
+                'qtyKg' => $this->qtyKg,
+                'qtyKarung' => $this->qtyKarung,
+                'terbilangKg' => $this->terbilangKg,
+                'terbilangKarung' => $this->terbilangKarung,
+                'packingID' => $this->packingID,
+                'dnNo' => $this->dnNo,
+                'isExport' => $this->isExport,
+                'spmJenisTruk' => $this->tmJenisTruk,
+                'eksesMol' => $this->eksesMol
+                ]);
+            } else {
+                // dd('tidak ada');
+                DB::connection('sqlsrv')->table('createspms')->insert([
                 'spmNo' => $this->spmNo,
                 'tglSPM' => $tgl,
                 'sppbNo' => $this->sppbID,
@@ -118,7 +146,10 @@ class Createspm extends Component
                 'dnNo' => $this->dnNo,
                 'isExport' => $this->isExport,
                 'spmJenisTruk' => $this->tmJenisTruk
-            ]);
+             
+                ]);
+            }
+            
 
             DB::connection('sqlsrv')->table('create_t_m_s')->where('id',$this->tiketMuat)->update([
                 'isSpm' => 1
@@ -298,6 +329,8 @@ class Createspm extends Component
         $this->custName = $datamuat->custName;
         $this->tmJenisTruk = $datamuat->jenisTruk;
         $this->itemType = $datamuat->type;
+        // $this->isExport = '';
+        // $this->eksesMol = '';
 
           
     }

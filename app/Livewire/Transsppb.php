@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Transporter;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
@@ -50,6 +51,7 @@ class Transsppb extends Component
 
     public function store()
     {
+        $idUsr = Auth::user()->id;
         $tgl=Carbon::now();
         $this->validate();
         try {
@@ -66,6 +68,21 @@ class Transsppb extends Component
                 'poNo' => $this->poNo,
 
             ]);
+
+            //#### simpan transaksi log
+                        DB::connection('sqlsrv')->table('transLog')->insert([
+                        'created_at' =>  Carbon::now(),
+                        'sppbNo' => $this->sppbNo,
+                        'sppbQtyKg' => $this->sppbQtyKg,
+                        'sppbQtyKarung' => $this->sppbQtyKarung,
+                        'openQtyKg' => $this->sppbQtyKg,
+                        'openQtyKarung' => $this->sppbQtyKarung,
+                        'userUpdateID' => $idUsr,
+                        'Modul' => 'createSPPB',
+                        
+                        ]);
+
+
             session()->flash('message', 'Data berhasil dimasukkan');
             $this->clear();
 
@@ -108,6 +125,7 @@ class Transsppb extends Component
 
     public function update()
     {
+        $idUsr = Auth::user()->id;
         $tgl=Carbon::now();
         // $data = Createsppb::find($this->transID);
         // dd($data);
@@ -127,6 +145,19 @@ class Transsppb extends Component
                 // 'openQtyKarung' => $this->sppbQtyKarung,
                 'poNo' => $this->poNo,
             ]);
+
+            //#### simpan transaksi log
+                        DB::connection('sqlsrv')->table('transLog')->insert([
+                        'created_at' =>  Carbon::now(),
+                        'sppbNo' => $this->sppbNo,
+                        'sppbQtyKg' => $this->sppbQtyKg,
+                        'sppbQtyKarung' => $this->sppbQtyKarung,
+                        'openQtyKg' => $this->sppbQtyKg,
+                        'openQtyKarung' => $this->sppbQtyKarung,
+                        'userUpdateID' => $idUsr,
+                        'Modul' => 'EditSPPB',
+                        
+                        ]);
             session()->flash('message', 'Data berhasil dimasukkan');
             $this->clear();
 

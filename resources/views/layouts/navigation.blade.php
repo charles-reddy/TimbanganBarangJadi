@@ -84,8 +84,12 @@
                             <x-dropdown-link :href="route('createpgi')" active="request()->routeIs('dashboard')">
                                 {{ __('Upload PGI') }}
                             </x-dropdown-link>
-                           
-                           
+                            <x-dropdown-link :href="route('sjeksesmolases')" active="request()->routeIs('dashboard')">
+                                {{ __('Surat Jalan Additional Molases') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('gantitgltm')" active="request()->routeIs('dashboard')">
+                                {{ __('Ganti Tgl Tiket Muat') }}
+                            </x-dropdown-link>
                             <x-dropdown-link :href="route('registrasimaterial')" active="request()->routeIs('dashboard')">
                                 {{ __('Registrasi timbang masuk') }}
                             </x-dropdown-link>

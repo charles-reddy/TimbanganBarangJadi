@@ -11,6 +11,10 @@
                         <label for="">Filter by Date Out</label>
                         <input type="date" id="tglout" class="form-control  mb-3 w-50"  wire:model.live="tglout">
                 </div>
+                <div>
+                    <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
+                    <button type="button" class="btn btn-primary" wire:click="export_out()">Export</button>  
+                </div>
         
         </div>
         <div class="card-body table-responsive p-0">
@@ -20,7 +24,7 @@
                     <tr>
                         <th></th>
                         <th class="col-md">No</th>
-                        <th class="col-md" >SPM</th>
+                        <th class="col-md" >tgl Keluar</th>
                         <th class="col-md" >SPM</th>
                         <th class="col-md" >Tiket Muat</th>
                         <th class="col-md" >Customer</th>

@@ -47,6 +47,7 @@ route::get('/cetakspm/{id}',[ScaleController::class,'cetakspm'])->middleware(['a
 route::any('/export',[ScaleController::class,'export_out'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi']);
 route::get('/cetaksegel/{id}',[ScaleController::class,'cetaksegel'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-registrasi|operator-b10|operator-timbangan|supervisor-timbangan-registrasi']);
 
+
 Route::get('/laptim', function () {
     return view('laptim');
 })->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('laptim');
@@ -87,7 +88,12 @@ Route::get('/lapsj', function () {
     return view('lapsj');
 })->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10'])->name('lapsj');
 
+Route::get('/sjeksesmolases', function () {
+    return view('sjeksesmolases');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|operator-registrasi|supervisor-timbangan-registrasi'])->name('sjeksesmolases');
+
 route::get('/cetaksj/{id}',[ScaleController::class,'cetaksj'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10']);
+route::get('/cetaksjeksesmol/{id}',[ScaleController::class,'cetaksjeksesmol'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|operator-registrasi|supervisor-timbangan-registrasi']);
 
 route::get('/testcapture', function () {
     return view('testcapture');
@@ -113,6 +119,10 @@ Route::get('/registrasimaterial', function () {
 route::get('/mastersupplier', function () {
     return view('mastersupplier');
 })->middleware(['auth', 'verified','role:administrator|manager-logistik|supervisor-timbangan-registrasi'])->name('mastersupplier');
+
+route::get('/gantitgltm', function () {
+    return view('gantitgltm');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|supervisor-timbangan-registrasi'])->name('gantitgltm');
 
 Route::get('/timbangoutmaterial', function () {
     return view('timbangoutmaterial');
@@ -201,6 +211,12 @@ Route::get('/segeltruk', function () {
 route::get('/cetaktiket/{id}',[scalecontroller::class,'cetaktiket'])->name('cetaktiket');
 
 route::post('/ttdstore',[scalecontroller::class,'ttdstore'])->name('ttdstore');
+
+
+Route::get('/testingimport', function () {
+    return view('testingimportmenu');
+})->middleware(['auth', 'verified', 'verified','role:administrator'])->name('testingimportmenu');
+route::post('/test_import',[ScaleController::class,'test_import'])->middleware(['auth', 'verified','role:administrator']);
 
 
 // Route::get('/proxy-image', function () {

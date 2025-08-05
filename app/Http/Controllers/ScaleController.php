@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExportTimbangOut;
+use App\Imports\ImportSupplier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -103,6 +104,26 @@ class ScaleController extends Controller
         $mpdf->Output();
     }
 
+    public function cetaksjeksesmol($id)
+    {
+        // dd($id);
+        $mpdf = new \Mpdf\Mpdf();
+        $tgl1 = Carbon::now();
+        $tglnow=date('d-m-Y H:i',strtotime($tgl1));
+        $tgl=date('Y-m-d',strtotime($tgl1));
+        // $struksj =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms', 'createspms.id', 'trscale.spmID')->join('createsppbs', 'createsppbs.id', 'trscale.doNo')->where('trscale.id',$id)->get();
+        $struksj =  DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'createspms.itemCode')->where('createspms.id', $id)->get();
+       
+        //  dd($struksj);
+            // return view('cetaksj', compact('struksj'));
+       $html = view('cetaksj-eksesmol', compact('struksj'));
+
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output();
+    }
+
+
 
     public function cetaktiket($id)
     {
@@ -139,6 +160,16 @@ class ScaleController extends Controller
                                     return view('dashboard');
     }
 
+
+    public function test_import(Request $request)
+    {
+        // dd($request->file('suppliers'));
+        return Excel::import(new ImportSupplier,  request()->file('suppliers'));
+        session()->flash('message', 'Data berhasil dimasukkan');
+        return redirect('/testingimport');
+        // return view('testingimportmenu')->with('message', 'Your action was successful!');
+
+    }
 
     
 }
