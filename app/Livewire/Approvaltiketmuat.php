@@ -80,7 +80,7 @@ class Approvaltiketmuat extends Component
                 $this->simKtp = 'http://10.20.1.64:8104/storage/' . $data->simKtp;
             } else {
                 // dd('outside');
-                $this->simKtp = 'http://180.250.143.206/storage/' . $data->simKtp;
+                $this->simKtp = 'https://customer.appktm.com/storage/' . $data->simKtp;
             }
         } else {
             if($this->ip == '10.20.3.9') {
@@ -88,7 +88,7 @@ class Approvaltiketmuat extends Component
                 $this->simKtp = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
             } else {
                 // dd('outside');
-                $this->simKtp = 'http://180.250.143.206/storage/uploads/noimage.jpg';
+                $this->simKtp = 'https://customer.appktm.com/storage/uploads/noimage.jpg';
             }
             // $this->simKtp = '/storage/uploads/noimage.jpg';
         }
@@ -98,7 +98,7 @@ class Approvaltiketmuat extends Component
                 // dd('local');
                 $this->stnk = 'http://10.20.1.64:8104/storage/' . $data->stnk;
             } else {
-                $this->stnk = 'http://180.250.143.206/storage/' . $data->stnk;
+                $this->stnk = 'https://customer.appktm.com/storage/' . $data->stnk;
             }
             
         } else {
@@ -107,7 +107,7 @@ class Approvaltiketmuat extends Component
                 $this->stnk = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
             } else {
                 // dd('outside');
-                $this->stnk = 'http://180.250.143.206/storage/uploads/noimage.jpg';
+                $this->stnk = 'https://customer.appktm.com/storage/uploads/noimage.jpg';
             }
         }
         // dd($data->stnk, $data->simKtp);

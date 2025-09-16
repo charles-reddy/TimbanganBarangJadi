@@ -83,7 +83,7 @@ class Appsecurity extends Component
         if ($data->simKtp != null) {
             if($this->ip = '10.20.3.9') {
                 // dd('outside');
-                $this->simKtp = 'http://180.250.143.206/storage/' . $data->simKtp;
+                $this->simKtp = 'https://customer.appktm.com/storage/' . $data->simKtp;
                 
             } else {
                 // dd('local');
@@ -92,7 +92,7 @@ class Appsecurity extends Component
         } else {
             if($this->ip = '10.20.3.9') {
                 // dd('outside');
-                $this->simKtp = 'http://180.250.143.206/storage/uploads/noimage.jpg';
+                $this->simKtp = 'https://customer.appktm.com/storage/uploads/noimage.jpg';
                 
             } else {
                 // dd('local');
@@ -103,7 +103,7 @@ class Appsecurity extends Component
 
         if ($data->stnk != null) {
             if($this->ip = '10.20.3.9') {
-                $this->stnk = 'http://180.250.143.206/storage/' . $data->stnk;
+                $this->stnk = 'https://customer.appktm.com/storage/' . $data->stnk;
                 
             } else {
                 // dd('local');
@@ -116,7 +116,7 @@ class Appsecurity extends Component
                 $this->stnk = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
             } else {
                 // dd('outside');
-                $this->stnk = 'http://180.250.143.206/storage/uploads/noimage.jpg';
+                $this->stnk = 'https://customer.appktm.com/storage/uploads/noimage.jpg';
             }
         }
         // dd($data->stnk, $data->simKtp);

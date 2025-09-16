@@ -14,10 +14,12 @@ use Livewire\Attributes\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
+use Livewire\WithPagination;
 
 class Uploadappkarung extends Component
 {
     use WithFileUploads;
+    use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $sortColumn = 'jam_in';
     public $sortDirection = 'desc';
@@ -177,7 +179,7 @@ class Uploadappkarung extends Component
     public function render()
     {
         
-        $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->where('type','<>','FG-L')->whereNotNull('avgKarung')->where('isApp',false)->whereNull('BuktiAppKarung1')->whereBetween('trscale.created_at',[Carbon::now()->addDays(-3), Carbon::now()  ])->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+        $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->where('type','<>','FG-L')->whereNotNull('avgKarung')->where('isApp',false)->whereNull('BuktiAppKarung1')->whereBetween('trscale.created_at',[Carbon::now()->addDays(-3), Carbon::now()  ])->orderby($this->sortColumn ,$this->sortDirection)->paginate(20);
         // dd($data);
         $timbangan = JembatanTimbang::all();
         $pelanggan = Customer::all();

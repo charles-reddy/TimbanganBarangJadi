@@ -62,7 +62,7 @@ class Laptiketmuatapproved extends Component
                 $this->simKtp = 'http://10.20.1.64:8104/storage/' . $data->simKtp;
             } else {
                 // dd('outside');
-                $this->simKtp = 'http://180.250.143.206/storage/' . $data->simKtp;
+                $this->simKtp = 'https://customer.appktm.com/storage/' . $data->simKtp;
             }
    
         } else {
@@ -71,7 +71,7 @@ class Laptiketmuatapproved extends Component
                 $this->simKtp = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
             } else {
                 // dd('outside');
-                $this->simKtp = 'http://180.250.143.206/storage/uploads/noimage.jpg';
+                $this->simKtp = 'https://customer.appktm.com/storage/uploads/noimage.jpg';
             }
         }
 
@@ -80,7 +80,7 @@ class Laptiketmuatapproved extends Component
                 // dd('local');
                 $this->stnk = 'http://10.20.1.64:8104/storage/' . $data->stnk;
             } else {
-                $this->stnk = 'http://180.250.143.206/storage/' . $data->stnk;
+                $this->stnk = 'https://customer.appktm.com/storage/' . $data->stnk;
             }
             
         } else {
@@ -89,7 +89,7 @@ class Laptiketmuatapproved extends Component
                 $this->stnk = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
             } else {
                 // dd('outside');
-                $this->stnk = 'http://180.250.143.206/storage/uploads/noimage.jpg';
+                $this->stnk = 'https://customer.appktm.com/storage/uploads/noimage.jpg';
             }
         }
         

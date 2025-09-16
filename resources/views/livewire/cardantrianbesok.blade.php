@@ -36,6 +36,9 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $totalkg = 0;
+                    @endphp
                     @foreach ($antrianbsk as $key => $value)
                     <tr>
                         <td></td>
@@ -48,13 +51,19 @@
                         <td>{{ $value->itemName }}</td>
                         <td>{{ $value->jenisTruk }}</td>
                         <td>{{ $value->tmQtyKg }}</td>
-                        
+                        @php
+                            $totalkg = $totalkg + $value->tmQtyKg
+                        @endphp
                         
                     </tr>
                     @endforeach
                     
                 </tbody>
             </table>
+            <div class="offset-10">
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total =  {{ number_format($totalkg) }}
+            </div>
+            
         </div>
     </div>
     <!-- AKHIR antrian besok -->

@@ -800,7 +800,7 @@ class TimbanganKeluar extends Component
                             
                         
                         ########   kemasan 500 gram karton awal #### 
-                        case 'S2IBF1390D':
+                        case 'S2IBFV390D':
                             //  dd('500 gram karton');
                             if ($this->avgKarung >= 10.414 and $this->avgKarung < 10.531) {
                                 //    dd('1');         

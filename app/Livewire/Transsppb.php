@@ -72,7 +72,7 @@ class Transsppb extends Component
             //#### simpan transaksi log
                         DB::connection('sqlsrv')->table('transLog')->insert([
                         'created_at' =>  Carbon::now(),
-                        'sppbNo' => $this->sppbNo,
+                        'sppbID' => $this->sppbNo,
                         'sppbQtyKg' => $this->sppbQtyKg,
                         'sppbQtyKarung' => $this->sppbQtyKarung,
                         'openQtyKg' => $this->sppbQtyKg,
