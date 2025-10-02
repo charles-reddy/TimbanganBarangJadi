@@ -41,11 +41,11 @@ Route::middleware('auth')->group(function () {
 });
 
 
-route::get('/cetakout/{id}',[ScaleController::class,'cetakout'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi']);
-route::get('/cetakoutm/{id}',[ScaleController::class,'cetakoutm'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi']);
-route::get('/cetakspm/{id}',[ScaleController::class,'cetakspm'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi']);
+route::get('/cetakout/{id}',[ScaleController::class,'cetakout'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit']);
+route::get('/cetakoutm/{id}',[ScaleController::class,'cetakoutm'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit']);
+route::get('/cetakspm/{id}',[ScaleController::class,'cetakspm'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi|audit']);
 route::any('/export',[ScaleController::class,'export_out'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit']);
-route::get('/cetaksegel/{id}',[ScaleController::class,'cetaksegel'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-registrasi|operator-b10|operator-timbangan|supervisor-timbangan-registrasi']);
+route::get('/cetaksegel/{id}',[ScaleController::class,'cetaksegel'])->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-registrasi|operator-b10|operator-timbangan|supervisor-timbangan-registrasi|audit']);
 
 
 Route::get('/laptim', function () {

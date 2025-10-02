@@ -55,11 +55,11 @@ class exportTrukTransaction implements FromCollection, WithHeadings
         {
             //Put Here Header Name That you want in your excel sheet 
             return [
-                        'Tgl Keluar',
-                        'SPM',
-                        'Tiket Muat',
-                        'Customer',
-                        'Item',
+                        'Request No',
+                        'Date Start',
+                        'Date End',
+                        'Destination',
+                        'Number of Passenge',
                         'Tipe',
                         'Plat No',
                         'Sopir',
