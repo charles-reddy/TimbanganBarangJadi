@@ -11,7 +11,7 @@
             <div class="row" >
             <div class="col-md-auto mt-2">
                 
-                    <div class="card bg-warning" style="width: 12rem;" >
+                    <div class="card bg-warning" style="width: 10rem;" >
                         <div class="card-body">
                             <h1 class="card-title text-center ">
 
@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="col-md-auto mt-2">
-                    <div class="card bg-info" style="width: 12rem;" >
+                    <div class="card bg-info" style="width: 11rem;" >
                         <div class="card-body">
                             <h1 class="card-title text-center ">
                                 @php
@@ -58,7 +58,7 @@
                 </div>
                 
                 <div class="col-md-auto mt-2 ">
-                    <div class="card bg-secondary " style="width: 12rem;">
+                    <div class="card bg-secondary " style="width: 11rem;">
                         <div class="card-body">
                             <h1 class="card-title text-center ">
                             {{ $registered}}
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <div class="col-md-auto mt-2 ">
-                    <div class="card bg-primary " style="width: 12rem;">
+                    <div class="card bg-primary " style="width: 11rem;">
                         <div class="card-body">
                             <h1 class="card-title text-center ">
                             {{ $datafgtruk->timIn}}
@@ -90,7 +90,7 @@
                 
 
                 <div class="col-md-auto mt-2">
-                    <div class="card bg-info " style="width: 12rem;">
+                    <div class="card bg-info " style="width: 11rem;">
                         <div class="card-body">
                             <h1 class="card-title text-center">
 
@@ -107,7 +107,7 @@
                 </div>
 
                 <div class="col-md-auto mt-2">
-                    <div class="card bg-danger " style="width: 12rem;">
+                    <div class="card bg-danger " style="width: 11rem;">
                         <div class="card-body">
                             <h1 class="card-title text-center">
 
@@ -124,7 +124,7 @@
                 </div>
 
                 <div class="col-md-auto mt-2 mr-2">
-                    <div class="card bg-success " style="width: 12rem;">
+                    <div class="card bg-success " style="width: 11rem;">
                         <div class="card-body">
                             <h1 class="card-title text-center ">
                             {{ $datafgtruk->timout}}
@@ -140,7 +140,7 @@
                     </div>
                 </div>
                 <div class="col-md-auto mt-2">
-                    <div class="card bg-primary " style="width: 12rem;">
+                    <div class="card bg-primary " style="width: 11rem;">
                         <div class="card-body">
                             <h1 class="card-title text-center ">
                             {{ $datafgtruk->pgi}}
@@ -149,6 +149,23 @@
                             
                             <h5 class="card-text text-center ">
                                 <a href = "/cardpgi" class="text-white">Sudah PGI <h3>
+                            </h5>
+                            <a href="#" class="card-link"></a>
+                            <a href="#" class="card-link"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-auto mt-2">
+                    <div class="card bg-danger " style="width: 11rem;">
+                        <div class="card-body">
+                            <h1 class="card-title text-center ">
+                            {{ $pendingkmr}}
+                            </h1>
+                            <h6 class="card-subtitle mb-2 text-muted"></h6>
+                            
+                            <h5 class="card-text text-center ">
+                                <a href = "/cardpending" class="text-white">Tunda Kemarin  <h3>
                             </h5>
                             <a href="#" class="card-link"></a>
                             <a href="#" class="card-link"></a>

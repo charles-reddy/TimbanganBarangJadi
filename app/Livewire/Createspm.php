@@ -372,7 +372,7 @@ class Createspm extends Component
         } else {
             $this->spmNo = '';
         }
-        $tiket = DB::connection('mysql')->table('tb_reservasi')->select('no','nodo','stts','tgldaf','token','cust')->where('stts','=','Daftar')->where('tgldaf','=',$tglskr)->get();
+        // $tiket = DB::connection('mysql')->table('tb_reservasi')->select('no','nodo','stts','tgldaf','token','cust')->where('stts','=','Daftar')->where('tgldaf','=',$tglskr)->get();
         //  dd($tiket);
         $angkutan = Transporter::all();
         $barang = Product::where('itemName','like','%gkr%')->orwhere('itemName','like','%gkp%')->orwhere('itemName','like','%mola%')->get();
@@ -382,6 +382,6 @@ class Createspm extends Component
         //   dd($getsppb);
         $getTm = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id','create_t_m_s.tmSppbID','create_t_m_s.pendfNo','create_t_m_s.tmCarID','create_t_m_s.tmDriver','create_t_m_s.noHPDriver','create_t_m_s.tmTranspName','create_t_m_s.tmQtyKarung','create_t_m_s.tmQtyKg','create_t_m_s.tglMuat','products.itemName','customers.custName','createsppbs.sppbNo','create_t_m_s.isSecCek')->whereNull('isSpm')->whereNotNull('create_t_m_s.isSecCek')->get();
         // dd($getTm);
-        return view('livewire.createspm', ['datatm' => $getTm, 'dataspm' => $data, 'transporter' => $angkutan,'product' => $barang,'listsppb' => $getsppb,'antrian' => $tiket,'kemasan' => $paking, 'jenistruk' => $truk]);
+        return view('livewire.createspm', ['datatm' => $getTm, 'dataspm' => $data, 'transporter' => $angkutan,'product' => $barang,'listsppb' => $getsppb,'kemasan' => $paking, 'jenistruk' => $truk]);
     }
 }

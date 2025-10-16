@@ -173,6 +173,10 @@ Route::get('/cardpgi', function () {
     return view('cardpgi');
 })->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-registrasi|supervisor-timbangan-registrasi|marketing|operator-b10|supervisor-b10|audit'])->name('cardpgi');
 
+Route::get('/cardpending', function () {
+    return view('cardpending');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-registrasi|supervisor-timbangan-registrasi|marketing|operator-b10|supervisor-b10|audit'])->name('cardpending');
+
 Route::get('/truktransaction', function () {
     return view('truktransaction');
 })->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-registrasi|supervisor-timbangan-registrasi|marketing|operator-b10|supervisor-b10|audit'])->name('truktransaction');

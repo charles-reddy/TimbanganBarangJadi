@@ -42,16 +42,22 @@ class Fgdashboard extends Component
 
     public function render()
     {
+        // dd(date('d-m-Y',strtotime(Carbon::now()->addDays(-1))));
         $antrianskr = DB::connection('sqlsrv')->table('vwTiketMuat')->whereDate('tgl','=', Carbon::now() )->orderBy('tgl','desc')->select('antrian')->first();
         $antrianbsk = DB::connection('sqlsrv')->table('vwTiketMuat')->whereDate('tgl','=', Carbon::now()->addDays(+1) )->orderBy('tgl','desc')->select('antrian')->first();
         // dd($antrianskr, $antrianbsk);
-        $registrasi = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now() )->where('isIN','=',0)->count('id');
-        // dd($registrasi);
+        // $registrasi = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now() )->where('isIN','=',0)->count('id');
+        $registrasi = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now() )->count('id');
+        $registrasikmrblmmasuk = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now()->addDays(-1) )->where('isIN','=',0)->count('id');
+        $timbanginkmrblmkeluar = DB::connection('sqlsrv')->table('trscale')->whereDate('created_at','=', Carbon::now()->addDays(-1) )->wherenull('timbangout')->count('id');
+        $tidakdatang = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat','=', date('Y-m-d',strtotime(Carbon::now()->addDays(-1))) )->wherenull('isSecCek')->count('id');
+        $pendingkmr = $timbanginkmrblmkeluar + $registrasikmrblmmasuk + $tidakdatang;
+        // dd($tidakdatang);
         $data = DB::connection('sqlsrv')->table('vwSummaryTruckFG')->orderBy('tgl','desc')->first();
         $data7hari = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers','customers.custID','create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products','products.itemCode','create_t_m_s.itemCode')->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')->whereBetween('tglMuat',[Carbon::now(), Carbon::now()->addDays(+7) ])->where('create_t_m_s.tmQtyKg','>',0)->orderBy('tglMuat','asc')->paginate(10);
         // dd($data7hari);
         $dataout = DB::connection('sqlsrv')->table('trscale')->join('customers','customers.custID','trscale.custID')->join('products','products.itemCode','trscale.itemCode')->join('createspms','createspms.id','trscale.spmID')->join('create_t_m_s','create_t_m_s.id','createspms.tiketID')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->where('create_t_m_s.tmQtyKg','>',0)->orderBy('jam_out','desc')->paginate(10);
         // dd($dataout);
-        return view('livewire.fgdashboard', ['datafgtruk' => $data, 'data7hari' => $data7hari, 'datatrukout' => $dataout, 'antrianskr' => $antrianskr, 'antrianbsk' => $antrianbsk, 'registered' => $registrasi   ]);
+        return view('livewire.fgdashboard', ['datafgtruk' => $data, 'data7hari' => $data7hari, 'datatrukout' => $dataout, 'antrianskr' => $antrianskr, 'antrianbsk' => $antrianbsk, 'registered' => $registrasi, 'pendingkmr' => $pendingkmr, 'tidakdatang' => $tidakdatang    ]);
     }
 }
