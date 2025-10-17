@@ -134,6 +134,7 @@
                                     <th class="col-md-0">Karung</th>
                                     <th class="col-md-0">Tgl Muat</th>
                                     <th class="col-md-0">Plat No</th>
+                                    <th class="col-md-0">Transporter</th>
                                     <th class="col-md-0">Approved</th>
                                     <th class="col-md-0">Sudah di Pabrik</th>
                                     
@@ -154,6 +155,7 @@
                                     <td>{{ $key->tmQtyKarung }}</td>
                                     <td>{{ $key->tglMuat }}</td>
                                     <td>{{ $key->tmCarID }}</td>
+                                    <td>{{ $key->tmTranspName }}</td>
                                     <td> @php
                                         if ($key->isMktApp){
                                             echo 'Yes';
