@@ -51,13 +51,14 @@ class Fgdashboard extends Component
         $registrasikmrblmmasuk = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now()->addDays(-1) )->where('isIN','=',0)->count('id');
         $timbanginkmrblmkeluar = DB::connection('sqlsrv')->table('trscale')->whereDate('created_at','=', Carbon::now()->addDays(-1) )->wherenull('timbangout')->count('id');
         $tidakdatang = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat','=', date('Y-m-d',strtotime(Carbon::now()->addDays(-1))) )->wherenull('isSecCek')->count('id');
+        $tmsdhmasuk = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat','=', date('Y-m-d',strtotime(Carbon::now())) )->wherenotnull('isSecCek')->count('id');
         $pendingkmr = $timbanginkmrblmkeluar + $registrasikmrblmmasuk + $tidakdatang;
-        // dd($tidakdatang);
+        // dd($tmsdhmasuk);
         $data = DB::connection('sqlsrv')->table('vwSummaryTruckFG')->orderBy('tgl','desc')->first();
         $data7hari = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers','customers.custID','create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products','products.itemCode','create_t_m_s.itemCode')->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')->whereBetween('tglMuat',[Carbon::now(), Carbon::now()->addDays(+7) ])->where('create_t_m_s.tmQtyKg','>',0)->orderBy('tglMuat','asc')->paginate(10);
         // dd($data7hari);
         $dataout = DB::connection('sqlsrv')->table('trscale')->join('customers','customers.custID','trscale.custID')->join('products','products.itemCode','trscale.itemCode')->join('createspms','createspms.id','trscale.spmID')->join('create_t_m_s','create_t_m_s.id','createspms.tiketID')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->where('create_t_m_s.tmQtyKg','>',0)->orderBy('jam_out','desc')->paginate(10);
         // dd($dataout);
-        return view('livewire.fgdashboard', ['datafgtruk' => $data, 'data7hari' => $data7hari, 'datatrukout' => $dataout, 'antrianskr' => $antrianskr, 'antrianbsk' => $antrianbsk, 'registered' => $registrasi, 'pendingkmr' => $pendingkmr, 'tidakdatang' => $tidakdatang    ]);
+        return view('livewire.fgdashboard', ['datafgtruk' => $data, 'data7hari' => $data7hari, 'datatrukout' => $dataout, 'antrianskr' => $antrianskr, 'antrianbsk' => $antrianbsk, 'registered' => $registrasi, 'pendingkmr' => $pendingkmr, 'tidakdatang' => $tidakdatang , 'tmsdhmasuk' => $tmsdhmasuk    ]);
     }
 }

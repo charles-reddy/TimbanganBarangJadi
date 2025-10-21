@@ -56,7 +56,22 @@
                         </div>
                     </div>
                 </div>
-                
+                <div class="col-md-auto mt-2 mr-2">
+                    <div class="card bg-success " style="width: 11rem;">
+                        <div class="card-body">
+                            <h1 class="card-title text-center ">
+                            {{ $tmsdhmasuk}}
+                            </h1>
+                            <h6 class="card-subtitle mb-2 text-muted"></h6>
+                            
+                            <h5 class="card-text text-center ">
+                                <a href = "/cardtmsdhmasuk" class="text-white">Sdh Masuk <h3>
+                            </h5>
+                            <a href="#" class="card-link"></a>
+                            <a href="#" class="card-link"></a>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-auto mt-2 ">
                     <div class="card bg-secondary " style="width: 11rem;">
                         <div class="card-body">
