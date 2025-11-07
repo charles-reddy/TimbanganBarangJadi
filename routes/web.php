@@ -88,6 +88,11 @@ Route::get('/lapsj', function () {
     return view('lapsj');
 })->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|audit'])->name('lapsj');
 
+
+Route::get('/lappemuatanfg', function () {
+    return view('lappemuatanfg');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|audit'])->name('lappemuatanfg');
+
 Route::get('/sjeksesmolases', function () {
     return view('sjeksesmolases');
 })->middleware(['auth', 'verified','role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|operator-registrasi|supervisor-timbangan-registrasi'])->name('sjeksesmolases');

@@ -47,7 +47,9 @@ class Fgdashboard extends Component
         $antrianbsk = DB::connection('sqlsrv')->table('vwTiketMuat')->whereDate('tgl','=', Carbon::now()->addDays(+1) )->orderBy('tgl','desc')->select('antrian')->first();
         // dd($antrianskr, $antrianbsk);
         // $registrasi = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now() )->where('isIN','=',0)->count('id');
-        $registrasi = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now() )->count('id');
+        // $registrasi = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now() )->count('id');
+        $registrasi = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat','=', date('Y-m-d',strtotime(Carbon::now())) )->wherenotnull('isSecCek')->whereNotNull('isSPM')->count('id');
+        // dd($registrasi);
         $registrasikmrblmmasuk = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now()->addDays(-1) )->where('isIN','=',0)->count('id');
         $timbanginkmrblmkeluar = DB::connection('sqlsrv')->table('trscale')->whereDate('created_at','=', Carbon::now()->addDays(-1) )->wherenull('timbangout')->count('id');
         $tidakdatang = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat','=', date('Y-m-d',strtotime(Carbon::now()->addDays(-1))) )->wherenull('isSecCek')->count('id');

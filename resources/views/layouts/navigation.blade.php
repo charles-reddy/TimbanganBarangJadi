@@ -204,6 +204,9 @@
                             <x-dropdown-link :href="route('lapsj')" active="request()->routeIs('dashboard')">
                                 {{ __('Laporan Surat Jalan') }}
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('lappemuatanfg')" active="request()->routeIs('dashboard')">
+                                {{ __('Laporan Pemuatan FG') }}
+                            </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
                 </div>
