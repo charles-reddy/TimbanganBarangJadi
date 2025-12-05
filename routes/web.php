@@ -127,7 +127,7 @@ route::get('/mastersupplier', function () {
 
 route::get('/gantitgltm', function () {
     return view('gantitgltm');
-})->middleware(['auth', 'verified','role:administrator|manager-logistik|supervisor-timbangan-registrasi'])->name('gantitgltm');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|supervisor-timbangan-registrasi|exim'])->name('gantitgltm');
 
 Route::get('/timbangoutmaterial', function () {
     return view('timbangoutmaterial');

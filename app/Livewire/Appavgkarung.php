@@ -15,10 +15,12 @@ use Livewire\Attributes\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
+use Livewire\WithPagination;
 
 class Appavgkarung extends Component
 {
     use WithFileUploads;
+    use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $sortColumn = 'jam_in';
     public $sortDirection = 'desc';
@@ -207,7 +209,7 @@ class Appavgkarung extends Component
        
         // } else {
             // $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('isApp',false)->wherenull('netto')->WhereNotBetween('avgKarung',[50.01, 50.25])->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->where('type','<>','FG-L')->whereNotNull('avgKarung')->where('isApp',false)->wherenotNull('BuktiAppKarung1')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms','createspms.id', 'trscale.spmID')->where('type','<>','FG-L')->whereNotNull('avgKarung')->where('isApp',false)->wherenotNull('BuktiAppKarung1')->orderby($this->sortColumn ,$this->sortDirection)->paginate(20);
         
         // }
         // dd($data);

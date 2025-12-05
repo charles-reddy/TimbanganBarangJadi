@@ -35,7 +35,7 @@
                 </div>
                 <div>
                     <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
-                    <button type="button" class="btn-primary" wire:click="export_out()">Export</button>  
+                    <button type="button" class="btn btn-primary" wire:click="export_out()">Export</button>  
                 </div>
         
         </div>
@@ -60,8 +60,10 @@
                         <th class="col-md" >Berat Kosong</th>
                         <th class="col-md" >Berat Kotor</th>
                         <th class="col-md" >Berat Bersih</th>
+                        <th class="col-md" >qty Karung</th>
                         <th class="col-md" >Rata-Rata Karung</th>
                         <th class="col-md" >No Segel</th>
+                        <th class="col-md" >No DN</th>
                         <th class="col-md" >Daftar average Karung</th>
                         <th class="col-md" >SPM</th>
                         <th class="col-md" >Segel</th>
@@ -98,8 +100,10 @@
                         <td>{{ number_format($value->timbangin) }}</td>
                         <td>{{ number_format($value->timbangout) }}</td>
                         <td>{{ number_format($value->netto) }}</td>
+                        <td>{{ number_format($value->b10QtyKarung) }}</td>
                         <td>{{ number_format($value->avgkarung,2) }}</td>
                         <td>{{ $value->sealNo }}</td>
+                        <td>{{ $value->dnNo }}</td>
                         <td>
                             <a wire:click="edit1('{{ $value->trsID }}')" class="btn btn-warning btn-sm">AVG Karung</a>
                         </td>

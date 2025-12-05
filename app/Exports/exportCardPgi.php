@@ -39,18 +39,18 @@ class exportCardPgi implements FromCollection, WithHeadings, WithMapping
             //  dd('satu');   
             // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunci . '%')->wheredate('jam_in','>=',$this->tglout)->orderby($this->sortColumn ,$this->sortDirection)->get();
             // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunci . '%')->wheredate('jam_in','>=',$this->tglout)->orderby($this->sortColumn ,$this->sortDirection)->get();
-            $hasil = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->where('createspms.carID','like','%' . $this->katakunci . '%')->wheredate('jam_out','=',$tglout)->whereNotNull('buktiPGI')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI' )->get();
+            $hasil = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->where('createspms.carID','like','%' . $this->katakunci . '%')->wheredate('jam_out','=',$tglout)->whereNotNull('buktiPGI')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI', 'createspms.dnNo',  'trscale.b10QtyKarung' )->get();
          
         } elseif (($this->tglout  )  !=null) {
             // dd('dua'); 
             // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglout)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
             // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_out','=',$this->tglout)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
-            $hasil = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out','=',$this->tglout)->whereNotNull('buktiPGI')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI' )->get();
+            $hasil = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out','=',$this->tglout)->whereNotNull('buktiPGI')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI', 'createspms.dnNo',  'trscale.b10QtyKarung' )->get();
         
         } else {
              
            $this->tglout = $tglout->jam_out;
-            $hasil = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out','=',$this->tglout)->whereNotNull('buktiPGI')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI' )->get();
+            $hasil = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out','=',$this->tglout)->whereNotNull('buktiPGI')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI', 'createspms.dnNo',  'trscale.b10QtyKarung' )->get();
         
         }
 
@@ -77,8 +77,10 @@ class exportCardPgi implements FromCollection, WithHeadings, WithMapping
                 'Berat Kosong',
                 'Berat Kotor',
                 'Berat Bersih',
+                'qty Karung',
                 'Rata-Rata Karung',
                 'No Segel',                
+                'No DN',                
                
             ];
         }
@@ -103,8 +105,10 @@ class exportCardPgi implements FromCollection, WithHeadings, WithMapping
                 $hasil->timbangin,
                 $hasil->timbangout,
                 $hasil->netto,
+                $hasil->b10QtyKarung,
                 $hasil->avgkarung,
                 $hasil->sealNo1,
+                $hasil->dnNo,
                 ];
         }
 }
