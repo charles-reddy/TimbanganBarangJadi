@@ -35,6 +35,8 @@
                         <th class="col-md" >Berat Masuk</th>
                         <th class="col-md" >Gross </th>
                         <th class="col-md" >Netto</th>
+                        <th class="col-md" >qty Karung</th>
+                        <th class="col-md" >No DN</th>
                         <th class="col-md" >Rata-Rata Karung</th>
                         <th class="col-md" >Rata-Rata OK?</th>
                         <th class="col-md" >PGI</th>
@@ -66,6 +68,9 @@
                         <td>{{ number_format($value->timbangin) }}</td>
                         <td>{{ number_format($value->timbangout) }}</td>
                         <td>{{ number_format($value->netto) }}</td>
+                        
+                        <td>{{ number_format($value->b10QtyKarung) }}</td>
+                        <td>{{ $value->dnNo }}</td>
                         <td>{{ number_format($value->avgKarung,2) }}</td>
                         <td>@if ($value->isApp)
                                 <h6 class="text-danger">Abnormal</h6>

@@ -33,17 +33,17 @@ class exportTrukTransaction implements FromCollection, WithHeadings
         // dd($tglout);
         if ($this->katakunci !=null) {
             // dd('katakunci');
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('carID','like','%' . $this->katakunci . '%')->orderBy('id', 'desc')->select('tgl', 'spmNo','pendfNo','custName','itemName', 'type', 'carID', 'driver','timbangin','timbangout','netto','avgKarung')->get();
+            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('carID','like','%' . $this->katakunci . '%')->orderBy('id', 'desc')->select('tgl', 'spmNo','pendfNo','custName','itemName', 'type', 'carID', 'driver','timbangin','timbangout','netto','b10QtyKarung','dnNo','avgKarung')->get();
             
 
         } elseif (($this->tglout  )  !=null) {
             // dd('tgl');
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->wheredate('tgl','=',$this->tglout)->whereNotNull('netto')->orderBy('id', 'desc')->select('tgl', 'spmNo','pendfNo','custName','itemName', 'type', 'carID', 'driver','timbangin','timbangout','netto','avgKarung')->get();
+            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->wheredate('tgl','=',$this->tglout)->whereNotNull('netto')->orderBy('id', 'desc')->select('tgl', 'spmNo','pendfNo','custName','itemName', 'type', 'carID', 'driver','timbangin','timbangout','netto','b10QtyKarung','dnNo','avgKarung')->get();
         } else {
             // dd('kosong');
             $this->tglout = $tglout->tgl;
             // dd($tglout->tgl);
-             $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->whereBetween('tgl',[ Carbon::now()->addDays(-14), Carbon::now() ])->orderBy('id', 'desc')->select('tgl', 'spmNo','pendfNo','custName','itemName', 'type', 'carID', 'driver','timbangin','timbangout','netto','avgKarung')->get();
+             $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->whereBetween('tgl',[ Carbon::now()->addDays(-14), Carbon::now() ])->orderBy('id', 'desc')->select('tgl', 'spmNo','pendfNo','custName','itemName', 'type', 'carID', 'driver','timbangin','timbangout','netto','b10QtyKarung','dnNo','avgKarung')->get();
        
         }
         // dd($hasil);
@@ -66,6 +66,8 @@ class exportTrukTransaction implements FromCollection, WithHeadings
                         'Berat Masuk',
                         'Gross ',
                         'Netto',
+                        'qty Karung',
+                        'No DN',
                         'Rata-Rata Karung',
                         
                 
