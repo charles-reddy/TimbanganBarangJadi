@@ -10,6 +10,9 @@
                 <div class="col-sm-4">
                     <input type="text" class="form-control mb-3 w-50" placeholder="Search base customer ..." wire:model.live="katacust">
                 </div>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control mb-3 w-50" placeholder="Search base SPPB ..." wire:model.live="katasppb">
+                </div>
         
         </div>
         <div class="card-body table-responsive p-0">

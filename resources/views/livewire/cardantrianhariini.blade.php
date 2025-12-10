@@ -10,6 +10,9 @@
                 <div class="col-sm-4">
                     <input type="text" class="form-control mb-3 w-50" placeholder="Search base customer ..." wire:model.live="katacust">
                 </div>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control mb-3 w-50" placeholder="Search base SPPB ..." wire:model.live="katasppb">
+                </div>
                 
         </div>
         <div class="card-body table-responsive p-0">
@@ -20,6 +23,7 @@
                         <th></th>
                         <th class="col-md">No</th>
                         <th class="col-md" >Tiket Muat</th>
+                        <th class="col-md" >SPPB</th>
                         <th class="col-md" >Tgl Muat</th>
                         <th class="col-md" >Driver</th>
                         <th class="col-md" >Car ID</th>
@@ -44,6 +48,7 @@
                         <td></td>
                         <td>{{ $antriantdy->firstItem() + $key }}</td>
                         <td>{{ $value->pendfNo }}</td>
+                        <td>{{ $value->sppbNo }}</td>
                         <td>{{ $value->tglMuat }}</td>
                         <td>{{ $value->tmDriver }}</td>
                         <td>{{ $value->tmCarID }}</td>
