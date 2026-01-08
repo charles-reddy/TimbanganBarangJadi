@@ -8,8 +8,12 @@
                     <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Plat no" wire:model.live="katakunci">
                 </div>
                 <div class="col-sm-2 ms-2">
-                        <label for="">Filter by Date Out</label>
-                        <input type="date" id="tglout" class="form-control  mb-3 w-50"  wire:model.live="tglout">
+                        <label for="">Filter by Date Out From</label>
+                        <input type="date" id="tglout" class="form-control  mb-3 w-50"  wire:model.live="tglout1">
+                </div>
+                <div class="col-sm-2 ms-2">
+                        <label for="">Filter by Date Out To</label>
+                        <input type="date" id="tglout" class="form-control  mb-3 w-50"  wire:model.live="tglout2">
                 </div>
                 <div>
                     <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
