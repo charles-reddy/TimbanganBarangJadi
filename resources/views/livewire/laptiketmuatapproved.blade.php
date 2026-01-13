@@ -123,7 +123,7 @@
                     
                     <div class="d-flex justify-content-left">
                     
-                        <table class="table table-striped table-sortable w-75 p-3 ">
+                        <table class="table table-striped table-sortable w-100 p-3 ">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -133,6 +133,8 @@
                                     <th class="col-md-0">Berat</th>
                                     <th class="col-md-0">Karung</th>
                                     <th class="col-md-0">Tgl Muat</th>
+                                    <th class="col-md-0">Tgl Masuk</th>
+                                    <th class="col-md-0">Tgl Keluar</th>
                                     <th class="col-md-0">Plat No</th>
                                     <th class="col-md-0">Transporter</th>
                                     <th class="col-md-0">Approved</th>
@@ -154,6 +156,8 @@
                                     <td>{{ $key->tmQtyKg }}</td>
                                     <td>{{ $key->tmQtyKarung }}</td>
                                     <td>{{ $key->tglMuat }}</td>
+                                    <td>{{ $key->isSecCekDate }}</td>
+                                    <td>{{ $key->jam_out }}</td>
                                     <td>{{ $key->tmCarID }}</td>
                                     <td>{{ $key->tmTranspName }}</td>
                                     <td> @php
