@@ -3,9 +3,13 @@
     <div class="my-3 p-3 bg-body rounded shadow-sm"  >
         <h1> Transaksi Truk</h1>
         <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                 <label for=""></label>
-                    <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Plat no" wire:model.live="katakunci">
+                    <input type="text" class="form-control mb-3 w-50" placeholder="Search Plat no" wire:model.live="katakunci">
+                </div>
+                <div class="col-sm-2">
+                <label for=""></label>
+                    <input type="text" class="form-control mb-3 w-75" placeholder="Search Customer" wire:model.live="katacust">
                 </div>
                 <div class="col-sm-2 ms-2">
                         <label for="">Filter by Date Out From</label>
@@ -28,7 +32,8 @@
                     <tr>
                         <th></th>
                         <th class="col-md">No</th>
-                        <th class="col-md" >tgl Keluar</th>
+                        <th class="col-md">Tgl Masuk</th>
+                        <th class="col-md" >Tgl Keluar</th>
                         <th class="col-md" >SPM</th>
                         <th class="col-md" >Tiket Muat</th>
                         <th class="col-md" >Customer</th>
@@ -61,6 +66,7 @@
                     <tr>
                         <td></td>
                         <td>{{ $data->firstItem() + $key }}</td>
+                        <td>{{ $value->isSecCekDate }}</td>
                         <td>{{ $value->tgl }}</td>
                         <td>{{ $value->spmNo }}</td>
                         <td>{{ $value->pendfNo }}</td>
