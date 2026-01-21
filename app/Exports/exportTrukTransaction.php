@@ -37,18 +37,18 @@ class exportTrukTransaction implements FromCollection, WithHeadings
         // dd($tglout);
         if ($this->katakunci != null) {
             // dd('katakunci');
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('carID', 'like', '%' . $this->katakunci . '%')->orWhere('dnNo', 'like', '%' . $this->katakunci . '%')->orderBy('id', 'desc')->select('tgl', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
+            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('carID', 'like', '%' . $this->katakunci . '%')->orWhere('dnNo', 'like', '%' . $this->katakunci . '%')->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
         } elseif (($this->katacust)  != null) {
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('custName', 'like', '%' . $this->katacust . '%')->orWhere('dnNo', 'like', '%' . $this->katacust . '%')->orderBy('id', 'desc')->select('tgl', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
+            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('custName', 'like', '%' . $this->katacust . '%')->orWhere('dnNo', 'like', '%' . $this->katacust . '%')->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
             } elseif (($this->tglout1)  != null) {
             // dd('tgl');
             // $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->wheredate('tgl','=',$this->tglout1)->whereNotNull('netto')->orderBy('id', 'desc')->select('tgl', 'spmNo','pendfNo','custName','itemName', 'type', 'carID', 'driver','timbangin','timbangout','netto','b10QtyKarung','dnNo','avgKarung')->get();
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereBetween('tgl', [$this->tglout1, $this->tglout2])->whereNotNull('netto')->orderBy('id', 'desc')->select('tgl', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
+            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereBetween('tgl', [$this->tglout1, $this->tglout2])->whereNotNull('netto')->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
         } else {
             // dd('kosong');
             $this->tglout1 = $tglout->tgl;
             // dd($tglout->tgl);
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->whereBetween('tgl', [Carbon::now()->addDays(-14), Carbon::now()])->orderBy('id', 'desc')->select('tgl', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
+            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->whereBetween('tgl', [Carbon::now()->addDays(-14), Carbon::now()])->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
         }
         // dd($hasil);
         return $hasil;
@@ -58,16 +58,19 @@ class exportTrukTransaction implements FromCollection, WithHeadings
     {
         //Put Here Header Name That you want in your excel sheet 
         return [
-            'Request No',
-            'Date Start',
-            'Date End',
-            'Destination',
-            'Number of Passenge',
+            'Tgl Registrasi',
+            'Tgl Timbang Masuk',
+            'Tgl Timbang Keluar',
+            'SPPB',
+            'SPM',
+            'Tiket Muat',
+            'Customer',
+            'Item',
             'Tipe',
-            'Plat No',
+            'Plat No ',
             'Sopir',
             'Berat Masuk',
-            'Gross ',
+            'Gross',
             'Netto',
             'qty Karung',
             'No DN',

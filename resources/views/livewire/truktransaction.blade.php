@@ -32,8 +32,10 @@
                     <tr>
                         <th></th>
                         <th class="col-md">No</th>
-                        <th class="col-md">Tgl Masuk</th>
-                        <th class="col-md" >Tgl Keluar</th>
+                        <th class="col-md">Tgl Registrasi</th>
+                        <th class="col-md">Tgl Timbang Masuk</th>
+                        <th class="col-md" >Tgl Timbang Keluar</th>
+                        <th class="col-md" >SPPB</th>
                         <th class="col-md" >SPM</th>
                         <th class="col-md" >Tiket Muat</th>
                         <th class="col-md" >Customer</th>
@@ -67,7 +69,9 @@
                         <td></td>
                         <td>{{ $data->firstItem() + $key }}</td>
                         <td>{{ $value->isSecCekDate }}</td>
+                        <td>{{ $value->tgl_tim_in }}</td>
                         <td>{{ $value->tgl }}</td>
+                        <td>{{ $value->sppbNo }}</td>
                         <td>{{ $value->spmNo }}</td>
                         <td>{{ $value->pendfNo }}</td>
                         <td>{{ $value->custName }}</td>

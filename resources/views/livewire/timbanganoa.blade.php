@@ -126,7 +126,7 @@
                             <div class="row">
                                 <div class="col-sm5">
                                     <div>
-                                         <input  type="text" class="form-control w-50" wire:model="timbangin"  disabled >
+                                         <input  type="text" class="form-control w-50" wire:model="timbangin"  disable >
                                     </div>
                                     <span ></span>
 
