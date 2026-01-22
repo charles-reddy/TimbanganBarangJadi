@@ -2,10 +2,24 @@
     <!-- START data -->
     <div class="my-3 p-3 bg-body rounded shadow-sm"  >
         <h1> Transaksi Truk</h1>
+        
+        @if (session()->has('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        
+        @if (session()->has('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <div class="row">
                 <div class="col-sm-2">
                 <label for=""></label>
-                    <input type="text" class="form-control mb-3 w-50" placeholder="Search Plat no" wire:model.live="katakunci">
+                    <input type="text" class="form-control mb-3 w-100" placeholder="Search CARID / SO " wire:model.live="katakunci">
                 </div>
                 <div class="col-sm-2">
                 <label for=""></label>
@@ -13,11 +27,11 @@
                 </div>
                 <div class="col-sm-2 ms-2">
                         <label for="">Filter by Date Out From</label>
-                        <input type="date" id="tglout" class="form-control  mb-3 w-50"  wire:model.live="tglout1">
+                        <input type="date" id="tglout1" class="form-control  mb-3 w-75"  wire:model.live="tglout1" max="{{ date('Y-m-d') }}" onchange="validateTglout1()">
                 </div>
                 <div class="col-sm-2 ms-2">
                         <label for="">Filter by Date Out To</label>
-                        <input type="date" id="tglout" class="form-control  mb-3 w-50"  wire:model.live="tglout2">
+                        <input type="date" id="tglout2" class="form-control  mb-3 w-75"  wire:model.live="tglout2" max="{{ date('Y-m-d') }}">
                 </div>
                 <div>
                     <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
@@ -144,3 +158,58 @@
     <!-- AKHIR data  -->
 
 </div>
+
+<script>
+    function validateTglout1() {
+        const input = document.getElementById('tglout1');
+        const tglout2 = document.getElementById('tglout2');
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (input.value) {
+            // Validasi tanggal tidak boleh lebih dari hari ini
+            if (input.value > today) {
+                alert('Tanggal tidak boleh lebih dari hari ini!');
+                input.value = '';
+                @this.set('tglout1', null);
+                return false;
+            }
+            
+            // Validasi tanggal From tidak boleh lebih besar dari tanggal To
+            if (tglout2.value && input.value > tglout2.value) {
+                alert('Tanggal From tidak boleh lebih besar dari tanggal To!');
+                input.value = '';
+                @this.set('tglout1', null);
+                return false;
+            }
+            
+            // Validasi format tanggal (tambahan untuk browser lama)
+            const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+            if (!datePattern.test(input.value)) {
+                alert('Format tanggal tidak valid! Gunakan format YYYY-MM-DD.');
+                input.value = '';
+                @this.set('tglout1', null);
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.on('show-alert', (event) => {
+            alert(event.message);
+        });
+        
+        // Validasi saat halaman dimuat
+        const tglout1Input = document.getElementById('tglout1');
+        if (tglout1Input) {
+            tglout1Input.addEventListener('blur', validateTglout1);
+            tglout1Input.addEventListener('input', function() {
+                // Validasi real-time saat user mengetik
+                if (this.value && !this.validity.valid) {
+                    alert('Format tanggal tidak valid!');
+                    this.value = '';
+                }
+            });
+        }
+    });
+</script>

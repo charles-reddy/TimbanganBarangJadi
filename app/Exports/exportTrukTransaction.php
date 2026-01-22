@@ -37,7 +37,7 @@ class exportTrukTransaction implements FromCollection, WithHeadings
         // dd($tglout);
         if ($this->katakunci != null) {
             // dd('katakunci');
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('carID', 'like', '%' . $this->katakunci . '%')->orWhere('dnNo', 'like', '%' . $this->katakunci . '%')->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
+            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('carID', 'like', '%' . $this->katakunci . '%')->orWhere('dnNo', 'like', '%' . $this->katakunci . '%')->orWhere('sppbNo', 'like', '%' . $this->katakunci . '%')->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
         } elseif (($this->katacust)  != null) {
             $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('custName', 'like', '%' . $this->katacust . '%')->orWhere('dnNo', 'like', '%' . $this->katacust . '%')->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
             } elseif (($this->tglout1)  != null) {
