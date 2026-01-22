@@ -27,11 +27,11 @@
                 </div>
                 <div class="col-sm-2 ms-2">
                         <label for="">Filter by Date Out From</label>
-                        <input type="date" id="tglout1" class="form-control  mb-3 w-75"  wire:model.live="tglout1" max="{{ date('Y-m-d') }}" onchange="validateTglout1()">
+                        <input type="date" id="tglout1" class="form-control  mb-3 w-75"  wire:model.blur="tglout1" max="{{ date('Y-m-d') }}">
                 </div>
                 <div class="col-sm-2 ms-2">
                         <label for="">Filter by Date Out To</label>
-                        <input type="date" id="tglout2" class="form-control  mb-3 w-75"  wire:model.live="tglout2" max="{{ date('Y-m-d') }}">
+                        <input type="date" id="tglout2" class="form-control  mb-3 w-75"  wire:model.blur="tglout2" max="{{ date('Y-m-d') }}">
                 </div>
                 <div>
                     <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
@@ -194,22 +194,55 @@
         return true;
     }
     
+    function validateTglout2() {
+        const input = document.getElementById('tglout2');
+        const tglout1 = document.getElementById('tglout1');
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (input.value) {
+            // Validasi tanggal tidak boleh lebih dari hari ini
+            if (input.value > today) {
+                alert('Tanggal tidak boleh lebih dari hari ini!');
+                input.value = '';
+                @this.set('tglout2', null);
+                return false;
+            }
+            
+            // Validasi tanggal To tidak boleh lebih kecil dari tanggal From
+            if (tglout1.value && input.value < tglout1.value) {
+                alert('Tanggal To tidak boleh lebih kecil dari tanggal From!');
+                input.value = '';
+                @this.set('tglout2', null);
+                return false;
+            }
+            
+            // Validasi format tanggal (tambahan untuk browser lama)
+            const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+            if (!datePattern.test(input.value)) {
+                alert('Format tanggal tidak valid! Gunakan format YYYY-MM-DD.');
+                input.value = '';
+                @this.set('tglout2', null);
+                return false;
+            }
+        }
+        return true;
+    }
+    
     document.addEventListener('livewire:initialized', () => {
         Livewire.on('show-alert', (event) => {
             alert(event.message);
         });
         
-        // Validasi saat halaman dimuat
+        // Validasi saat halaman dimuat untuk tglout1
         const tglout1Input = document.getElementById('tglout1');
         if (tglout1Input) {
             tglout1Input.addEventListener('blur', validateTglout1);
-            tglout1Input.addEventListener('input', function() {
-                // Validasi real-time saat user mengetik
-                if (this.value && !this.validity.valid) {
-                    alert('Format tanggal tidak valid!');
-                    this.value = '';
-                }
-            });
+        }
+        
+        // Validasi saat halaman dimuat untuk tglout2
+        const tglout2Input = document.getElementById('tglout2');
+        if (tglout2Input) {
+            tglout2Input.addEventListener('blur', validateTglout2);
         }
     });
 </script>

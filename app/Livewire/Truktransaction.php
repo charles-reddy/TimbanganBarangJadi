@@ -72,6 +72,56 @@ class Truktransaction extends Component
         }
     }
 
+    public function updatedTglout2($value)
+    {
+        if ($value) {
+            try {
+                // Validasi format tanggal dengan regex
+                if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                    $this->tglout2 = null;
+                    $this->dispatch('show-alert', message: 'Format tanggal tidak valid! Gunakan format YYYY-MM-DD.');
+                    return;
+                }
+
+                // Validasi format tanggal dengan DateTime
+                $date = \DateTime::createFromFormat('Y-m-d', $value);
+                if (!$date || $date->format('Y-m-d') !== $value) {
+                    $this->tglout2 = null;
+                    $this->dispatch('show-alert', message: 'Tanggal tidak valid! Periksa hari, bulan, dan tahun.');
+                    return;
+                }
+
+                // Validasi dengan Carbon untuk memastikan tanggal valid
+                $carbonDate = Carbon::parse($value);
+
+                // Validasi tanggal tidak boleh di masa depan
+                if ($carbonDate->isAfter(Carbon::now())) {
+                    $this->tglout2 = null;
+                    $this->dispatch('show-alert', message: 'Tanggal tidak boleh lebih dari hari ini!');
+                    return;
+                }
+
+                // Validasi jika tglout1 sudah diisi, tglout2 tidak boleh lebih kecil dari tglout1
+                if ($this->tglout1) {
+                    try {
+                        $carbonDate1 = Carbon::parse($this->tglout1);
+                        if ($carbonDate->isBefore($carbonDate1)) {
+                            $this->tglout2 = null;
+                            $this->dispatch('show-alert', message: 'Tanggal To tidak boleh lebih kecil dari tanggal From!');
+                            return;
+                        }
+                    } catch (\Exception $e) {
+                        // tglout1 invalid, abaikan validasi ini
+                    }
+                }
+            } catch (\Exception $e) {
+                $this->tglout2 = null;
+                $this->dispatch('show-alert', message: 'Format tanggal tidak valid! Error: ' . $e->getMessage());
+                return;
+            }
+        }
+    }
+
 
     public function export_out()
     {
