@@ -20,6 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-route::get('/spmlist', [TimbangController::class, 'index']);
+route::get('/spmlist', [TimbangController::class, 'index'])->middleware('auth:sanctum');
+route::get('/siapKeluar', [TimbangController::class, 'siapKeluar'])->middleware('auth:sanctum');
 route::post('/loginUser', [AuthController::class, 'loginUser']);
+route::post('/timbangin', [TimbangController::class, 'timbangin'])->middleware('auth:sanctum');
+route::post('/timbangout', [TimbangController::class, 'timbangout'])->middleware('auth:sanctum');
     
