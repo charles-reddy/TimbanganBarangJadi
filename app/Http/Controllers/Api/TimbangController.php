@@ -67,7 +67,7 @@ class TimbangController extends Controller
     public function timbangout(Request $request)
     {
         
-        DB::connection('sqlsrv')->table('trscale')->where('id', $request->timbangID)->update([
+        $datatimbang = DB::connection('sqlsrv')->table('trscale')->where('id', $request->id)->update([
             'timbangout' => $request->timbangout,
             'userIDOUT' => $request->userIDOUT,
             'usernameOUT' => $request->usernameOUT,
@@ -75,15 +75,21 @@ class TimbangController extends Controller
             'netto' => $request->netto,
             'updated_at' => Carbon::now(),
             'avgKarung' => $request->avgKarung,
-            'b10QtyKarung' => $request->b10QtyKarung,
+            'b10QtyKarung' => $request->b10QtyKarung
+        ]);
 
-
-
+        DB::connection('sqlsrv')->table('createspms')->where('id', $request->spmID)->update([
+            'imgFormLoading' => 'outside WH',
+            'buktiAppKarung1' => 'outside WH',
+            'buktiAppKarung2' => 'outside WH',
+            'buktiAppKarung3' => 'outside WH',
+            'sealNo1' => 'outside WH'
         ]);
 
         return response()->json([
             'status' => true,
             'message' => 'Data BERHASIL Diupdate',
+            'data' => $datatimbang
         ], 200);
     }
 
