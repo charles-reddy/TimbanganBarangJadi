@@ -1,537 +1,369 @@
 <div>
-    <div class="container-fluid">
-    
-        
-    
-            <!-- <div class="col-sm-4 ms-2">
-                <label for="">Filter by Date</label>
-                <input type="date" id="tglin" class="form-control  mb-3 w-50"  wire:model.live="tglin">
-            </div> -->
-            <!-- Row atas tonase dan rendemen -->
-            <div class="row" >
-            <div class="col-md-auto mt-2">
-                
-                    <div class="card bg-warning" style="width: 10rem;" >
-                        <div class="card-body">
-                            <h1 class="card-title text-center ">
+    <div class="container-fluid px-3 px-md-4">
 
-                            @php
-                                if($antrianbsk){
-                                    echo $antrianbsk->antrian;
-
-                                } else {
-                                    echo '0';
-                                } 
-                                @endphp
-                                        
-                                <h6 class="card-subtitle mb-2 text-muted"></h6>
-                            <h5 class="card-text text-center ">
-                                <a href = "/cardantrianbesok" class="text-white">Antrian Besok <h3>
-                            </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
+        <!-- Cards Section -->
+        <div class="row g-3 mb-4">
+            <!-- Antrian Besok -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-warning h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">
+                            {{ $antrianbsk->antrian ?? '0' }}
+                        </h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardantrianbesok" class="text-white text-decoration-none">
+                                Antrian Besok
+                            </a>
+                        </h6>
                     </div>
                 </div>
-                <div class="col-md-auto mt-2">
-                    <div class="card bg-info" style="width: 11rem;" >
-                        <div class="card-body">
-                            <h1 class="card-title text-center ">
-                                @php
-                                    if($antrianskr){
-                                        echo $antrianskr->antrian;
-
-                                    } else {
-                                        echo '0';
-                                    } 
-                                @endphp
-                           
-                                        
-                                <h6 class="card-subtitle mb-2 text-muted"></h6>
-                                <h5 class="card-text text-center ">
-                                    <a href = "/cardantrianhariini" class="text-white">Antrian Hari Ini <h3>
-                                </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-auto mt-2 mr-2">
-                    <div class="card bg-success " style="width: 11rem;">
-                        <div class="card-body">
-                            <h1 class="card-title text-center ">
-                            {{ $tmsdhmasuk}}
-                            </h1>
-                            <h6 class="card-subtitle mb-2 text-muted"></h6>
-                            
-                            <h5 class="card-text text-center ">
-                                <a href = "/cardtmsdhmasuk" class="text-white">Sdh Masuk <h3>
-                            </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-auto mt-2 ">
-                    <div class="card bg-secondary " style="width: 11rem;">
-                        <div class="card-body">
-                            <h1 class="card-title text-center ">
-                            {{ $registered}}
-                                        
-                                <h6 class="card-subtitle mb-2 text-muted"></h6>
-                                <h5 class="card-text text-center ">
-                                    <a href = "/cardregistered" class="text-white">Registrasi <h3>
-                                </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-auto mt-2 ">
-                    <div class="card bg-primary " style="width: 11rem;">
-                        <div class="card-body">
-                            <h1 class="card-title text-center ">
-                            {{ $datafgtruk->timIn}}
-                                        
-                                <h6 class="card-subtitle mb-2 text-muted"></h6>
-                                <h5 class="card-text text-center ">
-                                    <a href = "/cardwbin" class="text-white">Timb. Masuk <h3>
-                                </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
-                    </div>
-                </div>
-                
-
-                <div class="col-md-auto mt-2">
-                    <div class="card bg-info " style="width: 11rem;">
-                        <div class="card-body">
-                            <h1 class="card-title text-center">
-
-                            {{ $datafgtruk->loading}}
-                             </h1>
-                            <h6 class="card-subtitle mb-2 text-muted"></h6>
-                            <h5 class="card-text text-center ">
-                                    <a href = "/cardloading" class="text-white">Sedang Muat <h3>
-                                </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-auto mt-2">
-                    <div class="card bg-danger " style="width: 11rem;">
-                        <div class="card-body">
-                            <h1 class="card-title text-center">
-
-                            {{ $datafgtruk->appavg}}
-                             </h1>
-                            <h6 class="card-subtitle mb-2 text-muted"></h6>
-                            <h5 class="card-text text-center ">
-                                    <a href = "/cardabnormal" class="text-white">Avg Abnormal <h3>
-                                </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-auto mt-2 mr-2">
-                    <div class="card bg-success " style="width: 11rem;">
-                        <div class="card-body">
-                            <h1 class="card-title text-center ">
-                            {{ $datafgtruk->timout}}
-                            </h1>
-                            <h6 class="card-subtitle mb-2 text-muted"></h6>
-                            
-                            <h5 class="card-text text-center ">
-                                <a href = "/cardwbout" class="text-white">Timb. Keluar <h3>
-                            </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-auto mt-2">
-                    <div class="card bg-primary " style="width: 11rem;">
-                        <div class="card-body">
-                            <h1 class="card-title text-center ">
-                            {{ $datafgtruk->pgi}}
-                            </h1>
-                            <h6 class="card-subtitle mb-2 text-muted"></h6>
-                            
-                            <h5 class="card-text text-center ">
-                                <a href = "/cardpgi" class="text-white">Sudah PGI <h3>
-                            </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-auto mt-2">
-                    <div class="card bg-danger " style="width: 11rem;">
-                        <div class="card-body">
-                            <h1 class="card-title text-center ">
-                            {{ $pendingkmr}}
-                            </h1>
-                            <h6 class="card-subtitle mb-2 text-muted"></h6>
-                            
-                            <h5 class="card-text text-center ">
-                                <a href = "/cardpending" class="text-white">Tunda Kemarin  <h3>
-                            </h5>
-                            <a href="#" class="card-link"></a>
-                            <a href="#" class="card-link"></a>
-                        </div>
-                    </div>
-                </div>
-
-                
             </div>
-            <!-- Row atas tonase dan rendemen -->
-            
-            <div class="row mt-4">
-                <div class="col-sm-6">
-                    <div class="card ">
-                        <div class="card-header border-0 bg-primary">
-                                    <h2 style="text-align:center;"><b>Delivery Summary - 
-                                        <div wire:poll.60s >
-                                                <!-- {{ now() }} -->
-                                                {{ $datafgtruk->tgl}}
-                                            
-                                        </div>
-                                  
-                                        </b></h2>
-                                
-                                    
-                                    
-                                
-                        </div>
-            <!-- Delivery Summary -->
-                        <!-- awal summary-->
-                         <div class="card">
-                            <div class="card-body table-responsive p-0">
-                                    <table class="table table-striped  ">
-                                        <thead>
-                                            <tr>
-                                                <th class="col-md-1" ><h2><b>Item Name</b></h2></th>
-                                                <th class="col-md-1" ><h2><b>Truck(s)</b></h2></th>
-                                                <th class="col-md-1" ><h2><b>MT</b></h2></th>
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="col-md-1" ><h4><b>GKP - Kemasan 65 Gram</b></h4></td>
-                                                <td class="col-md-1" ><h4><b>{{ $datafgtruk->trukGKP65 }}</b></h4></td>
-                                                <td class="col-md-1" ><h4><b> 
-                                                    @php
-                                                        if($datafgtruk->netGKP65) {
-                                                            echo number_format($datafgtruk->netGKP65/1000,2);
-                                                        } else {
-                                                            echo number_format(0,2);
-                                                        }
-
-                                                    @endphp
-                                                </b></h4></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="col-md-1" ><h4><b>GKP - Kemasan 500 Gram</b></h4></td>
-                                                <td class="col-md-1" ><h4><b>{{ $datafgtruk->trukGKP500g }}</b></h4></td>
-                                                <td class="col-md-1" ><h4><b> 
-                                                    @php
-                                                        if($datafgtruk->netGKP500g) {
-                                                            echo number_format($datafgtruk->netGKP500g/1000,2);
-                                                        } else {
-                                                            echo number_format(0,2);
-                                                        }
-
-                                                    @endphp
-                                                </b></h4></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="col-md-1" ><h4><b>GKP - Kemasan 1 Kg</b></h4></td>
-                                                <td class="col-md-1" ><h4><b>{{ $datafgtruk->trukGKP1kg }}</b></h4></td>
-                                                <td class="col-md-1" ><h4><b> 
-                                                    @php
-                                                        if($datafgtruk->netGKP1kg) {
-                                                            echo number_format($datafgtruk->netGKP1kg/1000,2);
-                                                        } else {
-                                                            echo number_format(0,2);
-                                                        }
-
-                                                    @endphp
-                                                </b></h4></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="col-md-1" ><h4><b>GKP - Kemasan 50 Kg</b></h4></td>
-                                                <td class="col-md-1" ><h4><b>{{ $datafgtruk->trukGKP50Kg }}</b></h4></td>
-                                                <td class="col-md-1" ><h4><b> 
-                                                    @php
-                                                        if($datafgtruk->netGKP50Kg) {
-                                                            echo number_format($datafgtruk->netGKP50Kg/1000,2);
-                                                        } else {
-                                                            echo number_format(0,2);
-                                                        }
-
-                                                    @endphp
-                                                </b></h4></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="col-md-1" ><h4><b>GKP - BULK Unpacking</b></h4></td>
-                                                <td class="col-md-1" ><h4><b>{{ $datafgtruk->trukGKPbulk }}</b></h4></td>
-                                                <td class="col-md-1" ><h4><b> 
-                                                    @php
-                                                        if($datafgtruk->netGKPbulk) {
-                                                            echo number_format($datafgtruk->netGKPbulk/1000,2);
-                                                        } else {
-                                                            echo number_format(0,2);
-                                                        }
-
-                                                    @endphp
-                                                </b></h4></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="col-md-1" ><h4><b>GKP - Molases</b></h4></td>
-                                                <td class="col-md-1" ><h4><b>{{ $datafgtruk->trukGKPMol }}</b></h4></td>
-                                                <td class="col-md-1" ><h4><b> 
-                                                    @php
-                                                        if($datafgtruk->netGKPMol) {
-                                                            echo number_format($datafgtruk->netGKPMol/1000,2);
-                                                        } else {
-                                                            echo number_format(0,2);
-                                                        }
-
-                                                    @endphp
-                                                </b></h4></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="col-md-1" ><h4><b>GKR - Premium 50Kg</b></h4></td>
-                                                <td class="col-md-1" ><h4><b>{{ $datafgtruk->trukGKR50Kg }}</b></h4></td>
-                                                <td class="col-md-1" ><h4><b> 
-                                                    @php
-                                                        if($datafgtruk->netGKR50Kg) {
-                                                            echo number_format($datafgtruk->netGKR50Kg/1000,2);
-                                                        } else {
-                                                            echo number_format(0,2);
-                                                        }
-
-                                                    @endphp
-                                                </b></h4></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="col-md-1" ><h4><b>GKR - BULK Unpacking</b></h4></td>
-                                                <td class="col-md-1" ><h4><b>{{ $datafgtruk->trukGKRbulk }}</b></h4></td>
-                                                <td class="col-md-1" ><h4><b> 
-                                                    @php
-                                                        if($datafgtruk->netGKRbulk) {
-                                                            echo number_format($datafgtruk->netGKRbulk/1000,2);
-                                                        } else {
-                                                            echo number_format(0,2);
-                                                        }
-
-                                                    @endphp
-                                                </b></h4></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="col-md-1" ><h4><b>GKR - Molases</b></h4></td>
-                                                <td class="col-md-1" ><h4><b>{{ $datafgtruk->trukGKRMol }}</b></h4></td>
-                                                <td class="col-md-1" ><h4><b> 
-                                                    @php
-                                                        if($datafgtruk->netGKRMol) {
-                                                            echo number_format($datafgtruk->netGKRMol/1000,2);
-                                                        } else {
-                                                            echo number_format(0,2);
-                                                        }
-
-                                                    @endphp
-                                                </b></h4></td>
-                                            </tr>
-                                        
-                                            
-                                        </tbody> 
-                                    </table>
-                                
-                            </div>
-                        </div>
-                        <!-- akhir summary-->
-
-                        
+            <!-- Antrian Hari Ini -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-info h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">
+                            {{ $antrianskr->antrian ?? '0' }}
+                        </h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardantrianhariini" class="text-white text-decoration-none">
+                                Antrian Hari Ini
+                            </a>
+                        </h6>
                     </div>
                 </div>
-                    <!-- awal chart 7 hari delivery -->
-                    <div class="col-sm-6">
-                        <div class="card">
-                            <canvas  id="myChart" height="665px" ></canvas>
-                        </div>
+            </div>
+
+            <!-- Sudah Masuk -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-success h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">{{ $tmsdhmasuk }}</h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardtmsdhmasuk" class="text-white text-decoration-none">
+                                Sdh Masuk
+                            </a>
+                        </h6>
                     </div>
-        <!-- akhir chart 7 hari delivery -->
-
+                </div>
             </div>
-            <!-- Delivery Summary -->
 
-
-    </div>
-    
-        
-            <div class="row mt-4">
-
-        <!-- awal detail truk out-->
-            <div class="col-sm-6">
-                        
-                            
-                        <div class="card-header border-0 bg-primary">
-                            <br>
-                            <h1 style="text-align:center;"> Delivery Details ( Today )</h1>  <br>                     
-                        </div>
-                        
-                        
-
-                        
-
-                        {{ $datatrukout->links() }}
-                        <table class="table table-striped table-sortable">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th class="col-md">No</th>
-                                    <th class="col-md" >Tiket Muat</th>
-                                    
-                                    <th class="col-md" >SPM NO</th>
-                                    <th class="col-md" >Driver</th>
-                                    <th class="col-md" >Car ID</th>
-                                    <th class="col-md" >Customer</th>
-                                    <th class="col-md" >Item</th>
-                                    <th class="col-md" >WB IN</th>
-                                    <th class="col-md" >WB Out</th>
-                                    <th class="col-md" >Netto</th>
-                                    
-                                    
-                                    
-                                    
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($datatrukout as $key => $value)
-                                <tr>
-                                    <td></td>
-                                    <td>{{ $datatrukout->firstItem() + $key }}</td>
-                                    <td>{{ $value->pendfNo }}</td>
-                                    
-                                    <td>{{ $value->spmNo }}</td>
-                                    <td>{{ $value->driver }}</td>
-                                    <td>{{ $value->carID }}</td>
-                                    <td>{{ $value->custName }}</td>
-                                    <td>{{ $value->itemName }}</td>
-                                    <td>{{ $value->timbangin }}</td>
-                                    <td>{{ $value->timbangout }}</td>
-                                    <td>{{ $value->netto }}</td>
-                                    
-                                    
-                                    
-                                    <!-- <td>
-                                        <a wire:click="edit({{ $value->id }})" class="btn btn-primary btn-sm">Seal</a>
-                                    </td> -->
-                                </tr>
-                                @endforeach
-                                
-                            </tbody>
-                        </table>
-                    
-                
+            <!-- Registrasi -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-secondary h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">{{ $registered }}</h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardregistered" class="text-white text-decoration-none">
+                                Registrasi
+                            </a>
+                        </h6>
+                    </div>
+                </div>
             </div>
-        <!-- akhir detail truk out-->
 
-        <!-- awal 7 hari jumlah truk-->
-            <div class="col-sm-6">
-                        <div class="card">
-                            <canvas  id="myChart1" height="665px" ></canvas>
-                        </div>
+            <!-- Timbang Masuk -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-primary h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">{{ $datafgtruk->timIn }}</h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardwbin" class="text-white text-decoration-none">
+                                Timb. Masuk
+                            </a>
+                        </h6>
+                    </div>
+                </div>
             </div>
-        <!-- akhir 7 hari jumlah truk-->
 
-        <!-- awal 7 hari antrian truk-->
-        <div class="my-3 p-3 bg-body rounded shadow-sm"  >
-        <h1> Antrian 7 Hari ke depan</h1>
-        <div class="row">
-                <div class="col-sm-4">
-                <!-- <label for=""></label>
-                    <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Plat no" wire:model.live="katakunci">
-                </div> -->
-                <!-- <div class="col-sm-2 ms-2">
-                        <label for="">Filter by Date IN</label>
-                        <input type="date" id="tglmuat" class="form-control  mb-3 w-50"  wire:model.live="tglmuat">
-                </div> -->
-        
+            <!-- Sedang Muat -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-info h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">{{ $datafgtruk->loading }}</h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardloading" class="text-white text-decoration-none">
+                                Sedang Muat
+                            </a>
+                        </h6>
+                    </div>
+                </div>
             </div>
-            {{ $data7hari->links() }}
-            <table class="table table-striped table-sortable">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th class="col-md">No</th>
-                        <th class="col-md" >Tiket Muat</th>
-                        <th class="col-md" >SPPB No</th>
-                        <th class="col-md" >Driver</th>
-                        <th class="col-md" >Car ID</th>
-                        <th class="col-md" >Customer</th>
-                        <th class="col-md" >Item </th>
-                        <th class="col-md" >Truck Type </th>
-                        <th class="col-md" >Weight (KG) </th>
-                        <th class="col-md" >Tgl Muat </th>
-                    
-                        
-                        
-                        
-                        
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data7hari as $key => $value)
-                    <tr>
-                        <td></td>
-                        <td>{{ $data7hari->firstItem() + $key }}</td>
-                        <td>{{ $value->pendfNo }}</td>
-                        <td>{{ $value->sppbNo }}</td>
-                        <td>{{ $value->tmDriver }}</td>
-                        <td>{{ $value->tmCarID }}</td>
-                        <td>{{ $value->custName }}</td>
-                        <td>{{ $value->itemName }}</td>
-                        <td>{{ $value->jenisTruk }}</td>
-                        <td>{{ $value->tmQtyKg }}</td>
-                        <td>{{ $value->tglMuat }}</td>
-                        
-                        
-                    </tr>
-                    @endforeach
-                    
-                </tbody>
-            </table>
+
+            <!-- Avg Abnormal -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-danger h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">{{ $datafgtruk->appavg }}</h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardabnormal" class="text-white text-decoration-none">
+                                Avg Abnormal
+                            </a>
+                        </h6>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timbang Keluar -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-success h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">{{ $datafgtruk->timout }}</h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardwbout" class="text-white text-decoration-none">
+                                Timb. Keluar
+                            </a>
+                        </h6>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sudah PGI -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-primary h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">{{ $datafgtruk->pgi }}</h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardpgi" class="text-white text-decoration-none">
+                                Sudah PGI
+                            </a>
+                        </h6>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tunda Kemarin -->
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card bg-danger h-100">
+                    <div class="card-body text-center p-3">
+                        <h2 class="card-title mb-1">{{ $pendingkmr }}</h2>
+                        <h6 class="card-text mb-0">
+                            <a href="/cardpending" class="text-white text-decoration-none">
+                                Tunda Kemarin
+                            </a>
+                        </h6>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- akhir 7 hari antrian truk-->
-        
+
+        <!-- Delivery Summary & Chart Section -->
+        <div class="row g-3 mb-4">
+            <!-- Delivery Summary -->
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h4 class="mb-0">Delivery Summary -
+                            <span wire:poll.60s>{{ $datafgtruk->tgl }}</span>
+                        </h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="py-3 px-3"><strong>Item Name</strong></th>
+                                        <th class="py-3 px-2 text-center"><strong>Truck(s)</strong></th>
+                                        <th class="py-3 px-2 text-end"><strong>MT</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="px-3">GKP - Kemasan 65 Gram</td>
+                                        <td class="px-2 text-center">{{ $datafgtruk->trukGKP65 }}</td>
+                                        <td class="px-2 text-end">
+                                            {{ number_format(($datafgtruk->netGKP65 ?? 0) / 1000, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3">GKP - Kemasan 500 Gram</td>
+                                        <td class="px-2 text-center">{{ $datafgtruk->trukGKP500g }}</td>
+                                        <td class="px-2 text-end">
+                                            {{ number_format(($datafgtruk->netGKP500g ?? 0) / 1000, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3">GKP - Kemasan 1 Kg</td>
+                                        <td class="px-2 text-center">{{ $datafgtruk->trukGKP1kg }}</td>
+                                        <td class="px-2 text-end">
+                                            {{ number_format(($datafgtruk->netGKP1kg ?? 0) / 1000, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3">GKP - Kemasan 50 Kg</td>
+                                        <td class="px-2 text-center">{{ $datafgtruk->trukGKP50Kg }}</td>
+                                        <td class="px-2 text-end">
+                                            {{ number_format(($datafgtruk->netGKP50Kg ?? 0) / 1000, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3">GKP - BULK Unpacking</td>
+                                        <td class="px-2 text-center">{{ $datafgtruk->trukGKPbulk }}</td>
+                                        <td class="px-2 text-end">
+                                            {{ number_format(($datafgtruk->netGKPbulk ?? 0) / 1000, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3">GKP - Molases</td>
+                                        <td class="px-2 text-center">{{ $datafgtruk->trukGKPMol }}</td>
+                                        <td class="px-2 text-end">
+                                            {{ number_format(($datafgtruk->netGKPMol ?? 0) / 1000, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3">GKR - Premium 50Kg</td>
+                                        <td class="px-2 text-center">{{ $datafgtruk->trukGKR50Kg }}</td>
+                                        <td class="px-2 text-end">
+                                            {{ number_format(($datafgtruk->netGKR50Kg ?? 0) / 1000, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3">GKR - BULK Unpacking</td>
+                                        <td class="px-2 text-center">{{ $datafgtruk->trukGKRbulk }}</td>
+                                        <td class="px-2 text-end">
+                                            {{ number_format(($datafgtruk->netGKRbulk ?? 0) / 1000, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3">GKR - Molases</td>
+                                        <td class="px-2 text-center">{{ $datafgtruk->trukGKRMol }}</td>
+                                        <td class="px-2 text-end">
+                                            {{ number_format(($datafgtruk->netGKRMol ?? 0) / 1000, 2) }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7 Days Delivery Chart -->
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <canvas id="myChart" style="max-height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delivery Details & Truck Chart Section -->
+        <div class="row g-3 mb-4">
+            <!-- Delivery Details -->
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h4 class="mb-0">Delivery Details (Today)</h4>
+                    </div>
+                    <div class="card-body p-2">
+                        {{ $datatrukout->links() }}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="py-2 px-2">No</th>
+                                        <th class="py-2 px-2">Tiket Muat</th>
+                                        <th class="py-2 px-2">SPM NO</th>
+                                        <th class="py-2 px-2">Driver</th>
+                                        <th class="py-2 px-2">Car ID</th>
+                                        <th class="py-2 px-2 d-none d-md-table-cell">Customer</th>
+                                        <th class="py-2 px-2 d-none d-lg-table-cell">Item</th>
+                                        <th class="py-2 px-2">WB IN</th>
+                                        <th class="py-2 px-2">WB Out</th>
+                                        <th class="py-2 px-2">Netto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($datatrukout as $key => $value)
+                                        <tr>
+                                            <td class="py-2 px-2">{{ $datatrukout->firstItem() + $key }}</td>
+                                            <td class="py-2 px-2">{{ $value->pendfNo }}</td>
+                                            <td class="py-2 px-2">{{ $value->spmNo }}</td>
+                                            <td class="py-2 px-2">{{ $value->driver }}</td>
+                                            <td class="py-2 px-2">{{ $value->carID }}</td>
+                                            <td class="py-2 px-2 d-none d-md-table-cell">{{ $value->custName }}</td>
+                                            <td class="py-2 px-2 d-none d-lg-table-cell">{{ $value->itemName }}</td>
+                                            <td class="py-2 px-2">{{ $value->timbangin }}</td>
+                                            <td class="py-2 px-2">{{ $value->timbangout }}</td>
+                                            <td class="py-2 px-2">{{ $value->netto }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7 Days Truck Chart -->
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <canvas id="myChart1" style="max-height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Antrian 7 Hari Section -->
+        <div class="card mb-4">
+            <div class="card-header bg-light py-3">
+                <h4 class="mb-0">Antrian 7 Hari ke Depan</h4>
+            </div>
+            <div class="card-body p-2">
+                {{ $data7hari->links() }}
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-2">No</th>
+                                <th class="py-2 px-2">Tiket Muat</th>
+                                <th class="py-2 px-2">SPPB No</th>
+                                <th class="py-2 px-2">Driver</th>
+                                <th class="py-2 px-2">Car ID</th>
+                                <th class="py-2 px-2 d-none d-md-table-cell">Customer</th>
+                                <th class="py-2 px-2 d-none d-lg-table-cell">Item</th>
+                                <th class="py-2 px-2 d-none d-xl-table-cell">Truck Type</th>
+                                <th class="py-2 px-2">Weight (KG)</th>
+                                <th class="py-2 px-2">Tgl Muat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data7hari as $key => $value)
+                                <tr>
+                                    <td class="py-2 px-2">{{ $data7hari->firstItem() + $key }}</td>
+                                    <td class="py-2 px-2">{{ $value->pendfNo }}</td>
+                                    <td class="py-2 px-2">{{ $value->sppbNo }}</td>
+                                    <td class="py-2 px-2">{{ $value->tmDriver }}</td>
+                                    <td class="py-2 px-2">{{ $value->tmCarID }}</td>
+                                    <td class="py-2 px-2 d-none d-md-table-cell">{{ $value->custName }}</td>
+                                    <td class="py-2 px-2 d-none d-lg-table-cell">{{ $value->itemName }}</td>
+                                    <td class="py-2 px-2 d-none d-xl-table-cell">{{ $value->jenisTruk }}</td>
+                                    <td class="py-2 px-2">{{ $value->tmQtyKg }}</td>
+                                    <td class="py-2 px-2">{{ $value->tglMuat }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
-        
-    
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js" integrity="sha512-zjlf0U0eJmSo1Le4/zcZI51ks5SjuQXkU0yOdsOBubjSmio9iCUp8XPLkEAADZNBdR9crRy3cniZ65LF2w8sRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-            <script>
-            var chartData = JSON.parse(`<?php echo $transac ?>`);
-            // console.log(chartData);
-            const ctx = document.getElementById('myChart');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
+
+    <!-- Chart Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"
+        integrity="sha512-zjlf0U0eJmSo1Le4/zcZI51ks5SjuQXkU0yOdsOBubjSmio9iCUp8XPLkEAADZNBdR9crRy3cniZ65LF2w8sRA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        // Delivery Chart
+        var chartData = JSON.parse(`<?php echo $transac; ?>`);
+        const ctx = document.getElementById('myChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
                 labels: chartData.label,
                 datasets: [{
                     label: '7 DAYS DELIVERY GRAPHIC ( KG )',
@@ -539,11 +371,13 @@
                     borderWidth: 1,
                     backgroundColor: ['lightgreen'],
                 }]
-                },
-                options: {
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
                 scales: {
                     y: {
-                    beginAtZero: true
+                        beginAtZero: true
                     }
                 },
                 plugins: {
@@ -551,38 +385,37 @@
                         labels: {
                             font: {
                                 family: 'Arial',
-                                size: 23,      
+                                size: 14,
                                 style: 'normal',
-                                weight: 'bold',  
-                                lineHeight: 1.2, 
+                                weight: 'bold',
                             },
                         },
                     },
                 },
-                }
-            });
-        </script>
-    
-    <script>
-            var chartDatajmltruk = JSON.parse(`<?php echo $jmltruk ?>`);
-            // console.log(chartData1);
-            const ctxjmltruk = document.getElementById('myChart1');
-            new Chart(ctxjmltruk, {
-                type: 'line',
-                data: {
+            }
+        });
+
+        // Truck Chart
+        var chartDatajmltruk = JSON.parse(`<?php echo $jmltruk; ?>`);
+        const ctxjmltruk = document.getElementById('myChart1');
+        new Chart(ctxjmltruk, {
+            type: 'line',
+            data: {
                 labels: chartDatajmltruk.label,
                 datasets: [{
                     label: '7 DAYS DELIVERY GRAPHIC ( TRUCKS )',
                     data: chartDatajmltruk.data,
                     borderWidth: 3,
                     borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: ['blue','yellow','green', 'pink', 'oranga', 'black', 'magenta'],
+                    backgroundColor: ['blue', 'yellow', 'green', 'pink', 'orange', 'black', 'magenta'],
                 }]
-                },
-                options: {
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
                 scales: {
                     y: {
-                    beginAtZero: true
+                        beginAtZero: true
                     }
                 },
                 plugins: {
@@ -590,15 +423,14 @@
                         labels: {
                             font: {
                                 family: 'Arial',
-                                size: 23,      
+                                size: 14,
                                 style: 'normal',
-                                weight: 'bold',  
-                                lineHeight: 1.2, 
+                                weight: 'bold',
                             },
                         },
                     },
                 },
-                }
-            });
-        </script>
+            }
+        });
+    </script>
 </div>

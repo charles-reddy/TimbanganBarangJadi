@@ -235,6 +235,9 @@
                             <x-dropdown-link :href="route('laptiketmuatapproved')" active="request()->routeIs('laptiketmuatapproved')">
                                 {{ __('Tiket Muat - Approved') }}
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('quotaharian')" active="request()->routeIs('quotaharian')">
+                                {{ __('Quota Harian') }}
+                            </x-dropdown-link>
                             
                         </x-slot>
                     </x-dropdown>
@@ -496,6 +499,9 @@
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('laptiketmuatapproved')" active="request()->routeIs('laptiketmuatapproved')">
                                     {{ __('Tiket Muat - Approved') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('quotaharian')" active="request()->routeIs('quotaharian')">
+                                    {{ __('Quota Harian') }}
                                 </x-dropdown-link>
                             
                             </x-slot>
