@@ -148,6 +148,143 @@
             </div>
         </div>
 
+        <!-- Shift Performance Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <h5 class="mb-0">Shift Performance - {{ now()->format('d M Y') }}</h5>
+            </div>
+
+            <!-- Shift 1 -->
+            <div class="col-12 col-md-4">
+                <div class="card border-primary h-100">
+                    <div class="card-header bg-primary text-white py-2">
+                        <h6 class="mb-0"><i class="bi bi-sunrise"></i> Shift 1 (08:00-12:00)</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row text-center mb-2">
+                            <div class="col-6">
+                                <h3 class="mb-0 text-primary">{{ $shift1->totalTruk ?? 0 }}</h3>
+                                <small class="text-muted">Truk</small>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="mb-0 text-primary">{{ number_format(($shift1->totalNetto ?? 0) / 1000, 2) }}
+                                </h3>
+                                <small class="text-muted">MT</small>
+                            </div>
+                        </div>
+                        @if ($quotaToday && $quotaToday->quota1)
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <small class="text-muted">Target: {{ $quotaToday->quota1 }} truk</small>
+                                <small
+                                    class="fw-bold {{ ($shift1->totalTruk ?? 0) >= $quotaToday->quota1 ? 'text-success' : 'text-warning' }}">
+                                    {{ number_format((($shift1->totalTruk ?? 0) / $quotaToday->quota1) * 100, 1) }}%
+                                </small>
+                            </div>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar {{ ($shift1->totalTruk ?? 0) >= $quotaToday->quota1 ? 'bg-success' : 'bg-warning' }}"
+                                    style="width: {{ min((($shift1->totalTruk ?? 0) / $quotaToday->quota1) * 100, 100) }}%">
+                                    {{ $shift1->totalTruk ?? 0 }}/{{ $quotaToday->quota1 }}
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shift 2 -->
+            <div class="col-12 col-md-4">
+                <div class="card border-success h-100">
+                    <div class="card-header bg-success text-white py-2">
+                        <h6 class="mb-0"><i class="bi bi-sun"></i> Shift 2 (12:00-16:00)</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row text-center mb-2">
+                            <div class="col-6">
+                                <h3 class="mb-0 text-success">{{ $shift2->totalTruk ?? 0 }}</h3>
+                                <small class="text-muted">Truk</small>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="mb-0 text-success">
+                                    {{ number_format(($shift2->totalNetto ?? 0) / 1000, 2) }}</h3>
+                                <small class="text-muted">MT</small>
+                            </div>
+                        </div>
+                        @if ($quotaToday && $quotaToday->quota2)
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <small class="text-muted">Target: {{ $quotaToday->quota2 }} truk</small>
+                                <small
+                                    class="fw-bold {{ ($shift2->totalTruk ?? 0) >= $quotaToday->quota2 ? 'text-success' : 'text-warning' }}">
+                                    {{ number_format((($shift2->totalTruk ?? 0) / $quotaToday->quota2) * 100, 1) }}%
+                                </small>
+                            </div>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar {{ ($shift2->totalTruk ?? 0) >= $quotaToday->quota2 ? 'bg-success' : 'bg-warning' }}"
+                                    style="width: {{ min((($shift2->totalTruk ?? 0) / $quotaToday->quota2) * 100, 100) }}%">
+                                    {{ $shift2->totalTruk ?? 0 }}/{{ $quotaToday->quota2 }}
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shift 3 -->
+            <div class="col-12 col-md-4">
+                <div class="card border-warning h-100">
+                    <div class="card-header bg-warning text-dark py-2">
+                        <h6 class="mb-0"><i class="bi bi-sunset"></i> Shift 3 (16:00-20:00)</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row text-center mb-2">
+                            <div class="col-6">
+                                <h3 class="mb-0 text-warning">{{ $shift3->totalTruk ?? 0 }}</h3>
+                                <small class="text-muted">Truk</small>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="mb-0 text-warning">
+                                    {{ number_format(($shift3->totalNetto ?? 0) / 1000, 2) }}</h3>
+                                <small class="text-muted">MT</small>
+                            </div>
+                        </div>
+                        @if ($quotaToday && $quotaToday->quota3)
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <small class="text-muted">Target: {{ $quotaToday->quota3 }} truk</small>
+                                <small
+                                    class="fw-bold {{ ($shift3->totalTruk ?? 0) >= $quotaToday->quota3 ? 'text-success' : 'text-warning' }}">
+                                    {{ number_format((($shift3->totalTruk ?? 0) / $quotaToday->quota3) * 100, 1) }}%
+                                </small>
+                            </div>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar {{ ($shift3->totalTruk ?? 0) >= $quotaToday->quota3 ? 'bg-success' : 'bg-warning' }}"
+                                    style="width: {{ min((($shift3->totalTruk ?? 0) / $quotaToday->quota3) * 100, 100) }}%">
+                                    {{ $shift3->totalTruk ?? 0 }}/{{ $quotaToday->quota3 }}
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shift Performance Chart Section -->
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white py-2">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bar-chart-fill"></i> 7 Hari Kerja - Performance Per Shift (Senin-Sabtu)
+                        </h5>
+                    </div>
+                    <div class="card-body p-3">
+                        <canvas id="shiftPerformanceChart" style="max-height: 350px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Delivery Summary & Chart Section -->
         <div class="row g-3 mb-4">
             <!-- Delivery Summary -->
@@ -264,6 +401,7 @@
                                 <thead>
                                     <tr>
                                         <th class="py-2 px-2">No</th>
+                                        <th class="py-2 px-2">Shift</th>
                                         <th class="py-2 px-2">Tiket Muat</th>
                                         <th class="py-2 px-2">SPM NO</th>
                                         <th class="py-2 px-2">Driver</th>
@@ -279,6 +417,17 @@
                                     @foreach ($datatrukout as $key => $value)
                                         <tr>
                                             <td class="py-2 px-2">{{ $datatrukout->firstItem() + $key }}</td>
+                                            <td class="py-2 px-2">
+                                                @if ($value->shift == 'Shift 1')
+                                                    <span class="badge bg-primary">S1</span>
+                                                @elseif($value->shift == 'Shift 2')
+                                                    <span class="badge bg-success">S2</span>
+                                                @elseif($value->shift == 'Shift 3')
+                                                    <span class="badge bg-warning text-dark">S3</span>
+                                                @else
+                                                    <span class="badge bg-secondary">-</span>
+                                                @endif
+                                            </td>
                                             <td class="py-2 px-2">{{ $value->pendfNo }}</td>
                                             <td class="py-2 px-2">{{ $value->spmNo }}</td>
                                             <td class="py-2 px-2">{{ $value->driver }}</td>
@@ -430,6 +579,110 @@
                         },
                     },
                 },
+            }
+        });
+
+        // Shift Performance Chart (Stacked Bar)
+        var shiftData = JSON.parse(`<?php echo $shiftChartData; ?>`);
+        const ctxShift = document.getElementById('shiftPerformanceChart');
+        new Chart(ctxShift, {
+            type: 'bar',
+            data: {
+                labels: shiftData.labels,
+                datasets: [{
+                        label: 'Shift 1 (08:00-12:00)',
+                        data: shiftData.shift1,
+                        backgroundColor: 'rgba(13, 110, 253, 0.8)',
+                        borderColor: 'rgba(13, 110, 253, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Shift 2 (12:00-16:00)',
+                        data: shiftData.shift2,
+                        backgroundColor: 'rgba(25, 135, 84, 0.8)',
+                        borderColor: 'rgba(25, 135, 84, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Shift 3 (16:00-20:00)',
+                        data: shiftData.shift3,
+                        backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Hari (Senin - Sabtu)',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Jumlah Truk',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        ticks: {
+                            stepSize: 5
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                family: 'Arial',
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: '7 Hari Kerja - Performance Per Shift',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 5,
+                            bottom: 10
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            footer: function(tooltipItems) {
+                                let total = 0;
+                                tooltipItems.forEach(item => {
+                                    total += item.parsed.y;
+                                });
+                                return 'Total: ' + total + ' truk';
+                            }
+                        }
+                    }
+                }
             }
         });
     </script>

@@ -207,6 +207,10 @@
                             <x-dropdown-link :href="route('lappemuatanfg')" active="request()->routeIs('dashboard')">
                                 {{ __('Laporan Pemuatan FG') }}
                             </x-dropdown-link>
+                            
+                            <x-dropdown-link :href="route('createpembatasanharian')" active="request()->routeIs('createpembatasanharian')">
+                                {{ __('Input Pembatasan Harian') }}
+                            </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
                 </div>
@@ -237,6 +241,9 @@
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('quotaharian')" active="request()->routeIs('quotaharian')">
                                 {{ __('Quota Harian') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('monitortiketmuat')" active="request()->routeIs('monitortiketmuat')">
+                                {{ __('Monitor Tiket Muat') }}
                             </x-dropdown-link>
                             
                         </x-slot>
@@ -470,6 +477,9 @@
                                 <x-dropdown-link :href="route('lappemuatanfg')" active="request()->routeIs('dashboard')">
                                     {{ __('Laporan Pemuatan FG') }}
                                 </x-dropdown-link>
+                                <x-dropdown-link :href="route('createpembatasanharian')" active="request()->routeIs('createpembatasanharian')">
+                                    {{ __('Input Pembatasan Harian') }}
+                                </x-dropdown-link>
                             
                             </x-slot>
             </x-dropdown>
@@ -502,6 +512,9 @@
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('quotaharian')" active="request()->routeIs('quotaharian')">
                                     {{ __('Quota Harian') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('monitortiketmuat')" active="request()->routeIs('monitortiketmuat')">
+                                    {{ __('Monitor Tiket Muat') }}
                                 </x-dropdown-link>
                             
                             </x-slot>
