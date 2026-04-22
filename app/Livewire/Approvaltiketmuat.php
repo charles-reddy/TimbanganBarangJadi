@@ -35,24 +35,21 @@ class Approvaltiketmuat extends Component
         $this->validate();
 
         try {
-               
-            DB::connection('sqlsrv')->table('create_t_m_s')->where('id',$this->transID)->update([
+
+            DB::connection('sqlsrv')->table('create_t_m_s')->where('id', $this->transID)->update([
                 'isMktApp' => 1,
                 'isMktAppID' => $userIDApp,
                 'isAppDate' => $tgl,
-                
+
             ]);
-            
+
             session()->flash('message', 'Data berhasil dimasukkan');
             $this->clear();
             redirect('/approvaltiketmuat');
-            
-
         } catch (\Throwable $th) {
-            
-            
+
+
             session()->flash('error', 'gagal menyimpan data');
-            
         }
     }
 
@@ -63,9 +60,9 @@ class Approvaltiketmuat extends Component
 
     public function edit($id)
     {
-        $this->ip = substr(request()->ip(),0,2);
-        $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id','create_t_m_s.tmSppbID','create_t_m_s.pendfNo','create_t_m_s.tmCarID','create_t_m_s.tmDriver','create_t_m_s.noHPDriver','create_t_m_s.tmTranspName','create_t_m_s.tmQtyKarung','create_t_m_s.tmQtyKg','create_t_m_s.tglMuat','products.itemName','customers.custName','createsppbs.sppbNo','create_t_m_s.simKtp','create_t_m_s.stnk')->where('create_t_m_s.id', $id)->first();
-        
+        $this->ip = substr(request()->ip(), 0, 2);
+        $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id', 'create_t_m_s.tmSppbID', 'create_t_m_s.pendfNo', 'create_t_m_s.tmCarID', 'create_t_m_s.tmDriver', 'create_t_m_s.noHPDriver', 'create_t_m_s.tmTranspName', 'create_t_m_s.tmQtyKarung', 'create_t_m_s.tmQtyKg', 'create_t_m_s.tglMuat', 'products.itemName', 'customers.custName', 'createsppbs.sppbNo', 'create_t_m_s.simKtp', 'create_t_m_s.stnk')->where('create_t_m_s.id', $id)->first();
+
         $this->sppbNo = $data->sppbNo;
         $this->transID = $id;
         $this->custName = $data->custName;
@@ -75,7 +72,7 @@ class Approvaltiketmuat extends Component
         $this->itemName = $data->itemName;
 
         if ($data->simKtp != null) {
-            if($this->ip == '10.20.3.9') {
+            if ($this->ip == '10.20.3.9') {
                 // dd('local');
                 $this->simKtp = 'http://10.20.1.64:8104/storage/' . $data->simKtp;
             } else {
@@ -83,7 +80,7 @@ class Approvaltiketmuat extends Component
                 $this->simKtp = 'https://customer.appktm.com/storage/' . $data->simKtp;
             }
         } else {
-            if($this->ip == '10.20.3.9') {
+            if ($this->ip == '10.20.3.9') {
                 // dd('local');
                 $this->simKtp = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
             } else {
@@ -94,15 +91,14 @@ class Approvaltiketmuat extends Component
         }
 
         if ($data->stnk != null) {
-            if($this->ip == '10.20.3.9') {
+            if ($this->ip == '10.20.3.9') {
                 // dd('local');
                 $this->stnk = 'http://10.20.1.64:8104/storage/' . $data->stnk;
             } else {
                 $this->stnk = 'https://customer.appktm.com/storage/' . $data->stnk;
             }
-            
         } else {
-            if($this->ip == '10.20.3.9') {
+            if ($this->ip == '10.20.3.9') {
                 // dd('local');
                 $this->stnk = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
             } else {
@@ -116,12 +112,12 @@ class Approvaltiketmuat extends Component
 
     public function render()
     {
-        if ($this->katakunci  !=null) {
-            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id','create_t_m_s.tmSppbID','create_t_m_s.pendfNo','create_t_m_s.tmCarID','create_t_m_s.tmDriver','create_t_m_s.noHPDriver','create_t_m_s.tmTranspName','create_t_m_s.tmQtyKarung','create_t_m_s.tmQtyKg','create_t_m_s.tglMuat','products.itemName','customers.custName','createsppbs.sppbNo')->whereNull('ismktapp')->where('create_t_m_s.tmQtyKg','>', 0)->where('createsppbs.sppbNo','like','%' . $this->katakunci . '%')->orderBy('id','desc')->paginate(10);
-        
+        if ($this->katakunci  != null) {
+            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id', 'create_t_m_s.tmSppbID', 'create_t_m_s.pendfNo', 'create_t_m_s.tmCarID', 'create_t_m_s.tmDriver', 'create_t_m_s.noHPDriver', 'create_t_m_s.tmTranspName', 'create_t_m_s.tmQtyKarung', 'create_t_m_s.tmQtyKg', 'create_t_m_s.tglMuat', 'products.itemName', 'customers.custName', 'createsppbs.sppbNo')->whereNull('ismktapp')->where('create_t_m_s.tmQtyKg', '>', 0)->whereDate('create_t_m_s.tglMuat', '>=', now()->format('Y-m-d'))->where('createsppbs.sppbNo', 'like', '%' . $this->katakunci . '%')->orderBy('id', 'desc')->paginate(10);
         } else {
-            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id','create_t_m_s.tmSppbID','create_t_m_s.pendfNo','create_t_m_s.tmCarID','create_t_m_s.tmDriver','create_t_m_s.noHPDriver','create_t_m_s.tmTranspName','create_t_m_s.tmQtyKarung','create_t_m_s.tmQtyKg','create_t_m_s.tglMuat','products.itemName','customers.custName','createsppbs.sppbNo')->whereNull('ismktapp')->where('create_t_m_s.tmQtyKg','>', 0)->orderBy('id','desc')->paginate(10);
-            
+            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id', 'create_t_m_s.tmSppbID', 'create_t_m_s.pendfNo', 'create_t_m_s.tmCarID', 'create_t_m_s.tmDriver', 'create_t_m_s.noHPDriver', 'create_t_m_s.tmTranspName', 'create_t_m_s.tmQtyKarung', 'create_t_m_s.tmQtyKg', 'create_t_m_s.tglMuat', 'products.itemName', 'customers.custName', 'createsppbs.sppbNo')->whereNull('ismktapp')->where('create_t_m_s.tmQtyKg', '>', 0)->whereDate('create_t_m_s.tglMuat', '>=', now()->format('Y-m-d'))->orderBy('id', 'desc')->paginate(10);
+            // $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id','create_t_m_s.tmSppbID','create_t_m_s.pendfNo','create_t_m_s.tmCarID','create_t_m_s.tmDriver','create_t_m_s.noHPDriver','create_t_m_s.tmTranspName','create_t_m_s.tmQtyKarung','create_t_m_s.tmQtyKg','create_t_m_s.tglMuat','products.itemName','customers.custName','createsppbs.sppbNo')->whereNull('ismktapp')->where('create_t_m_s.tmQtyKg','>', 0)->orderBy('id','desc')->paginate(10);
+
         }
         // dd($data);
         return view('livewire.approvaltiketmuat', ['datatiketmuat' => $data]);

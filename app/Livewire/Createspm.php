@@ -83,87 +83,87 @@ class Createspm extends Component
     public $itemType;
     public $eksesMol;
 
-    
 
-    
+
+
 
     public function store()
     {
-        $tgl=Carbon::now();
+        $tgl = Carbon::now();
         //  dd($this->terbilangKarung);
         $this->validate();
         $this->terbilangKg = Terbilang::make($this->qtyKg);
         $this->terbilangKarung = Terbilang::make($this->qtyKarung);
-        
+
         //  dd($this->eksesMol);
-         
-        
+
+
         try {
             // dd($this->tiketID, $this->sppbNo);
-            if($this->eksesMol) {
+            if ($this->eksesMol) {
                 // dd('ada');
                 DB::connection('sqlsrv')->table('createspms')->insert([
-                'spmNo' => $this->spmNo,
-                'tglSPM' => $tgl,
-                'sppbNo' => $this->sppbID,
-                'tiketID' => $this->tiketMuat,
-                'carID' => $this->carID,
-                'driver' => $this->driver,
-                'sealNo' => $this->sealNo,
-                'kontainerNo' => $this->kontainerNo,
-                'itemCode' => $this->itemCode,
-                'transpID' => $this->transpID,
-                'custID' => $this->custID,
-                'qtyKg' => $this->qtyKg,
-                'qtyKarung' => $this->qtyKarung,
-                'terbilangKg' => $this->terbilangKg,
-                'terbilangKarung' => $this->terbilangKarung,
-                'packingID' => $this->packingID,
-                'dnNo' => $this->dnNo,
-                'isExport' => $this->isExport,
-                'spmJenisTruk' => $this->tmJenisTruk,
-                'eksesMol' => $this->eksesMol
+                    'spmNo' => $this->spmNo,
+                    'tglSPM' => $tgl,
+                    'sppbNo' => $this->sppbID,
+                    'tiketID' => $this->tiketMuat,
+                    'carID' => $this->carID,
+                    'driver' => $this->driver,
+                    'sealNo' => $this->sealNo,
+                    'kontainerNo' => $this->kontainerNo,
+                    'itemCode' => $this->itemCode,
+                    'transpID' => $this->transpID,
+                    'custID' => $this->custID,
+                    'qtyKg' => $this->qtyKg,
+                    'qtyKarung' => $this->qtyKarung,
+                    'terbilangKg' => $this->terbilangKg,
+                    'terbilangKarung' => $this->terbilangKarung,
+                    'packingID' => $this->packingID,
+                    'dnNo' => $this->dnNo,
+                    'isExport' => $this->isExport,
+                    'spmJenisTruk' => $this->tmJenisTruk,
+                    'eksesMol' => $this->eksesMol
                 ]);
             } else {
                 // dd('tidak ada');
                 DB::connection('sqlsrv')->table('createspms')->insert([
-                'spmNo' => $this->spmNo,
-                'tglSPM' => $tgl,
-                'sppbNo' => $this->sppbID,
-                'tiketID' => $this->tiketMuat,
-                'carID' => $this->carID,
-                'driver' => $this->driver,
-                'sealNo' => $this->sealNo,
-                'kontainerNo' => $this->kontainerNo,
-                'itemCode' => $this->itemCode,
-                'transpID' => $this->transpID,
-                'custID' => $this->custID,
-                'qtyKg' => $this->qtyKg,
-                'qtyKarung' => $this->qtyKarung,
-                'terbilangKg' => $this->terbilangKg,
-                'terbilangKarung' => $this->terbilangKarung,
-                'packingID' => $this->packingID,
-                'dnNo' => $this->dnNo,
-                'isExport' => $this->isExport,
-                'spmJenisTruk' => $this->tmJenisTruk
-             
+                    'spmNo' => $this->spmNo,
+                    'tglSPM' => $tgl,
+                    'sppbNo' => $this->sppbID,
+                    'tiketID' => $this->tiketMuat,
+                    'carID' => $this->carID,
+                    'driver' => $this->driver,
+                    'sealNo' => $this->sealNo,
+                    'kontainerNo' => $this->kontainerNo,
+                    'itemCode' => $this->itemCode,
+                    'transpID' => $this->transpID,
+                    'custID' => $this->custID,
+                    'qtyKg' => $this->qtyKg,
+                    'qtyKarung' => $this->qtyKarung,
+                    'terbilangKg' => $this->terbilangKg,
+                    'terbilangKarung' => $this->terbilangKarung,
+                    'packingID' => $this->packingID,
+                    'dnNo' => $this->dnNo,
+                    'isExport' => $this->isExport,
+                    'spmJenisTruk' => $this->tmJenisTruk
+
                 ]);
             }
-            
 
-            DB::connection('sqlsrv')->table('create_t_m_s')->where('id',$this->tiketMuat)->update([
+
+            DB::connection('sqlsrv')->table('create_t_m_s')->where('id', $this->tiketMuat)->update([
                 'isSpm' => 1
             ]);
-            
+
             // DB::connection('mysql')->table('tb_reservasi')->where('no',$this->tiketID)->update([
             //     // 'stts' => 'Cek In',
             //     // 'ptgs' => 'system',
             //     // 'idptgs' => 'system',
-               
+
             // ]);
 
-            
-            
+
+
             session()->flash('message', 'Data berhasil dimasukkan');
             $this->clear();
         } catch (Exception $e) {
@@ -176,17 +176,70 @@ class Createspm extends Component
     public function sort($columnName)
     {
         $this->sortColumn = $columnName;
-        $this->sortDirection = $this->sortDirection == 'asc'?'desc' : 'asc';
-
+        $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
     }
 
     public function edit($id)
     {
-        $data = DB::connection('sqlsrv')->table('createspms')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('customers', 'customers.custID', 'createspms.custID')->join('products', 'products.itemCode', 'createspms.itemCode')->join('packings', 'packings.packingid', 'createspms.packingID')->select('createspms.id','createspms.spmNo','createspms.tiketID','createspms.tglSpm','createspms.itemCode','createspms.transpID','createspms.custID','createspms.qtyKarung','createspms.terbilangkarung','createspms.qtyKg','createspms.terbilangKg','createspms.qtyKg','createspms.packingID','createspms.carID','createspms.driver','createspms.dnNo','createspms.remarks'
-        ,'createspms.sealNo','createspms.kontainerNo','createspms.isExport','createspms.isIN','createsppbs.tglSppb','createsppbs.sppbNo','createsppbs.openQtyKarung','createsppbs.openQtyKg','createsppbs.kontrakNo','createsppbs.poNo','createsppbs.sppbQtyKg','createsppbs.sppbQtyKarung'
-        ,'create_t_m_s.tmSppbID','create_t_m_s.pendfNo','create_t_m_s.tglDaftar','create_t_m_s.tmCarID','create_t_m_s.tmDriver','create_t_m_s.noHpDriver','create_t_m_s.jenisTruk','create_t_m_s.tmTranspName','create_t_m_s.tmQtyKarung','create_t_m_s.tmQtyKg','create_t_m_s.tglMuat'
-        ,'create_t_m_s.simKtp','create_t_m_s.stnk','create_t_m_s.isSpm','create_t_m_s.isMktApp','create_t_m_s.isMktAppID','create_t_m_s.isAppDate','create_t_m_s.isSecCek','create_t_m_s.isSecCekdate','customers.custName'
-        ,'customers.custAdd','products.itemName','products.deduction','products.type','products.uom','packings.packingName','createspms.spmJenisTruk', 'products.type')->where('createspms.id',$id)->first();
+        $data = DB::connection('sqlsrv')->table('createspms')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('customers', 'customers.custID', 'createspms.custID')->join('products', 'products.itemCode', 'createspms.itemCode')->join('packings', 'packings.packingid', 'createspms.packingID')->select(
+            'createspms.id',
+            'createspms.spmNo',
+            'createspms.tiketID',
+            'createspms.tglSpm',
+            'createspms.itemCode',
+            'createspms.transpID',
+            'createspms.custID',
+            'createspms.qtyKarung',
+            'createspms.terbilangkarung',
+            'createspms.qtyKg',
+            'createspms.terbilangKg',
+            'createspms.qtyKg',
+            'createspms.packingID',
+            'createspms.carID',
+            'createspms.driver',
+            'createspms.dnNo',
+            'createspms.remarks',
+            'createspms.sealNo',
+            'createspms.kontainerNo',
+            'createspms.isExport',
+            'createspms.isIN',
+            'createsppbs.tglSppb',
+            'createsppbs.sppbNo',
+            'createsppbs.openQtyKarung',
+            'createsppbs.openQtyKg',
+            'createsppbs.kontrakNo',
+            'createsppbs.poNo',
+            'createsppbs.sppbQtyKg',
+            'createsppbs.sppbQtyKarung',
+            'create_t_m_s.tmSppbID',
+            'create_t_m_s.pendfNo',
+            'create_t_m_s.tglDaftar',
+            'create_t_m_s.tmCarID',
+            'create_t_m_s.tmDriver',
+            'create_t_m_s.noHpDriver',
+            'create_t_m_s.jenisTruk',
+            'create_t_m_s.tmTranspName',
+            'create_t_m_s.tmQtyKarung',
+            'create_t_m_s.tmQtyKg',
+            'create_t_m_s.tglMuat',
+            'create_t_m_s.simKtp',
+            'create_t_m_s.stnk',
+            'create_t_m_s.isSpm',
+            'create_t_m_s.isMktApp',
+            'create_t_m_s.isMktAppID',
+            'create_t_m_s.isAppDate',
+            'create_t_m_s.isSecCek',
+            'create_t_m_s.isSecCekdate',
+            'customers.custName',
+            'customers.custAdd',
+            'products.itemName',
+            'products.deduction',
+            'products.type',
+            'products.uom',
+            'packings.packingName',
+            'createspms.spmJenisTruk',
+            'products.type'
+        )->where('createspms.id', $id)->first();
         //   dd($data);
         $this->edited = 1;
         $this->spmNo1 = $data->spmNo;
@@ -215,57 +268,44 @@ class Createspm extends Component
         $this->custName = $data->custName;
         $this->itemName = $data->itemName;
         $this->itemType = $data->type;
-        
-        
-        
-        
-         
     }
 
     public function hitung()
     {
         try {
-            if ($this->qtyKg  )
-            {
+            if ($this->qtyKg) {
                 $selisihkg = $this->qtyKg -  $this->AwalQtyKg;
                 $this->openQtyKg =  $this->AwalOpenQtyKg -  $selisihkg;
-                
             } else {
                 session()->flash('error', 'failed to calculate data');
                 return;
             }
 
-            if ($this->qtyKarung )
-            {
-                
+            if ($this->qtyKarung) {
+
                 $selisihkarung = $this->qtyKarung -  $this->AwalQtyKarung;
                 $this->openQtyKarung =  $this->AwalOpenQtyKarung -  $selisihkarung;
             } else {
                 session()->flash('error', 'failed to calculate data');
                 return;
             }
-
-            
-            
         } catch (Exception $e) {
             // throw $e;
             session()->flash('error', 'failed to calculate data');
             return;
         }
-        
-        
     }
 
     public function update()
     {
-        $tgl=Carbon::now();
+        $tgl = Carbon::now();
         // $data = Createsppb::find($this->transID);
         // dd($data);
         $this->validate();
         // dd($this->openQtyKg, $this->openQtyKarung,$this->sppbNo1);
         try {
             // dd($data->itemCode);
-            DB::connection('sqlsrv')->table('createspms')->where('id',$this->transID)->update([
+            DB::connection('sqlsrv')->table('createspms')->where('id', $this->transID)->update([
                 'carID' => $this->carID,
                 // 'tglSppb' => $tgl,
                 'driver' => $this->driver,
@@ -283,11 +323,10 @@ class Createspm extends Component
             //     // 'stts' => 'Cek In',
             //     'openQtyKg' => $this->openQtyKg,
             //     'openQtyKarung' => $this->openQtyKarung,
-               
+
             // ]);
             session()->flash('message', 'Data berhasil dimasukkan');
             $this->clear();
-
         } catch (Exception $e) {
             // throw $e;
             session()->flash('error', 'failed to store data');
@@ -315,7 +354,7 @@ class Createspm extends Component
     #[Computed()]
     public function tiketmuatdata()
     {
-        $datamuat = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id','create_t_m_s.tmSppbID','create_t_m_s.pendfNo','create_t_m_s.tmCarID','create_t_m_s.tmDriver','create_t_m_s.noHPDriver','create_t_m_s.tmTranspName','create_t_m_s.tmQtyKarung','create_t_m_s.tmQtyKg','create_t_m_s.tglMuat','create_t_m_s.jenisTruk','products.itemName','products.itemCode','customers.custName','customers.custID','createsppbs.sppbNo','create_t_m_s.tmQtyKarung','create_t_m_s.tmQtyKg','create_t_m_s.isSecCek', 'products.type')->where('create_t_m_s.id',$this->tiketMuat)->whereNotNull('create_t_m_s.isSecCek')->first();
+        $datamuat = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id', 'create_t_m_s.tmSppbID', 'create_t_m_s.pendfNo', 'create_t_m_s.tmCarID', 'create_t_m_s.tmDriver', 'create_t_m_s.noHPDriver', 'create_t_m_s.tmTranspName', 'create_t_m_s.tmQtyKarung', 'create_t_m_s.tmQtyKg', 'create_t_m_s.tglMuat', 'create_t_m_s.jenisTruk', 'products.itemName', 'products.itemCode', 'customers.custName', 'customers.custID', 'createsppbs.sppbNo', 'create_t_m_s.tmQtyKarung', 'create_t_m_s.tmQtyKg', 'create_t_m_s.isSecCek', 'products.type')->where('create_t_m_s.id', $this->tiketMuat)->whereNotNull('create_t_m_s.isSecCek')->first();
         //  dd($datamuat);
         $this->sppbNo = $datamuat->sppbNo;
         $this->sppbID = $datamuat->tmSppbID;
@@ -332,26 +371,27 @@ class Createspm extends Component
         // $this->isExport = '';
         // $this->eksesMol = '';
 
-          
+
     }
 
-    
-     
+
+
 
     public function render()
-    {   
-        if ($this->katakunci !=null) {
-            $data = DB::connection('sqlsrv')->table('createspms')->select('createspms.id', 'createsppbs.sppbNo', 'createspms.tglSpm','createspms.spmNo','createspms.tiketID','createspms.carID','createspms.spmNo','createspms.driver','createspms.sealNo','createspms.isExport','createspms.kontainerNo','createspms.itemCode','createspms.packingID','createspms.qtyKg','createspms.qtyKarung','products.itemName','createsppbs.openQtyKg','createsppbs.openQtyKarung','packings.packingName', 'create_t_m_s.pendfNo')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'createspms.itemCode')->join('packings', 'packings.packingID', 'createspms.packingID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->where('createsppbs.sppbNo','like','%' . $this->katakunci . '%')->orwhere('createspms.carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+    {
+        if ($this->katakunci != null) {
+            // Dengan search: bebas filter bulan
+            $data = DB::connection('sqlsrv')->table('createspms')->select('createspms.id', 'createsppbs.sppbNo', 'createspms.tglSpm', 'createspms.spmNo', 'createspms.tiketID', 'createspms.carID', 'createspms.spmNo', 'createspms.driver', 'createspms.sealNo', 'createspms.isExport', 'createspms.kontainerNo', 'createspms.itemCode', 'createspms.packingID', 'createspms.qtyKg', 'createspms.qtyKarung', 'products.itemName', 'createsppbs.openQtyKg', 'createsppbs.openQtyKarung', 'packings.packingName', 'create_t_m_s.pendfNo')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'createspms.itemCode')->join('packings', 'packings.packingID', 'createspms.packingID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->where('createsppbs.sppbNo', 'like', '%' . $this->katakunci . '%')->orwhere('createspms.carID', 'like', '%' . $this->katakunci . '%')->orderby($this->sortColumn, $this->sortDirection)->paginate(5);
         } else {
-            $data = DB::connection('sqlsrv')->table('createspms')->select('createspms.id', 'createsppbs.sppbNo', 'createspms.tglSpm','createspms.spmNo','createspms.tiketID','createspms.carID','createspms.spmNo','createspms.driver','createspms.sealNo','createspms.isExport','createspms.kontainerNo','createspms.itemCode','createspms.packingID','createspms.qtyKg','createspms.qtyKarung','products.itemName','createsppbs.openQtyKg','createsppbs.openQtyKarung','packings.packingName', 'create_t_m_s.pendfNo')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'createspms.itemCode')->join('packings', 'packings.packingID', 'createspms.packingID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            // Tanpa search: hanya tampilkan data 1 bulan terakhir
+            $data = DB::connection('sqlsrv')->table('createspms')->select('createspms.id', 'createsppbs.sppbNo', 'createspms.tglSpm', 'createspms.spmNo', 'createspms.tiketID', 'createspms.carID', 'createspms.spmNo', 'createspms.driver', 'createspms.sealNo', 'createspms.isExport', 'createspms.kontainerNo', 'createspms.itemCode', 'createspms.packingID', 'createspms.qtyKg', 'createspms.qtyKarung', 'products.itemName', 'createsppbs.openQtyKg', 'createsppbs.openQtyKarung', 'packings.packingName', 'create_t_m_s.pendfNo')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'createspms.itemCode')->join('packings', 'packings.packingID', 'createspms.packingID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->where('createspms.tglSpm', '>=', Carbon::now()->subMonth())->orderby($this->sortColumn, $this->sortDirection)->paginate(5);
             // $data = DB::connection('sqlsrv')->table('createspms')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'createspms.itemCode')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
-        
+
         }
         //  dd($data);
-        if ($this->tiketMuat !=null)
-        {
-            
-           $this->tiketmuatdata();
+        if ($this->tiketMuat != null) {
+
+            $this->tiketmuatdata();
         }
 
         // $this->updateqty();
@@ -362,12 +402,11 @@ class Createspm extends Component
         $tglawal = date('Y-m-d', strtotime(Carbon::now()->startOfMonth()));
         $tglakhir = date('Y-m-d', strtotime(Carbon::now()->endOfMonth()));
         $tglskr = date('Y-m-d', strtotime(Carbon::now()));
-        $data1 = DB::connection('sqlsrv')->table('createspms')->wheredate('tglSpm','>=',$tglawal)->wheredate('tglSpm','<=',$tglakhir)->count('id');
+        $data1 = DB::connection('sqlsrv')->table('createspms')->wheredate('tglSpm', '>=', $tglawal)->wheredate('tglSpm', '<=', $tglakhir)->count('id');
         $nomor = $data1 + 1;
-        $spmNo = 'SPM/'. $nomor .'/' . $bulan .'/' . $tahun;
+        $spmNo = 'SPM/' . $nomor . '/' . $bulan . '/' . $tahun;
         // dd($this->edited);
-        if ($this->edited == 0)
-        {
+        if ($this->edited == 0) {
             $this->spmNo =  $spmNo;
         } else {
             $this->spmNo = '';
@@ -375,13 +414,13 @@ class Createspm extends Component
         // $tiket = DB::connection('mysql')->table('tb_reservasi')->select('no','nodo','stts','tgldaf','token','cust')->where('stts','=','Daftar')->where('tgldaf','=',$tglskr)->get();
         //  dd($tiket);
         $angkutan = Transporter::all();
-        $barang = Product::where('itemName','like','%gkr%')->orwhere('itemName','like','%gkp%')->orwhere('itemName','like','%mola%')->get();
+        $barang = Product::where('itemName', 'like', '%gkr%')->orwhere('itemName', 'like', '%gkp%')->orwhere('itemName', 'like', '%mola%')->get();
         // dd($barang);
         $paking = packing::all();
-        $getsppb = DB::connection('sqlsrv')->table('createsppbs')->join('customers', 'customers.custID', 'createsppbs.custID')->select('id','sppbNo','custName')->where('openQtyKg','>',0)->get();
+        $getsppb = DB::connection('sqlsrv')->table('createsppbs')->join('customers', 'customers.custID', 'createsppbs.custID')->select('id', 'sppbNo', 'custName')->where('openQtyKg', '>', 0)->get();
         //   dd($getsppb);
-        $getTm = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id','create_t_m_s.tmSppbID','create_t_m_s.pendfNo','create_t_m_s.tmCarID','create_t_m_s.tmDriver','create_t_m_s.noHPDriver','create_t_m_s.tmTranspName','create_t_m_s.tmQtyKarung','create_t_m_s.tmQtyKg','create_t_m_s.tglMuat','products.itemName','customers.custName','createsppbs.sppbNo','create_t_m_s.isSecCek')->whereNull('isSpm')->whereNotNull('create_t_m_s.isSecCek')->get();
+        $getTm = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id', 'create_t_m_s.tmSppbID', 'create_t_m_s.pendfNo', 'create_t_m_s.tmCarID', 'create_t_m_s.tmDriver', 'create_t_m_s.noHPDriver', 'create_t_m_s.tmTranspName', 'create_t_m_s.tmQtyKarung', 'create_t_m_s.tmQtyKg', 'create_t_m_s.tglMuat', 'products.itemName', 'customers.custName', 'createsppbs.sppbNo', 'create_t_m_s.isSecCek', 'create_t_m_s.jamMuat')->whereNull('isSpm')->whereNotNull('create_t_m_s.isSecCek')->get();
         // dd($getTm);
-        return view('livewire.createspm', ['datatm' => $getTm, 'dataspm' => $data, 'transporter' => $angkutan,'product' => $barang,'listsppb' => $getsppb,'kemasan' => $paking, 'jenistruk' => $truk]);
+        return view('livewire.createspm', ['datatm' => $getTm, 'dataspm' => $data, 'transporter' => $angkutan, 'product' => $barang, 'listsppb' => $getsppb, 'kemasan' => $paking, 'jenistruk' => $truk]);
     }
 }
