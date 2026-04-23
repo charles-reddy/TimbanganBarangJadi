@@ -97,6 +97,20 @@ class Fgdashboard extends Component
             ->selectRaw('COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
             ->first();
 
+        // Outside Shift: Sebelum 08:00 atau setelah 20:00
+        $shiftOutside = DB::connection('sqlsrv')->table('trscale')
+            ->join('createspms', 'createspms.id', 'trscale.spmID')
+            ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+            ->whereNotNull('netto')
+            ->where('create_t_m_s.tmQtyKg', '>', 0)
+            ->whereDate('jam_out', Carbon::now())
+            ->where(function ($query) {
+                $query->whereTime('jam_out', '<', '08:00:00')
+                    ->orWhereTime('jam_out', '>=', '20:00:00');
+            })
+            ->selectRaw('COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
+            ->first();
+
         // Get quota hari ini
         $quotaToday = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
             ->whereDate('quotaTglDatang', Carbon::now())
@@ -155,6 +169,7 @@ class Fgdashboard extends Component
         $shift1Data = [];
         $shift2Data = [];
         $shift3Data = [];
+        $outsideShiftData = [];
 
         foreach ($last7WorkingDays as $date) {
             $dateObj = Carbon::parse($date);
@@ -166,10 +181,12 @@ class Fgdashboard extends Component
             $s1 = $shiftPerformance->where('tanggal', $date)->where('shift', 'Shift 1')->first();
             $s2 = $shiftPerformance->where('tanggal', $date)->where('shift', 'Shift 2')->first();
             $s3 = $shiftPerformance->where('tanggal', $date)->where('shift', 'Shift 3')->first();
+            $sOutside = $shiftPerformance->where('tanggal', $date)->where('shift', 'Outside')->first();
 
             $shift1Data[] = $s1 ? $s1->totalTruk : 0;
             $shift2Data[] = $s2 ? $s2->totalTruk : 0;
             $shift3Data[] = $s3 ? $s3->totalTruk : 0;
+            $outsideShiftData[] = $sOutside ? $sOutside->totalTruk : 0;
         }
 
         $shiftChartData = json_encode([
@@ -177,6 +194,7 @@ class Fgdashboard extends Component
             'shift1' => $shift1Data,
             'shift2' => $shift2Data,
             'shift3' => $shift3Data,
+            'outsideShift' => $outsideShiftData,
         ]);
 
         // Query delivery details dengan kolom shift
@@ -213,6 +231,7 @@ class Fgdashboard extends Component
             'shift1' => $shift1,
             'shift2' => $shift2,
             'shift3' => $shift3,
+            'shiftOutside' => $shiftOutside,
             'quotaToday' => $quotaToday,
             'shiftChartData' => $shiftChartData
         ]);

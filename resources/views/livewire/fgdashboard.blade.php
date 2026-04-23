@@ -155,7 +155,7 @@
             </div>
 
             <!-- Shift 1 -->
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6 col-lg-3">
                 <div class="card border-primary h-100">
                     <div class="card-header bg-primary text-white py-2">
                         <h6 class="mb-0"><i class="bi bi-sunrise"></i> Shift 1 (08:00-12:00)</h6>
@@ -193,7 +193,7 @@
             </div>
 
             <!-- Shift 2 -->
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6 col-lg-3">
                 <div class="card border-success h-100">
                     <div class="card-header bg-success text-white py-2">
                         <h6 class="mb-0"><i class="bi bi-sun"></i> Shift 2 (12:00-16:00)</h6>
@@ -231,7 +231,7 @@
             </div>
 
             <!-- Shift 3 -->
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6 col-lg-3">
                 <div class="card border-warning h-100">
                     <div class="card-header bg-warning text-dark py-2">
                         <h6 class="mb-0"><i class="bi bi-sunset"></i> Shift 3 (16:00-20:00)</h6>
@@ -264,6 +264,34 @@
                                 </div>
                             </div>
                         @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outside Shift -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card border-danger h-100">
+                    <div class="card-header bg-danger text-white py-2">
+                        <h6 class="mb-0"><i class="bi bi-moon-stars"></i> Luar Jam Shift</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row text-center mb-2">
+                            <div class="col-6">
+                                <h3 class="mb-0 text-danger">{{ $shiftOutside->totalTruk ?? 0 }}</h3>
+                                <small class="text-muted">Truk</small>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="mb-0 text-danger">
+                                    {{ number_format(($shiftOutside->totalNetto ?? 0) / 1000, 2) }}</h3>
+                                <small class="text-muted">MT</small>
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="text-center">
+                            <small class="text-muted d-block"><i class="bi bi-exclamation-triangle"></i> Transaksi di
+                                luar jam operasional</small>
+                            <small class="text-muted">(&lt; 08:00 atau &gt;= 20:00)</small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -608,6 +636,13 @@
                         data: shiftData.shift3,
                         backgroundColor: 'rgba(255, 193, 7, 0.8)',
                         borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Luar Jam Shift',
+                        data: shiftData.outsideShift,
+                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
                         borderWidth: 1
                     }
                 ]
