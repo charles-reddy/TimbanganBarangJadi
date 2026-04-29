@@ -17,6 +17,7 @@ class Cardpgi extends Component
     public $spmNo;
     public $buktiPGI;
     public $listkarung;
+    public $shift;
 
     public function edit($id)
     {
@@ -26,20 +27,20 @@ class Cardpgi extends Component
         $this->spmNo = $data->spmNo;
         $this->buktiPGI = '/storage/' . $data->buktiPGI;
         // dd($this->buktiPGI);
-        
-       
+
+
     }
 
-     public function export_out()
+    public function export_out()
     {
-        
+
         return Excel::download(new exportCardPgi($this->tglout, $this->katakunci), "lappgiexport.xlsx");
-    } 
+    }
 
 
-     public function clear()
+    public function clear()
     {
-        
+
         redirect('/cardpgi');
     }
 
@@ -50,31 +51,34 @@ class Cardpgi extends Component
         // dd($data);
         $listavg = [];
         foreach ($data as  $value) {
-            $listavg[] = number_format($value->avgKarung,2) ;
+            $listavg[] = number_format($value->avgKarung, 2);
         }
-        
 
-        $this->listkarung = implode(", ",$listavg);
-       
+
+        $this->listkarung = implode(", ", $listavg);
     }
 
     public function render()
     {
-        $tglout = DB::connection('sqlsrv')->table('trscale')->whereNotNull('netto')->orderBy('id','desc')->first();
-        if ($this->katakunci !=null) {
+        $tglout = DB::connection('sqlsrv')->table('trscale')->whereNotNull('netto')->orderBy('id', 'desc')->first();
+        if ($this->katakunci != null) {
             // $datapgi = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->whereNotNull('buktiPGI')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->where('trscale.carID','like','%' . $this->katakunci . '%')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI' )->orderBy('createspms.id','desc')->paginate(10);
-            $datapgi = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->where('trscale.carID','like','%' . $this->katakunci . '%')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI', 'createspms.dnNo',  'trscale.b10QtyKarung' )->orderBy('createspms.id','desc')->paginate(10);
-        
-        } elseif (($this->tglout  )  !=null) {
+            $datapgi = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->where('trscale.carID', 'like', '%' . $this->katakunci . '%')->when($this->shift, function ($query) {
+                $query->whereRaw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
+            })->select('createspms.id as spmID', 'createspms.sealNo1', 'createspms.driver', 'createspms.carID', 'createspms.spmNo', 'products.itemName', 'customers.custName', 'jenistruks.jenisTruk', 'trscale.jam_in', 'products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI', 'createspms.dnNo',  'trscale.b10QtyKarung', 'create_t_m_s.tglDaftar', DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"), DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"))->orderBy('createspms.id', 'desc')->paginate(10);
+        } elseif (($this->tglout)  != null) {
             // $datapgi = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out','=',$this->tglout)->whereNotNull('buktiPGI')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI' )->orderBy('createspms.id','desc')->paginate(10);
-            $datapgi = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out','=',$this->tglout)->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI', 'createspms.dnNo',  'trscale.b10QtyKarung' )->orderBy('createspms.id','desc')->paginate(10);
-        
+            $datapgi = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out', '=', $this->tglout)->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->when($this->shift, function ($query) {
+                $query->whereRaw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
+            })->select('createspms.id as spmID', 'createspms.sealNo1', 'createspms.driver', 'createspms.carID', 'createspms.spmNo', 'products.itemName', 'customers.custName', 'jenistruks.jenisTruk', 'trscale.jam_in', 'products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI', 'createspms.dnNo',  'trscale.b10QtyKarung', 'create_t_m_s.tglDaftar', DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"), DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"))->orderBy('createspms.id', 'desc')->paginate(10);
         } else {
-        $this->tglout = $tglout->jam_out;
+            $this->tglout = $tglout->jam_out;
             // $datapgi = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out','=',$this->tglout)->whereNotNull('buktiPGI')->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI' )->orderBy('createspms.id','desc')->paginate(10);
-            $datapgi = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out','=',$this->tglout)->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->select('createspms.id as spmID','createspms.sealNo1','createspms.driver','createspms.carID','createspms.spmNo','products.itemName','customers.custName','jenistruks.jenisTruk', 'trscale.jam_in','products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI', 'createspms.dnNo',  'trscale.b10QtyKarung' )->orderBy('createspms.id','desc')->paginate(10);
+            $datapgi = DB::connection('sqlsrv')->table('trscale')->join('createspms', 'createspms.id', 'trscale.spmID')->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'trscale.itemCode')->join('customers', 'customers.custID', 'trscale.custID')->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')->wheredate('jam_out', '=', $this->tglout)->whereNotNull('netto')->whereNotNull('createspms.sealNo1')->when($this->shift, function ($query) {
+                $query->whereRaw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
+            })->select('createspms.id as spmID', 'createspms.sealNo1', 'createspms.driver', 'createspms.carID', 'createspms.spmNo', 'products.itemName', 'customers.custName', 'jenistruks.jenisTruk', 'trscale.jam_in', 'products.type', 'trscale.id as trsID', 'trscale.jam_out', 'trscale.timbangin', 'trscale.timbangout', 'trscale.netto', 'trscale.avgkarung', 'createspms.sealNo', 'createsppbs.sppbNo', 'create_t_m_s.pendfNo', 'createspms.buktiPGI', 'createspms.dnNo',  'trscale.b10QtyKarung', 'create_t_m_s.tglDaftar', DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"), DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"))->orderBy('createspms.id', 'desc')->paginate(10);
         }
         // dd($datapgi);
-        return view('livewire.cardpgi',['datapgi' => $datapgi]);
+        return view('livewire.cardpgi', ['datapgi' => $datapgi]);
     }
 }

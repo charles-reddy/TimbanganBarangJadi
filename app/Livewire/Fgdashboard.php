@@ -117,6 +117,15 @@ class Fgdashboard extends Component
             ->where('isApprove', true)
             ->first();
 
+        // Jika tidak ada, ambil quota default (quotaTglDatang = NULL)
+        if (!$quotaToday) {
+            $quotaToday = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
+                ->whereNull('quotaTglDatang')
+                ->where('isApprove', true)
+                ->orderBy('id', 'desc')
+                ->first();
+        }
+
         // Query 7 hari kerja terakhir (exclude Minggu) untuk chart shift performance
         $last7WorkingDays = [];
         $currentDate = Carbon::now();

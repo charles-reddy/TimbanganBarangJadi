@@ -175,16 +175,17 @@
                         @if ($quotaToday && $quotaToday->quota1)
                             <hr class="my-2">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <small class="text-muted">Target: {{ $quotaToday->quota1 }} truk</small>
-                                <small
-                                    class="fw-bold {{ ($shift1->totalTruk ?? 0) >= $quotaToday->quota1 ? 'text-success' : 'text-warning' }}">
-                                    {{ number_format((($shift1->totalTruk ?? 0) / $quotaToday->quota1) * 100, 1) }}%
+                                <small class="text-muted">Target: {{ number_format($quotaToday->quota1 / 1000, 2) }}
+                                    MT</small>
+                                <small class="fw-bold text-primary">
+                                    {{ number_format((($shift1->totalNetto ?? 0) / $quotaToday->quota1) * 100, 1) }}%
                                 </small>
                             </div>
                             <div class="progress" style="height: 20px;">
-                                <div class="progress-bar {{ ($shift1->totalTruk ?? 0) >= $quotaToday->quota1 ? 'bg-success' : 'bg-warning' }}"
-                                    style="width: {{ min((($shift1->totalTruk ?? 0) / $quotaToday->quota1) * 100, 100) }}%">
-                                    {{ $shift1->totalTruk ?? 0 }}/{{ $quotaToday->quota1 }}
+                                <div class="progress-bar bg-primary"
+                                    style="width: {{ min((($shift1->totalNetto ?? 0) / $quotaToday->quota1) * 100, 100) }}%">
+                                    {{ number_format(($shift1->totalNetto ?? 0) / 1000, 2) }}/{{ number_format($quotaToday->quota1 / 1000, 2) }}
+                                    MT
                                 </div>
                             </div>
                         @endif
@@ -213,16 +214,17 @@
                         @if ($quotaToday && $quotaToday->quota2)
                             <hr class="my-2">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <small class="text-muted">Target: {{ $quotaToday->quota2 }} truk</small>
-                                <small
-                                    class="fw-bold {{ ($shift2->totalTruk ?? 0) >= $quotaToday->quota2 ? 'text-success' : 'text-warning' }}">
-                                    {{ number_format((($shift2->totalTruk ?? 0) / $quotaToday->quota2) * 100, 1) }}%
+                                <small class="text-muted">Target: {{ number_format($quotaToday->quota2 / 1000, 2) }}
+                                    MT</small>
+                                <small class="fw-bold text-success">
+                                    {{ number_format((($shift2->totalNetto ?? 0) / $quotaToday->quota2) * 100, 1) }}%
                                 </small>
                             </div>
                             <div class="progress" style="height: 20px;">
-                                <div class="progress-bar {{ ($shift2->totalTruk ?? 0) >= $quotaToday->quota2 ? 'bg-success' : 'bg-warning' }}"
-                                    style="width: {{ min((($shift2->totalTruk ?? 0) / $quotaToday->quota2) * 100, 100) }}%">
-                                    {{ $shift2->totalTruk ?? 0 }}/{{ $quotaToday->quota2 }}
+                                <div class="progress-bar bg-success"
+                                    style="width: {{ min((($shift2->totalNetto ?? 0) / $quotaToday->quota2) * 100, 100) }}%">
+                                    {{ number_format(($shift2->totalNetto ?? 0) / 1000, 2) }}/{{ number_format($quotaToday->quota2 / 1000, 2) }}
+                                    MT
                                 </div>
                             </div>
                         @endif
@@ -251,16 +253,17 @@
                         @if ($quotaToday && $quotaToday->quota3)
                             <hr class="my-2">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <small class="text-muted">Target: {{ $quotaToday->quota3 }} truk</small>
-                                <small
-                                    class="fw-bold {{ ($shift3->totalTruk ?? 0) >= $quotaToday->quota3 ? 'text-success' : 'text-warning' }}">
-                                    {{ number_format((($shift3->totalTruk ?? 0) / $quotaToday->quota3) * 100, 1) }}%
+                                <small class="text-muted">Target: {{ number_format($quotaToday->quota3 / 1000, 2) }}
+                                    MT</small>
+                                <small class="fw-bold text-warning">
+                                    {{ number_format((($shift3->totalNetto ?? 0) / $quotaToday->quota3) * 100, 1) }}%
                                 </small>
                             </div>
                             <div class="progress" style="height: 20px;">
-                                <div class="progress-bar {{ ($shift3->totalTruk ?? 0) >= $quotaToday->quota3 ? 'bg-success' : 'bg-warning' }}"
-                                    style="width: {{ min((($shift3->totalTruk ?? 0) / $quotaToday->quota3) * 100, 100) }}%">
-                                    {{ $shift3->totalTruk ?? 0 }}/{{ $quotaToday->quota3 }}
+                                <div class="progress-bar bg-warning"
+                                    style="width: {{ min((($shift3->totalNetto ?? 0) / $quotaToday->quota3) * 100, 100) }}%">
+                                    {{ number_format(($shift3->totalNetto ?? 0) / 1000, 2) }}/{{ number_format($quotaToday->quota3 / 1000, 2) }}
+                                    MT
                                 </div>
                             </div>
                         @endif
