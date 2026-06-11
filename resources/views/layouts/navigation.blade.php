@@ -55,6 +55,9 @@
                             <x-dropdown-link :href="route('mastersupplier')" active="request()->routeIs('dashboard')">
                                 {{ __('Tambah Supplier') }}
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('masterproduct')" active="request()->routeIs('dashboard')">
+                                {{ __('Tambah Produk') }}
+                            </x-dropdown-link>
                             <!-- <x-dropdown-link :href="route('createsppb')" active="request()->routeIs('dashboard')">
                                 {{ __('Buat SPPB') }}
                             </x-dropdown-link> -->
@@ -357,6 +360,9 @@
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('mastersupplier')" active="request()->routeIs('dashboard')">
                                     {{ __('Tambah Supplier') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('masterproduct')" active="request()->routeIs('dashboard')">
+                                    {{ __('Tambah Produk') }}
                                 </x-dropdown-link>
                             
                             </x-slot>
