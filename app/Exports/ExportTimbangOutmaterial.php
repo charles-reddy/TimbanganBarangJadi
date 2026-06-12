@@ -11,95 +11,123 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 class ExportTimbangOutmaterial implements FromCollection, WithHeadings, WithMapping
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
 
     protected $tglin;
     protected $katakunciout;
     public $sortColumn = 'jam_in';
     public $sortDirection = 'asc';
-    
+    protected $productFilter;
 
-    function __construct($tglin,$katakunciout) {
-            $this->tglin = $tglin;
-            $this->katakunciout = $katakunciout;
-            
+
+    function __construct($tglin, $katakunciout, $sortColumn = 'jam_in', $sortDirection = 'asc', $productFilter = null)
+    {
+        $this->tglin = $tglin;
+        $this->katakunciout = $katakunciout;
+        $this->sortColumn = $sortColumn;
+        $this->sortDirection = $sortDirection;
+        $this->productFilter = $productFilter;
     }
 
     public function sort($columnName)
     {
         $this->sortColumn = $columnName;
-        $this->sortDirection = $this->sortDirection == 'asc'?'desc' : 'asc';
-        
+        $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
     }
 
     public function collection()
     {
-        $tglawal=date('d-m-Y',strtotime(Carbon::now()->subDay(4)));
-        
+        $tglawal = date('d-m-Y', strtotime(Carbon::now()->subDay(4)));
 
-        if (($this->katakunciout )  !=null) { 
-            
+
+        if (($this->katakunciout)  != null) {
+
             //  dd('satu');   
-            // $hasil = DB::connection('sqlsrv')->table('trscaleb19s')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->wheredate('jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->get();
-            $hasil = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->wheredate('jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->get();
-            
-        } elseif (($this->tglin  )  !=null) {
+            $hasil = DB::connection('sqlsrv')->table('trscaleb19s')
+                ->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')
+                ->join('products', 'products.itemCode', 'trscaleb19s.itemCode')
+                ->where(function ($query) {
+                    $query->where('driver', 'like', '%' . $this->katakunciout . '%')
+                        ->orWhere('carID', 'like', '%' . $this->katakunciout . '%');
+                })
+                ->whereNotNull('netto')
+                ->wheredate('jam_in', '>=', $this->tglin)
+                ->when($this->productFilter, function ($query) {
+                    $query->where('products.itemName', 'like', '%' . $this->productFilter . '%');
+                })
+                ->orderby($this->sortColumn, $this->sortDirection)
+                ->get();
+        } elseif (($this->tglin)  != null) {
             // dd('dua'); 
-            // $hasil = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('transporters', 'transporters.transpID', 'trscaleb19s.transpID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
-            $hasil = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
-        
+            $hasil = DB::connection('sqlsrv')->table('trscaleb19s')
+                ->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')
+                ->join('products', 'products.itemCode', 'trscaleb19s.itemCode')
+                ->wheredate('jam_in', '>=', $this->tglin)
+                ->whereNotNull('netto')
+                ->when($this->productFilter, function ($query) {
+                    $query->where('products.itemName', 'like', '%' . $this->productFilter . '%');
+                })
+                ->orderby($this->sortColumn, $this->sortDirection)
+                ->get();
         } else {
-             
+
             $this->tglin = $tglawal;
-            // $hasil = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('transporters', 'transporters.transpID', 'trscaleb19s.transpID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
-            $hasil = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
-        
+            $hasil = DB::connection('sqlsrv')->table('trscaleb19s')
+                ->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')
+                ->join('products', 'products.itemCode', 'trscaleb19s.itemCode')
+                ->wheredate('jam_in', '>=', $this->tglin)
+                ->whereNotNull('netto')
+                ->when($this->productFilter, function ($query) {
+                    $query->where('products.itemName', 'like', '%' . $this->productFilter . '%');
+                })
+                ->orderby($this->sortColumn, $this->sortDirection)
+                ->get();
         }
         return $hasil;
     }
 
     public function headings(): array
-        {
-            //Put Here Header Name That you want in your excel sheet 
-            return [
-                'ID Transaksi',
-                'Driver',
-                'Car ID',
-                'Supplier',
-                'Item Name',
-                'Bobot IN',
-                'Bobot OUT',
-                'Netto',
-                'Date IN',
-                'Date OUT',
-               
-            ];
-        }
+    {
+        //Put Here Header Name That you want in your excel sheet 
+        return [
+            'ID Transaksi',
+            'Driver',
+            'Car ID',
+            'Supplier',
+            'Item Name',
+            'Bobot IN',
+            'Bobot OUT',
+            'Netto',
+            'Date IN',
+            'Date OUT',
 
-        public function map($hasil): array
-        {
-            
-            return [
-                $hasil->id,
-                $hasil->driver,
-                $hasil->carID,
-                $hasil->suppName,
-                $hasil->itemName,
-                $hasil->timbangin,
-                $hasil->timbangout,
-                $hasil->netto,
-                date('d-m-Y H:i:s',strtotime( $hasil->jam_in)),
-                date('d-m-Y H:i:s',strtotime( $hasil->jam_out)),
-                
-                
-                
+        ];
+    }
+
+    public function map($hasil): array
+    {
+
+        return [
+            $hasil->id,
+            $hasil->driver,
+            $hasil->carID,
+            $hasil->suppName,
+            $hasil->itemName,
+            $hasil->timbangin,
+            $hasil->timbangout,
+            $hasil->netto,
+            date('d-m-Y H:i:s', strtotime($hasil->jam_in)),
+            date('d-m-Y H:i:s', strtotime($hasil->jam_out)),
 
 
-              
-                
-                
-                
-            ];
-        }
+
+
+
+
+
+
+
+        ];
+    }
 }
