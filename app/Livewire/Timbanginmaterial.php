@@ -29,8 +29,12 @@ class Timbanginmaterial extends Component
     public $carID;
     public $suppID;
     public $suppIDRaw; // For manual mode - raw suppID without name
+    public $suppSearchQuery = ''; // For live search
+    public $showSupplierDropdown = false;
     public $itemCode;
     public $itemCodeRaw; // For manual mode - raw itemCode without name
+    public $itemSearchQuery = ''; // For live search
+    public $showItemDropdown = false;
     public $doNo;
     public $updateData = false;
     public $jembatanTimbang;
@@ -64,14 +68,59 @@ class Timbanginmaterial extends Component
         $this->carID = '';
         $this->suppID = '';
         $this->suppIDRaw = '';
+        $this->suppSearchQuery = '';
+        $this->showSupplierDropdown = false;
         $this->itemCode = '';
         $this->itemCodeRaw = '';
+        $this->itemSearchQuery = '';
+        $this->showItemDropdown = false;
         $this->doNo = '';
         $this->poNo = '';
         $this->remarks = '';
         $this->timbangin = '';
         $this->transID = '';
         $this->resetValidation();
+    }
+
+    // Handle supplier search input
+    public function updatedSuppSearchQuery()
+    {
+        $this->showSupplierDropdown = strlen($this->suppSearchQuery) > 0;
+        $this->suppIDRaw = ''; // Reset selection when typing
+    }
+
+    // Select supplier from dropdown
+    public function selectSupplier($suppID, $suppName)
+    {
+        $this->suppIDRaw = $suppID;
+        $this->suppSearchQuery = $suppName;
+        $this->showSupplierDropdown = false;
+    }
+
+    // Handle item search input
+    public function updatedItemSearchQuery()
+    {
+        $this->showItemDropdown = strlen($this->itemSearchQuery) > 0;
+        $this->itemCodeRaw = ''; // Reset selection when typing
+    }
+
+    // Select item from dropdown
+    public function selectItem($itemCode, $itemName)
+    {
+        $this->itemCodeRaw = $itemCode;
+        $this->itemSearchQuery = $itemName;
+        $this->showItemDropdown = false;
+    }
+
+    // Close dropdown when clicking outside
+    public function closeSupplierDropdown()
+    {
+        $this->showSupplierDropdown = false;
+    }
+
+    public function closeItemDropdown()
+    {
+        $this->showItemDropdown = false;
     }
 
 
@@ -81,6 +130,7 @@ class Timbanginmaterial extends Component
         try {
 
             $iptimbangan = JembatanTimbang::where('timbanganID', '=', $this->timbanganID)->value('IP');
+
             // *************** testing timbangan *******************
             // $this->timbangin = 88888;
 
@@ -100,6 +150,7 @@ class Timbanginmaterial extends Component
             // dd($this->output);
             // *************** testing timbangan *******************
 
+            // dd($this->timbanganID);
             $data = null; // Initialize $data variable
             switch ($this->timbanganID) {
                 case 1:
@@ -112,6 +163,10 @@ class Timbanginmaterial extends Component
 
                 case '3':
                     $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
+                    break;
+
+                case '5':
+                    $data = "http://10.20.1.49:3000/api/weight/SCALE_07";
                     break;
 
                 default:
@@ -239,7 +294,11 @@ class Timbanginmaterial extends Component
         $this->itemCode = '';
         $this->suppID = '';
         $this->suppIDRaw = '';
+        $this->suppSearchQuery = '';
+        $this->showSupplierDropdown = false;
         $this->itemCodeRaw = '';
+        $this->itemSearchQuery = '';
+        $this->showItemDropdown = false;
         $this->updateData = false;
         $this->id_trscale = '';
         $this->trscaleSelectedID = [];
@@ -296,12 +355,20 @@ class Timbanginmaterial extends Component
         // Load supplier dan product list untuk manual mode
         $suppliers = DB::connection('sqlsrv')->table('suppliers')
             ->select('suppID', 'suppName')
+            ->when($this->suppSearchQuery, function ($query) {
+                $query->where('suppName', 'like', '%' . $this->suppSearchQuery . '%');
+            })
             ->orderBy('suppName', 'asc')
+            ->limit(10) // Limit results for performance
             ->get();
 
         $products = DB::connection('sqlsrv')->table('products')
             ->select('itemCode', 'itemName')
+            ->when($this->itemSearchQuery, function ($query) {
+                $query->where('itemName', 'like', '%' . $this->itemSearchQuery . '%');
+            })
             ->orderBy('itemName', 'asc')
+            ->limit(10) // Limit results for performance
             ->get();
 
         return view('livewire.timbanginmaterial', [

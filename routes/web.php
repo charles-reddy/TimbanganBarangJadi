@@ -118,7 +118,7 @@ route::get('/mastercustomer', function () {
 
 route::get('/masterproduct', function () {
     return view('masterproduct');
-})->middleware(['auth', 'verified','role:administrator|manager-logistik|supervisor-timbangan-registrasi|operator-registrasi'])->name('masterproduct');
+})->middleware(['auth', 'verified','role:administrator|manager-logistik|supervisor-timbangan-registrasi|operator-registrasi|operator-timbangan'])->name('masterproduct');
 
 
 Route::get('/timbanganmasukb19', function () {

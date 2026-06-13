@@ -69,6 +69,11 @@ class Timbangoutmaterial extends Component
                     $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
                     break; 
 
+                case '5':
+                    $data = "http://10.20.1.49:3000/api/weight/SCALE_07";
+                    break;
+
+
                 default:
                     
                     break;

@@ -1,4 +1,15 @@
 <div>
+    <style>
+        .list-group-item-action:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .list-group-item-action:focus {
+            background-color: #e9ecef;
+        }
+    </style>
+
     @if (session('error'))
         <div class="pt-3">
             <div class="alert alert-danger">
@@ -137,14 +148,38 @@
                                 @if ($entryMode == 'registered')
                                     <input type="text" class="form-control w-50" wire:model="suppID" disabled>
                                 @else
-                                    <div wire:ignore>
-                                        <select class="js-supplier-select w-50" id="my-supplier" wire:model="suppIDRaw">
-                                            <option value="">-- Pilih Supplier --</option>
-                                            @foreach ($suppliers as $supplier)
-                                                <option value="{{ $supplier->suppID }}">{{ $supplier->suppName }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                    <div class="position-relative" style="max-width: 50%;"
+                                        wire:click.away="closeSupplierDropdown">
+                                        <input type="text" class="form-control" wire:model.live="suppSearchQuery"
+                                            placeholder="Ketik untuk mencari supplier..." autocomplete="off">
+
+                                        <div wire:loading wire:target="suppSearchQuery" class="position-absolute"
+                                            style="right: 10px; top: 8px;">
+                                            <span class="spinner-border spinner-border-sm text-primary"
+                                                role="status"></span>
+                                        </div>
+
+                                        @if ($showSupplierDropdown && count($suppliers) > 0)
+                                            <div class="list-group position-absolute w-100"
+                                                style="max-height: 200px; overflow-y: auto; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                                @foreach ($suppliers as $supplier)
+                                                    <button type="button"
+                                                        class="list-group-item list-group-item-action text-start"
+                                                        wire:click="selectSupplier('{{ $supplier->suppID }}', '{{ $supplier->suppName }}')">
+                                                        {{ $supplier->suppName }}
+                                                    </button>
+                                                @endforeach
+                                            </div>
+                                        @endif
+
+                                        @if ($showSupplierDropdown && count($suppliers) == 0)
+                                            <div class="list-group position-absolute w-100"
+                                                style="z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                                <div class="list-group-item text-muted">
+                                                    Tidak ada supplier ditemukan
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 @endif
                             </div>
@@ -161,14 +196,38 @@
                                 @if ($entryMode == 'registered')
                                     <input type="text" class="form-control w-50" wire:model="itemCode" disabled>
                                 @else
-                                    <div wire:ignore>
-                                        <select class="js-product-select w-50" id="my-product" wire:model="itemCodeRaw">
-                                            <option value="">-- Pilih Produk --</option>
-                                            @foreach ($products as $product)
-                                                <option value="{{ $product->itemCode }}">{{ $product->itemName }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                    <div class="position-relative" style="max-width: 50%;"
+                                        wire:click.away="closeItemDropdown">
+                                        <input type="text" class="form-control" wire:model.live="itemSearchQuery"
+                                            placeholder="Ketik untuk mencari produk..." autocomplete="off">
+
+                                        <div wire:loading wire:target="itemSearchQuery" class="position-absolute"
+                                            style="right: 10px; top: 8px;">
+                                            <span class="spinner-border spinner-border-sm text-primary"
+                                                role="status"></span>
+                                        </div>
+
+                                        @if ($showItemDropdown && count($products) > 0)
+                                            <div class="list-group position-absolute w-100"
+                                                style="max-height: 200px; overflow-y: auto; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                                @foreach ($products as $product)
+                                                    <button type="button"
+                                                        class="list-group-item list-group-item-action text-start"
+                                                        wire:click="selectItem('{{ $product->itemCode }}', '{{ $product->itemName }}')">
+                                                        {{ $product->itemName }}
+                                                    </button>
+                                                @endforeach
+                                            </div>
+                                        @endif
+
+                                        @if ($showItemDropdown && count($products) == 0)
+                                            <div class="list-group position-absolute w-100"
+                                                style="z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                                <div class="list-group-item text-muted">
+                                                    Tidak ada produk ditemukan
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 @endif
                             </div>
@@ -357,91 +416,21 @@
             <script>
                 $(document).ready(function() {
                     $('.js-example-basic-single').select2();
-                    $('.js-supplier-select').select2({
-                        placeholder: "-- Cari Supplier --",
-                        allowClear: true
-                    });
-                    $('.js-product-select').select2({
-                        placeholder: "-- Cari Produk --",
-                        allowClear: true
-                    });
-
-                    // $('#my-custID').on('change',function(e) {
-                    //     var data = $('#my-custID').select2("val");
-                    //     @this.set('custID',data);
-                    // })
-
-
-
-
-
-                    // $(document).ready(function() {
-                    //     $('#my-custID').select2({
-                    //         placeholder: "Seleccione el Género"
-                    //     }).prepend('<option selected=""></option>')
-                    //     $('#my-custID').on('change', function(e) {
-                    //         @this.set('custID', e.target.value);
-                    //     });
-                    // });
-
-                    // $('#my-transpID').on('change',function(e) {
-                    //     var data = $('#my-transpID').select2("val");
-                    //     @this.set('transpID',data);
-                    // })
 
                     $('#my-regNo').on('change', function(e) {
                         var data = $('#my-regNo').select2("val");
                         @this.set('regNo', data);
                     })
 
-                    // Handle supplier change
-                    $('#my-supplier').on('change', function(e) {
-                        var data = $('#my-supplier').select2("val");
-                        @this.set('suppIDRaw', data);
-                    })
-
-                    // Handle product change
-                    $('#my-product').on('change', function(e) {
-                        var data = $('#my-product').select2("val");
-                        @this.set('itemCodeRaw', data);
-                    })
-
                     // Reinitialize Select2 when Livewire updates the DOM
                     Livewire.hook('message.processed', (message, component) => {
                         $('.js-example-basic-single').select2();
-                        $('.js-supplier-select').select2({
-                            placeholder: "-- Cari Supplier --",
-                            allowClear: true
-                        });
-                        $('.js-product-select').select2({
-                            placeholder: "-- Cari Produk --",
-                            allowClear: true
-                        });
 
                         $('#my-regNo').on('change', function(e) {
                             var data = $('#my-regNo').select2("val");
                             @this.set('regNo', data);
                         })
-
-                        $('#my-supplier').on('change', function(e) {
-                            var data = $('#my-supplier').select2("val");
-                            @this.set('suppIDRaw', data);
-                        })
-
-                        $('#my-product').on('change', function(e) {
-                            var data = $('#my-product').select2("val");
-                            @this.set('itemCodeRaw', data);
-                        })
                     });
-
-                    // $('#my-itemCode').on('change',function(e) {
-                    //     var data = $('#my-itemCode').select2("val");
-                    //     @this.set('itemCode',data);
-                    // })
-
-
-
-
                 });
             </script>
             <script>
