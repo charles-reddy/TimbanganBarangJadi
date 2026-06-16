@@ -49,7 +49,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <h4 >Tgl Masuk : {{ date('d-m-Y ',strtotime($item->jam_in)) }}</h4><br> 
+                        <h4 >Tgl Masuk : {{ date('d-m-Y h:i:s',strtotime($item->jam_in)) }}</h4><br> 
                         
                     </td>
                     <td>
@@ -61,7 +61,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <h4 >Tgl Keluar : {{ date('d-m-Y ',strtotime($item->jam_out)) }}</h4>
+                        <h4 >Tgl Keluar : {{ date('d-m-Y h:i:s ',strtotime($item->jam_out)) }}</h4>
                         
                     </td>
                     <td>
