@@ -20,53 +20,50 @@ class Laptiketmuatapproved extends Component
     public $katacust;
     public $tglMuat;
     public $ip;
+    public $kataproduct;
 
 
     public function store()
     {
-        
+
 
         try {
-               
-            DB::connection('sqlsrv')->table('create_t_m_s')->where('id',$this->transID)->update([
+
+            DB::connection('sqlsrv')->table('create_t_m_s')->where('id', $this->transID)->update([
                 'isMktApp' => null,
-                
-                
+
+
             ]);
-            
+
             session()->flash('message', 'Approval berhasil Dibatalkan');
             $this->clear();
             redirect('/laptiketmuatapproved');
-            
-
         } catch (\Throwable $th) {
-            
-            
+
+
             session()->flash('error', 'gagal menyimpan data');
-            
         }
     }
 
 
     public function edit($id)
     {
-        $this->ip = substr(request()->ip(),0,2);
+        $this->ip = substr(request()->ip(), 0, 2);
         $data = DB::connection('sqlsrv')->table('create_t_m_s')->where('id', $id)->first();
         // dd($data->simKtp);
         $this->tiketMuat = $data->pendfNo;
         $this->transID = $id;
         if ($data->simKtp != null) {
 
-            if($this->ip == '10.20.3.9') {
+            if ($this->ip == '10.20.3.9') {
                 // dd('local');
                 $this->simKtp = 'http://10.20.1.64:8104/storage/' . $data->simKtp;
             } else {
                 // dd('outside');
                 $this->simKtp = 'https://customer.appktm.com/storage/' . $data->simKtp;
             }
-   
         } else {
-            if($this->ip == '10.20.3.9') {
+            if ($this->ip == '10.20.3.9') {
                 // dd('local');
                 $this->simKtp = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
             } else {
@@ -76,15 +73,14 @@ class Laptiketmuatapproved extends Component
         }
 
         if ($data->stnk != null) {
-            if($this->ip == '10.20.3.9') {
+            if ($this->ip == '10.20.3.9') {
                 // dd('local');
                 $this->stnk = 'http://10.20.1.64:8104/storage/' . $data->stnk;
             } else {
                 $this->stnk = 'https://customer.appktm.com/storage/' . $data->stnk;
             }
-            
         } else {
-            if($this->ip == '10.20.3.9') {
+            if ($this->ip == '10.20.3.9') {
                 // dd('local');
                 $this->stnk = 'http://10.20.1.64:8104/storage/uploads/noimage.jpg';
             } else {
@@ -92,8 +88,6 @@ class Laptiketmuatapproved extends Component
                 $this->stnk = 'https://customer.appktm.com/storage/uploads/noimage.jpg';
             }
         }
-        
-       
     }
 
     public function cancel($id)
@@ -102,27 +96,58 @@ class Laptiketmuatapproved extends Component
         // dd($data->simKtp);
         $this->tiketMuat = $data->pendfNo;
         $this->transID = $id;
-       
-       
     }
 
-     public function clear()
+    public function clear()
     {
         redirect('/laptiketmuatapproved');
     }
 
     public function render()
     {
-        if ($this->katakunci  !=null) {
-            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('customers', 'customers.custID', 'create_t_m_s.custID')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','sppbNo','tmCarID','isMktApp','tglMuat','custName','isSecCek','tmTranspName', 'isSecCekDate')->where('isMktApp','1')->where('pendfNo','like','%' . $this->katakunci . '%')->orderBy('id','desc')->paginate(10);
-        } elseif ($this->katacust  !=null) {
-            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('customers', 'customers.custID', 'create_t_m_s.custID')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','sppbNo','tmCarID','isMktApp','tglMuat','custName','isSecCek','tmTranspName', 'isSecCekDate')->where('isMktApp','1')->where('custName','like','%' . $this->katacust . '%')->orderBy('id','desc')->paginate(10);
-        } elseif ($this->tglMuat  !=null) {
-            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('customers', 'customers.custID', 'create_t_m_s.custID')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','sppbNo','tmCarID','isMktApp','tglMuat','custName','isSecCek','tmTranspName', 'isSecCekDate')->where('isMktApp','1')->wheredate('tglMuat','=', $this->tglMuat)->orderBy('id','desc')->paginate(10);
-        } else {
-            $data = DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createspms', 'createspms.tiketID', 'create_t_m_s.id')->join('trscale', 'trscale.spmID', 'createspms.id')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','createsppbs.sppbNo','tmCarID','isMktApp','tglMuat','custName','isSecCek','tmTranspName', 'isSecCekDate', 'jam_out')->where('isMktApp','1')->orderBy('id','desc')->paginate(10);
-        // dd($data);
+        // Build the base query
+        $query = DB::connection('sqlsrv')->table('create_t_m_s')
+            ->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')
+            ->join('customers', 'customers.custID', 'create_t_m_s.custID')
+            ->join('products', 'products.itemCode', 'create_t_m_s.itemCode')
+            ->where('isMktApp', '1');
+
+        // Apply filters conditionally
+        if ($this->katakunci) {
+            $query->where('pendfNo', 'like', '%' . $this->katakunci . '%');
         }
-        return view('livewire.laptiketmuatapproved',['datatiketmuat' => $data]);
+
+        if ($this->katacust) {
+            $query->where('custName', 'like', '%' . $this->katacust . '%');
+        }
+
+        if ($this->tglMuat) {
+            $query->whereDate('tglMuat', '=', $this->tglMuat);
+        }
+
+        if ($this->kataproduct) {
+            $query->where('products.itemName', 'like', '%' . $this->kataproduct . '%');
+        }
+
+        // Select fields and paginate
+        $data = $query->select(
+            'create_t_m_s.id',
+            'pendfNo',
+            'tmQtyKg',
+            'tmQtyKarung',
+            'sppbNo',
+            'tmCarID',
+            'isMktApp',
+            'tglMuat',
+            'custName',
+            'isSecCek',
+            'tmTranspName',
+            'isSecCekDate',
+            'itemName'
+        )
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+
+        return view('livewire.laptiketmuatapproved', ['datatiketmuat' => $data]);
     }
 }

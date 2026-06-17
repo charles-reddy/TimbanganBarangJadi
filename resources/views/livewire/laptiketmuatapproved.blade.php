@@ -1,37 +1,36 @@
 <div>
     @if (session('error'))
-    <div class="pt-3">
-        <div class="alert alert-danger">
-            <span class="sr-only">WARNING</span>
-            <div>
-            <span class="font-medium">Danger alert!</span> {{ session("error") }}
+        <div class="pt-3">
+            <div class="alert alert-danger">
+                <span class="sr-only">WARNING</span>
+                <div>
+                    <span class="font-medium">Danger alert!</span> {{ session('error') }}
+                </div>
             </div>
         </div>
-    </div>
     @endif
 
-    
+
     @if ($errors->any())
-    <div class="pt-3">
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $item)
-                    <li>{{ $item }}</li>
-                @endforeach
-            </ul>
+        <div class="pt-3">
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $item)
+                        <li>{{ $item }}</li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
-    </div>
-        
+
     @endif
 
 
     @if (session()->has('message'))
-    <div class="pt-3">
-        <div class="alert alert-success">
-            {{ session('message') }}
+        <div class="pt-3">
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
         </div>
-    </div>
-        
     @endif
 
 
@@ -64,24 +63,24 @@
                             <input type="text" class="form-control w-50" wire:model="tiketMuat" disabled>
                         </div>
                     </div>
-                    
+
                 </div>
-               
+
             </div>
-            
-           
-            
-            
-            
-          
+
+
+
+
+
+
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
-                   
-                        <button type="button" class="btn btn-primary" name="submit" wire:click="store()">Cancel</button>
-                   
-                        <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
-                    
+
+                    <button type="button" class="btn btn-primary" name="submit" wire:click="store()">Cancel</button>
+
+                    <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
+
                 </div>
             </div>
         </form>
@@ -92,7 +91,7 @@
     {{-- start report --}}
     <div class="card-body">
         <div class="card-body table-responsive p-0">
-            <div class="my-3 p-3 bg-body rounded shadow-sm"  >
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
                 <h1></h1>
                 <div class="mb-3 row">
                     <div class="col">
@@ -100,145 +99,159 @@
                             <h2>Tiket Muat - Approved </h2>
                         </div>
                     </div>
-                            
-                            <div class="row mt-4">
-                                <div class="col-sm-4">
-                                    <input type="text" class="form-control mb-3 w-50" placeholder="Search base Tiket Muat ..." wire:model.live="katakunci">
-                                </div>
-                                <div class="col-sm-4">
-                                    <input type="text" class="form-control mb-3 w-50" placeholder="Search base customer ..." wire:model.live="katacust">
-                                </div>
-                                <div class="col-sm-1">
-                                    <label for="">Filter Tgl Muat</label>
-                                </div>
-                                <div class="col-sm-2">
-                                    <input type="date" id="tglin" class="form-control  mb-3 w-50"  wire:model.live="tglMuat">
-                                </div>
-                          
-                            </div>
 
-                
-                        
-                        {{ $datatiketmuat->links() }}
-                    
-                    <div class="d-flex justify-content-left">
-                    
-                        <table class="table table-striped table-sortable w-100 p-3 ">
-                            <thead>
+                    <!-- Filter Section -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <label for="tiketmuat" class="form-label small text-muted">Tiket Muat</label>
+                            <input type="text" id="tiketmuat" class="form-control" placeholder="Search tiket muat..."
+                                wire:model.live="katakunci">
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <label for="customer" class="form-label small text-muted">Customer</label>
+                            <input type="text" id="customer" class="form-control" placeholder="Search customer..."
+                                wire:model.live="katacust">
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <label for="product" class="form-label small text-muted">Product</label>
+                            <input type="text" id="product" class="form-control" placeholder="Search product..."
+                                wire:model.live="kataproduct">
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <label for="tglmuat" class="form-label small text-muted">Tanggal Muat</label>
+                            <input type="date" id="tglmuat" class="form-control" wire:model.live="tglMuat">
+                        </div>
+                    </div>
+
+
+
+                    {{ $datatiketmuat->links() }}
+
+                    <div class="table-responsive">
+
+                        <table class="table table-striped table-hover align-middle">
+                            <thead class="table-light">
                                 <tr>
-                                    <th></th>
-                                    <th class="col-md-0">No Tiket Muat</th>
-                                    <th class="col-md-0">SPPB No</th>
-                                    <th class="col-md-0">Customer</th>
-                                    <th class="col-md-0">Berat</th>
-                                    <th class="col-md-0">Karung</th>
-                                    <th class="col-md-0">Tgl Muat</th>
-                                    
-                                    <th class="col-md-0">Plat No</th>
-                                    <th class="col-md-0">Transporter</th>
-                                    <th class="col-md-0">Approved</th>
-                                    <th class="col-md-0">Sudah di Pabrik</th>
-                                    
-                                    <th class="col-md-1"  wire:click="Pilih" >Pilih </th>
-                                    <th class="col-md-1"  wire:click="Pilih" >Cancel </th>
-                                
-                                    
+                                    <th class="text-center" style="width: 60px;">No</th>
+                                    <th>Tiket Muat</th>
+                                    <th>SPPB No</th>
+                                    <th>Customer</th>
+                                    <th>Product</th>
+                                    <th class="text-end">Berat (Kg)</th>
+                                    <th class="text-center">Karung</th>
+                                    <th>Tgl Muat</th>
+                                    <th>Plat No</th>
+                                    <th>Transporter</th>
+                                    <th class="text-center">Approved</th>
+                                    <th class="text-center">Sudah di Pabrik</th>
+                                    <th class="text-center">Pilih</th>
+                                    <th class="text-center">Cancel</th>
                                 </tr>
                             </thead>
-                            <tbody> 
-                                @foreach ($datatiketmuat as $key )
-                                <tr>
-                                    <td></td>
-                                    <td>{{ $key->pendfNo }}</td>
-                                    <td>{{ $key->sppbNo }}</td>
-                                    <td>{{ $key->custName }}</td>
-                                    <td>{{ $key->tmQtyKg }}</td>
-                                    <td>{{ $key->tmQtyKarung }}</td>
-                                    <td>{{ $key->tglMuat }}</td>
-                                    
-                                    <td>{{ $key->tmCarID }}</td>
-                                    <td>{{ $key->tmTranspName }}</td>
-                                    <td> @php
-                                        if ($key->isMktApp){
-                                            echo 'Yes';
-                                        } else {
-                                            echo 'no';
-                                        }
-
-                                        @endphp
+                            <tbody>
+                                @php
+                                    $totalkg = 0;
+                                    $no = $datatiketmuat->firstItem();
+                                @endphp
+                                @foreach ($datatiketmuat as $key)
+                                    <tr>
+                                        <td class="text-center">{{ $no++ }}</td>
+                                        <td>{{ $key->pendfNo }}</td>
+                                        <td>{{ $key->sppbNo }}</td>
+                                        <td>{{ $key->custName }}</td>
+                                        <td>{{ $key->itemName }}</td>
+                                        <td class="text-end">{{ number_format($key->tmQtyKg) }}</td>
+                                        <td class="text-center">{{ $key->tmQtyKarung }}</td>
+                                        <td>{{ $key->tglMuat }}</td>
+                                        <td>{{ $key->tmCarID }}</td>
+                                        <td>{{ $key->tmTranspName }}</td>
+                                        <td class="text-center">
+                                            @if ($key->isMktApp)
+                                                <span class="badge bg-success">Yes</span>
+                                            @else
+                                                <span class="badge bg-secondary">No</span>
+                                            @endif
                                         </td>
-                                    <td> @php
-                                        if ($key->isSecCek){
-                                            echo 'Yes';
-                                        } else {
-                                            echo 'no';
-                                        }
-
-                                        @endphp
-                                    </td>
-                                    
-                                    
-                                    <td>
-                                        <a wire:click="edit('{{ $key->id }}')" class="btn btn-warning btn-sm">Pilih</a>
-                                    </td>
-
-                                    <td>
-                                        <a wire:click="cancel('{{ $key->id }}')" class="btn btn-warning btn-sm">Cancel</a>
-                                    </td>
-                                </tr>
+                                        <td class="text-center">
+                                            @if ($key->isSecCek)
+                                                <span class="badge bg-success">Yes</span>
+                                            @else
+                                                <span class="badge bg-secondary">No</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <a wire:click="edit('{{ $key->id }}')"
+                                                class="btn btn-warning btn-sm">Pilih</a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a wire:click="cancel('{{ $key->id }}')"
+                                                class="btn btn-danger btn-sm">Cancel</a>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $totalkg += $key->tmQtyKg;
+                                    @endphp
                                 @endforeach
-                                
                             </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="5" class="text-end fw-bold">Total Weight:</td>
+                                    <td class="text-end fw-bold">{{ number_format($totalkg) }} Kg</td>
+                                    <td colspan="8"></td>
+                                </tr>
+                            </tfoot>
                         </table>
-
-                        
+                        {{ $datatiketmuat->links() }}
                     </div>
                     <div class="card-body table-responsive p-0">
-                            <div class="row">
-                                    
-                                    <form >
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="mb-3 mt-3 row">
-                                                    <label for="nama" class="col-sm-2 col-form-label">Tiket Muat</label>
-                                                    
-                                                        <input type="text" class="form-control w-50" wire:model="transID" hidden>
-                                                    
-                                                    {{-- <div class="col-sm-10">
+                        <div class="row">
+
+                            <form>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3 mt-3 row">
+                                            <label for="nama" class="col-sm-2 col-form-label">Tiket Muat</label>
+
+                                            <input type="text" class="form-control w-50" wire:model="transID"
+                                                hidden>
+
+                                            {{-- <div class="col-sm-10">
                                                         <input type="text" class="form-control w-25 mb-2" id="tta_number" wire:model="tiketMuat" disabled>
                                                             <a href="/cetaktiket/{{ $transID }} " class="btn btn-primary" target="_blank" >cetak</a>
                                                     </div> --}}
+                                        </div>
+
+
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="card border-primary mb-3" style="max-width: 200rem;">
+                                                <div class="card-header  text-center">Foto SIM / KTP</div>
+                                                <div class="card-body text-primary">
+                                                    <img class="rounded float-start" style="width: 750px"
+                                                        src="{{ $simKtp }}">
                                                 </div>
-                                                
-                                                
-                                            
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <div class="card border-primary mb-3" style="max-width: 200rem;">
-                                                            <div class="card-header  text-center">Foto SIM / KTP</div>
-                                                                <div class="card-body text-primary">
-                                                                    <img class="rounded float-start" style="width: 750px" src="{{ $simKtp}}">
-                                                                </div>
-                                                            </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="card border-primary mb-3" style="max-width: 200rem;">
-                                                            <div class="card-header  text-center">Foto STNK</div>
-                                                                <div class="card-body text-primary">
-                                                                        <img class="rounded float-start" style="width: 750px" src="{{ $stnk}}"  >
-                                                                </div>
-                                                            </div>
-                                                </div>
-                                                
                                             </div>
                                         </div>
-                                    </form>
+                                        <div class="col-lg-6">
+                                            <div class="card border-primary mb-3" style="max-width: 200rem;">
+                                                <div class="card-header  text-center">Foto STNK</div>
+                                                <div class="card-body text-primary">
+                                                    <img class="rounded float-start" style="width: 750px"
+                                                        src="{{ $stnk }}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
