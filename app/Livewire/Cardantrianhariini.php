@@ -15,7 +15,7 @@ class Cardantrianhariini extends Component
     public $katacust;
     public $katasppb;
     public $shift;
-    public $kataproduct;
+    public $kataproduct = [];
 
     public function clear()
     {
@@ -48,13 +48,20 @@ class Cardantrianhariini extends Component
             $query->where('createsppbs.sppbNo', 'like', '%' . $this->katasppb . '%');
         }
 
-        if ($this->kataproduct) {
-            $query->where('products.itemName', 'like', '%' . $this->kataproduct . '%');
+        if (!empty($this->kataproduct)) {
+            $query->whereIn('products.itemCode', $this->kataproduct);
         }
 
         if ($this->shift) {
             $query->whereRaw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
         }
+
+        // Get all products for dropdown
+        $products = DB::connection('sqlsrv')->table('products')
+            ->select('itemCode', 'itemName')
+            ->where('type', '!=', 'NFG')
+            ->orderBy('itemName')
+            ->get();
 
         // Select fields and paginate
         $antriantdy = $query->select(
@@ -75,6 +82,6 @@ class Cardantrianhariini extends Component
             ->orderBy('create_t_m_s.id')
             ->paginate(10);
 
-        return view('livewire.cardantrianhariini', ['antriantdy' => $antriantdy]);
+        return view('livewire.cardantrianhariini', ['antriantdy' => $antriantdy, 'products' => $products]);
     }
 }

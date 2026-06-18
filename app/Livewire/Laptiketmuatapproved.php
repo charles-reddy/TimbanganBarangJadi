@@ -20,7 +20,7 @@ class Laptiketmuatapproved extends Component
     public $katacust;
     public $tglMuat;
     public $ip;
-    public $kataproduct;
+    public $kataproduct = [];
 
 
     public function store()
@@ -125,9 +125,16 @@ class Laptiketmuatapproved extends Component
             $query->whereDate('tglMuat', '=', $this->tglMuat);
         }
 
-        if ($this->kataproduct) {
-            $query->where('products.itemName', 'like', '%' . $this->kataproduct . '%');
+        if (!empty($this->kataproduct)) {
+            $query->whereIn('products.itemCode', $this->kataproduct);
         }
+
+        // Get all products for dropdown
+        $products = DB::connection('sqlsrv')->table('products')
+            ->select('itemCode', 'itemName')
+            ->where('type', '!=', 'NFG')
+            ->orderBy('itemName')
+            ->get();
 
         // Select fields and paginate
         $data = $query->select(
@@ -148,6 +155,6 @@ class Laptiketmuatapproved extends Component
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-        return view('livewire.laptiketmuatapproved', ['datatiketmuat' => $data]);
+        return view('livewire.laptiketmuatapproved', ['datatiketmuat' => $data, 'products' => $products]);
     }
 }

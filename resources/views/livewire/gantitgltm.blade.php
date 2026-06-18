@@ -1,43 +1,42 @@
 <div>
     @if (session('error'))
-    <div class="pt-3">
-        <div class="alert alert-danger">
-            <span class="sr-only">WARNING</span>
-            <div>
-            <span class="font-medium">Danger alert!</span> {{ session("error") }}
+        <div class="pt-3">
+            <div class="alert alert-danger">
+                <span class="sr-only">WARNING</span>
+                <div>
+                    <span class="font-medium">Danger alert!</span> {{ session('error') }}
+                </div>
             </div>
         </div>
-    </div>
     @endif
 
-    
+
     @if ($errors->any())
-    <div class="pt-3">
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $item)
-                    <li>{{ $item }}</li>
-                @endforeach
-            </ul>
+        <div class="pt-3">
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $item)
+                        <li>{{ $item }}</li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
-    </div>
-        
+
     @endif
 
 
     @if (session()->has('message'))
-    <div class="pt-3">
-        <div class="alert alert-success">
-            {{ session('message') }}
+        <div class="pt-3">
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
         </div>
-    </div>
-        
     @endif
 
     <!-- START FORM -->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <div>
-            {{ now() }}  - {{ $this->ip }}
+            {{ now() }} - {{ $this->ip }}
         </div>
         <div class="row">
             <div class="col">
@@ -50,7 +49,7 @@
             <div class="row">
                 <div class="col">
                     <div class="mb-3 mt-3 row">
-                        <label for="nama" class="col-sm-2 col-form-label" hidden >ID Transaction</label>
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>ID Transaction</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control w-50" wire:model="transID" hidden>
                         </div>
@@ -70,7 +69,13 @@
                     <div class="mb-3 mt-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">Tgl Muat</label>
                         <div class="col-sm-10">
-                            <input type="date" class="form-control w-50" wire:model="tglMuat" >
+                            <input type="date" class="form-control w-50" wire:model="tglMuat">
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3 row">
+                        <label for="nama" class="col-sm-2 col-form-label" hidden>Tgl Muat1</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control w-50" wire:model="tglMuat1" hidden>
                         </div>
                     </div>
                     <div class="mb-3 mt-3 row">
@@ -86,19 +91,19 @@
                         </div>
                     </div>
                 </div>
-               
+
             </div>
-            
-            
-          
+
+
+
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
-                   
-                        <button type="button" class="btn btn-primary" name="submit" wire:click="store()">SIMPAN</button>
-                   
-                        <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
-                    
+
+                    <button type="button" class="btn btn-primary" name="submit" wire:click="store()">SIMPAN</button>
+
+                    <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
+
                 </div>
             </div>
         </form>
@@ -107,13 +112,14 @@
 
 
     <!-- START DATA tiket muat-->
-    <div class="my-3 p-3 bg-body rounded shadow-sm"  >
+    <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h1>Data Tiket Muat</h1>
         <div class="pb-3 pt-3">
-            <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Tiket Muat" wire:model.live="katakunci">
+            <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Tiket Muat"
+                wire:model.live="katakunci">
         </div>
 
-        
+
 
         {{ $datatm->links() }}
         <table class="table table-striped table-sortable">
@@ -121,33 +127,39 @@
                 <tr>
                     <th></th>
                     <th class="col-md">No</th>
-                    <th class="col-md" >Tiket Muat</th>
-                    <th class="col-md" >Tgl Muat</th>
-                    <th class="col-md" >Customer</th>
-                    <th class="col-md" >Plat No</th>
-                    <th class="col-md" >Sopir</th>
-                    <th class="col-md" >Pilih</th>
-                    
-                    
+                    <th class="col-md">Tiket Muat</th>
+                    <th class="col-md">Tgl Muat</th>
+                    <th class="col-md">Customer</th>
+                    <th class="col-md">Plat No</th>
+                    <th class="col-md">Sopir</th>
+                    <th class="col-md">Tgl Muat sebelumnya</th>
+                    <th class="col-md">Dirubah Oleh</th>
+                    <th class="col-md">Tgl dirubah</th>
+                    <th class="col-md">Pilih</th>
+
+
                 </tr>
             </thead>
             <tbody>
                 @foreach ($datatm as $key => $value)
-                <tr>
-                    <td></td>
-                    <td>{{ $datatm->firstItem() + $key }}</td>
-                    <td>{{ $value->pendfNo }}</td>
-                    <td>{{ date('d-m-Y',strtotime($value->tglMuat)) }}</td>
-                    <td>{{ $value->custName }}</td>
-                    <td>{{ $value->tmCarID }}</td>
-                    <td>{{ $value->tmDriver }}</td>
-                    
-                    <td>
-                        <a wire:click="edit({{ $value->id }})" class="btn btn-primary btn-sm">Pilih</a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td></td>
+                        <td>{{ $datatm->firstItem() + $key }}</td>
+                        <td>{{ $value->pendfNo }}</td>
+                        <td>{{ date('d-m-Y', strtotime($value->tglMuat)) }}</td>
+                        <td>{{ $value->custName }}</td>
+                        <td>{{ $value->tmCarID }}</td>
+                        <td>{{ $value->tmDriver }}</td>
+                        <td>{{ $value->tglMuat1Log ?? '-' }}</td>
+                        <td>{{ $value->updatedBy ?? '-' }}</td>
+                        <td>{{ isset($value->created_at) ? date('d-m-Y H:i', strtotime($value->created_at)) : '-' }}</td>
+
+                        <td>
+                            <a wire:click="edit({{ $value->id }})" class="btn btn-primary btn-sm">Pilih</a>
+                        </td>
+                    </tr>
                 @endforeach
-                
+
             </tbody>
         </table>
     </div>

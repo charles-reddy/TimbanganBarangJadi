@@ -114,8 +114,14 @@
                         </div>
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <label for="product" class="form-label small text-muted">Product</label>
-                            <input type="text" id="product" class="form-control" placeholder="Search product..."
-                                wire:model.live="kataproduct">
+                            <select id="product" class="form-select" multiple wire:model.live="kataproduct"
+                                size="1">
+                                <option value="">-- Select Products --</option>
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->itemCode }}">{{ $product->itemName }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
                         </div>
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <label for="tglmuat" class="form-label small text-muted">Tanggal Muat</label>
