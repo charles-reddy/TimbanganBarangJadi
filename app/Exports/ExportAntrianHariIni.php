@@ -1,36 +1,32 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Exports;
 
-use App\Exports\ExportAntrianHariIni;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class Cardantrianhariini extends Component
+class ExportAntrianHariIni implements FromCollection, WithHeadings
 {
-    use WithPagination;
-    public $katakunci;
-    public $tglmuat;
-    public $katacust;
-    public $katasppb;
-    public $shift;
-    public $kataproduct = [];
+    protected $katakunci;
+    protected $katacust;
+    protected $katasppb;
+    protected $shift;
+    protected $kataproduct;
+    protected $tglmuat;
 
-    public function clear()
+    public function __construct($katakunci, $katacust, $katasppb, $shift, $kataproduct, $tglmuat)
     {
-
-        redirect('/cardantrianhariini');
+        $this->katakunci = $katakunci;
+        $this->katacust = $katacust;
+        $this->katasppb = $katasppb;
+        $this->shift = $shift;
+        $this->kataproduct = $kataproduct;
+        $this->tglmuat = $tglmuat;
     }
 
-    public function export()
-    {
-        return Excel::download(new ExportAntrianHariIni($this->katakunci, $this->katacust, $this->katasppb, $this->shift, $this->kataproduct, $this->tglmuat), 'antrian-hari-ini-' . date('Y-m-d') . '.xlsx');
-    }
-
-    public function render()
+    public function collection()
     {
         // Build the base query
         $query = DB::connection('sqlsrv')->table('create_t_m_s')
@@ -47,7 +43,7 @@ class Cardantrianhariini extends Component
             $query->whereDate('tglMuat', '=', Carbon::now());
         }
 
-        // Apply filters conditionally
+        // Apply other filters conditionally
         if ($this->katakunci) {
             $query->where('create_t_m_s.tmCarID', 'like', '%' . $this->katakunci . '%');
         }
@@ -68,32 +64,36 @@ class Cardantrianhariini extends Component
             $query->whereRaw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
         }
 
-        // Get all products for dropdown
-        $products = DB::connection('sqlsrv')->table('products')
-            ->select('itemCode', 'itemName')
-            ->where('type', '!=', 'NFG')
-            ->orderBy('itemName')
-            ->get();
-
-        // Select fields and paginate
-        $antriantdy = $query->select(
-            'create_t_m_s.id as tmsID',
+        // Select fields and return collection
+        return $query->select(
             'create_t_m_s.pendfNo',
-            'create_t_m_s.tglDaftar',
-            'create_t_m_s.tmCarID',
-            'create_t_m_s.tmDriver',
+            'createsppbs.sppbNo',
             'create_t_m_s.tglMuat',
-            'create_t_m_s.tmQtyKarung',
-            'create_t_m_s.tmQtyKg',
+            DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift"),
+            'create_t_m_s.tmDriver',
+            'create_t_m_s.tmCarID',
             'customers.custName',
             'products.itemName',
             'jenistruks.jenisTruk',
-            'createsppbs.sppbNo',
-            DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift")
+            'create_t_m_s.tmQtyKg'
         )
             ->orderBy('create_t_m_s.id')
-            ->paginate(10);
+            ->get();
+    }
 
-        return view('livewire.cardantrianhariini', ['antriantdy' => $antriantdy, 'products' => $products]);
+    public function headings(): array
+    {
+        return [
+            'Tiket Muat',
+            'SPPB',
+            'Tgl Muat',
+            'Shift',
+            'Driver',
+            'Car ID',
+            'Customer',
+            'Product',
+            'Truck Type',
+            'Weight (Kg)',
+        ];
     }
 }

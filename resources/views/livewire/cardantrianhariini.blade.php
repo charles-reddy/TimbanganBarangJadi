@@ -1,10 +1,19 @@
 <div>
     <!-- START antrian hari ini-->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <h1 class="mb-4">Antrian Hari ini</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="mb-0">Antrian Hari ini</h1>
+            <button class="btn btn-success" wire:click="export">
+                <i class="bi bi-file-earmark-excel"></i> Export to Excel
+            </button>
+        </div>
 
         <!-- Filter Section -->
         <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <label for="tglmuat" class="form-label small text-muted">Tgl Muat</label>
+                <input type="date" id="tglmuat" class="form-control" wire:model.live="tglmuat">
+            </div>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <label for="platno" class="form-label small text-muted">Plat No</label>
                 <input type="text" id="platno" class="form-control" placeholder="Search plat no..."
