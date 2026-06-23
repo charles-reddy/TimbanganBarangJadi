@@ -15,8 +15,11 @@ class ExportAntrianBesok implements FromCollection, WithHeadings
     protected $shift;
     protected $kataproduct;
     protected $tglmuat;
+    
+    protected $tglDaftar;
+    protected $isAppDate;
 
-    public function __construct($katakunci, $katacust, $katasppb, $shift, $kataproduct, $tglmuat)
+    public function __construct($katakunci, $katacust, $katasppb, $shift, $kataproduct, $tglmuat, $tglDaftar, $isAppDate)
     {
         $this->katakunci = $katakunci;
         $this->katacust = $katacust;
@@ -24,6 +27,8 @@ class ExportAntrianBesok implements FromCollection, WithHeadings
         $this->shift = $shift;
         $this->kataproduct = $kataproduct;
         $this->tglmuat = $tglmuat;
+        $this->tglDaftar = $tglDaftar;
+        $this->isAppDate = $isAppDate;
     }
 
     public function collection()
@@ -68,6 +73,8 @@ class ExportAntrianBesok implements FromCollection, WithHeadings
         return $query->select(
             'create_t_m_s.pendfNo',
             'create_t_m_s.tglMuat',
+            DB::raw("CASE WHEN create_t_m_s.tglDaftar IS NOT NULL THEN FORMAT(create_t_m_s.tglDaftar, 'dd-MM-yyyy HH:mm') ELSE 'Belum Approve' END as tglDaftar"),
+            DB::raw("CASE WHEN create_t_m_s.isAppDate IS NOT NULL THEN CONVERT(varchar, create_t_m_s.isAppDate, 120) ELSE 'Belum Approve' END as isAppDate"),
             DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift"),
             'createsppbs.sppbNo',
             'create_t_m_s.tmDriver',
@@ -86,6 +93,8 @@ class ExportAntrianBesok implements FromCollection, WithHeadings
         return [
             'Tiket Muat',
             'Tgl Muat',
+            'Tgl Daftar',
+            'Tgl Approve Marketing',
             'Shift',
             'SPPB',
             'Driver',

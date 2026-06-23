@@ -14,6 +14,8 @@ class Cardantrianhariini extends Component
     use WithPagination;
     public $katakunci;
     public $tglmuat;
+    public $tglDaftar;
+    public $isAppDate;
     public $katacust;
     public $katasppb;
     public $shift;
@@ -27,7 +29,7 @@ class Cardantrianhariini extends Component
 
     public function export()
     {
-        return Excel::download(new ExportAntrianHariIni($this->katakunci, $this->katacust, $this->katasppb, $this->shift, $this->kataproduct, $this->tglmuat), 'antrian-hari-ini-' . date('Y-m-d') . '.xlsx');
+        return Excel::download(new ExportAntrianHariIni($this->katakunci, $this->katacust, $this->katasppb, $this->shift, $this->kataproduct, $this->tglmuat, $this->tglDaftar, $this->isAppDate), 'antrian-hari-ini-' . date('Y-m-d') . '.xlsx');
     }
 
     public function render()
@@ -80,6 +82,7 @@ class Cardantrianhariini extends Component
             'create_t_m_s.id as tmsID',
             'create_t_m_s.pendfNo',
             'create_t_m_s.tglDaftar',
+            'create_t_m_s.isAppDate',
             'create_t_m_s.tmCarID',
             'create_t_m_s.tmDriver',
             'create_t_m_s.tglMuat',

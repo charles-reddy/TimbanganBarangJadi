@@ -14,6 +14,8 @@ class Cardantrianbesok extends Component
     use WithPagination;
     public $katakunci;
     public $tglmuat;
+    public $tglDaftar;
+    public $isAppDate;
     public $katacust;
     public $katasppb;
     public $shift;
@@ -27,7 +29,7 @@ class Cardantrianbesok extends Component
 
     public function export()
     {
-        return Excel::download(new ExportAntrianBesok($this->katakunci, $this->katacust, $this->katasppb, $this->shift, $this->kataproduct, $this->tglmuat), 'antrian-besok-' . date('Y-m-d') . '.xlsx');
+        return Excel::download(new ExportAntrianBesok($this->katakunci, $this->katacust, $this->katasppb, $this->shift, $this->kataproduct, $this->tglmuat, $this->tglDaftar, $this->isAppDate), 'antrian-besok-' . date('Y-m-d') . '.xlsx');
     }
 
     public function render()
@@ -39,6 +41,7 @@ class Cardantrianbesok extends Component
             ->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')
             ->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')
             ->where('create_t_m_s.tmQtyKg', '>', 0);
+        
 
         // Apply date filter
         if ($this->tglmuat) {
@@ -80,6 +83,7 @@ class Cardantrianbesok extends Component
             'create_t_m_s.id as tmsID',
             'create_t_m_s.pendfNo',
             'create_t_m_s.tglDaftar',
+            'create_t_m_s.isAppDate',
             'create_t_m_s.tglMuat',
             'create_t_m_s.tmCarID',
             'create_t_m_s.tmDriver',

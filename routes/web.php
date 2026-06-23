@@ -218,6 +218,10 @@ Route::get('/approvaltiketmuat', function () {
     return view('approvaltiketmuat');
 })->middleware(['auth', 'verified', 'verified','role:administrator|marketing'])->name('approvaltiketmuat');
 
+Route::get('/customerlist', function () {
+    return view('customerlist');
+})->middleware(['auth', 'verified', 'verified','role:administrator|marketing'])->name('customerlist');
+
 Route::get('/laptiketmuatapproved', function () {
     return view('laptiketmuatapproved');
 })->middleware(['auth', 'verified', 'verified','role:administrator|manager-logistik|supervisor-b10|marketing'])->name('laptiketmuatapproved');

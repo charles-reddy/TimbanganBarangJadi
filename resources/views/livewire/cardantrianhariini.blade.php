@@ -62,6 +62,8 @@
                     <th>Tiket Muat</th>
                     <th>SPPB</th>
                     <th>Tgl Muat</th>
+                    <th>Tgl Daftar</th>
+                    <th>Tgl Approve Marketing</th>
                     <th>Shift</th>
                     <th>Driver</th>
                     <th>Car ID</th>
@@ -81,6 +83,16 @@
                         <td>{{ $value->pendfNo }}</td>
                         <td>{{ $value->sppbNo }}</td>
                         <td>{{ $value->tglMuat }}</td>
+                        <td>{{ date('d-m-Y H:i', strtotime($value->tglDaftar)) }}</td>
+                        <td>
+                            @if ($value->isAppDate)
+                                {{ date('d-m-Y H:i', strtotime($value->isAppDate)) }}
+                            @else
+                                <span class="badge bg-secondary">Belum Approve</span>
+                                
+                            @endif
+                            
+                        </td>
                         <td>
                             @if ($value->shift == 'Shift 1')
                                 <span class="badge bg-primary">{{ $value->shift }}</span>
