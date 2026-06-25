@@ -14,30 +14,64 @@ class Fgdashboard extends Component
 
     public function mount()
     {
-        // $transac = DB::connection('sqlsrv')->table('trscale')->whereNot('jam_out')->orderBy('jam_out','desc')
-        //     ->select(db::raw("sum(netto) as netto"), db::raw(date('d-m-Y',strtotime('jam_out'))), db::raw("id") )
-        //     ->groupBy('jam_out')
-        //     ->get();
+        // Query untuk 7 hari terakhir - gabungkan single dan multi product
+        // Single product dari trscale
+        $singleProduct = DB::connection('sqlsrv')->table('trscale')
+            ->join('createspms', 'createspms.id', 'trscale.spmID')
+            ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+            ->whereNotNull('netto')
+            ->where('create_t_m_s.tmQtyKg', '>', 0)
+            ->whereDate('jam_out', '>=', Carbon::now()->subDays(7))
+            ->selectRaw('CAST(jam_out as DATE) as tgl, COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
+            ->groupBy(DB::raw('CAST(jam_out as DATE)'))
+            ->get();
 
-        $transac = DB::connection('sqlsrv')->table('vwSummaryTruckFG')->orderBy('tgl', 'desc')->Limit(7)->get();
-        // dd($transac);
+        // Multi product dari trscale_headers
+        $multiProduct = DB::connection('sqlsrv')->table('trscale_headers')
+            ->whereNotNull('net_weight')
+            ->whereIn('status', ['COMPLETED', 'APPROVED'])
+            ->whereDate('weigh_out_time', '>=', Carbon::now()->subDays(7))
+            ->selectRaw('CAST(weigh_out_time as DATE) as tgl, COUNT(id) as totalTruk, ISNULL(SUM(net_weight), 0) as totalNetto')
+            ->groupBy(DB::raw('CAST(weigh_out_time as DATE)'))
+            ->get();
+
+        // Gabungkan data per tanggal
+        $combinedData = [];
+        foreach ($singleProduct as $item) {
+            $tgl = Carbon::parse($item->tgl)->format('Y-m-d');
+            if (!isset($combinedData[$tgl])) {
+                $combinedData[$tgl] = ['tgl' => $item->tgl, 'totalTruk' => 0, 'totalNetto' => 0];
+            }
+            $combinedData[$tgl]['totalTruk'] += $item->totalTruk;
+            $combinedData[$tgl]['totalNetto'] += $item->totalNetto;
+        }
+
+        foreach ($multiProduct as $item) {
+            $tgl = Carbon::parse($item->tgl)->format('Y-m-d');
+            if (!isset($combinedData[$tgl])) {
+                $combinedData[$tgl] = ['tgl' => $item->tgl, 'totalTruk' => 0, 'totalNetto' => 0];
+            }
+            $combinedData[$tgl]['totalTruk'] += $item->totalTruk;
+            $combinedData[$tgl]['totalNetto'] += $item->totalNetto;
+        }
+
+        // Sort by date descending
+        krsort($combinedData);
+        $transac = array_slice($combinedData, 0, 7);
+
+        // Prepare chart data
+        $data = ['label' => [], 'data' => []];
+        $data1 = ['label' => [], 'data' => []];
+
         foreach ($transac as $item) {
-            $data['label'][] =  $item->tgl;
-            $data['data'][] = (int) $item->totalNetto;
+            $data['label'][] = Carbon::parse($item['tgl'])->format('d-m-Y');
+            $data['data'][] = (int) $item['totalNetto'];
+            $data1['label'][] = Carbon::parse($item['tgl'])->format('d-m-Y');
+            $data1['data'][] = (int) $item['totalTruk'];
         }
 
         $this->transac =  json_encode($data);
-        // dd($this->transac);
-
-        $jmltruk = DB::connection('sqlsrv')->table('vwSummaryTruckFG')->orderBy('tgl', 'desc')->Limit(7)->get();
-        // dd($transac);
-        foreach ($jmltruk as $item) {
-            $data1['label'][] =  $item->tgl;
-            $data1['data'][] = (int) $item->totalTruk;
-        }
-
         $this->jmltruk =  json_encode($data1);
-        // dd($this->jmltruk);
     }
 
     public function render()
@@ -57,12 +91,14 @@ class Fgdashboard extends Component
         $pendingkmr = $timbanginkmrblmkeluar + $registrasikmrblmmasuk + $tidakdatang;
         // dd($tmsdhmasuk);
         $data = DB::connection('sqlsrv')->table('vwSummaryTruckFG')->orderBy('tgl', 'desc')->first();
+        $datamulti = DB::connection('sqlsrv')->table('vwSummaryTruckFGMulti')->orderBy('tgl', 'desc')->first();
+        // dd($data, $datamulti);
         $data7hari = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')->whereBetween('tglMuat', [Carbon::now(), Carbon::now()->addDays(+7)])->where('create_t_m_s.tmQtyKg', '>', 0)->orderBy('tglMuat', 'asc')->paginate(10);
         // dd($data7hari);
 
         // Query data per shift hari ini
         // Shift 1: 08:00 - 12:00
-        $shift1 = DB::connection('sqlsrv')->table('trscale')
+        $shift1Single = DB::connection('sqlsrv')->table('trscale')
             ->join('createspms', 'createspms.id', 'trscale.spmID')
             ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
             ->whereNotNull('netto')
@@ -73,8 +109,22 @@ class Fgdashboard extends Component
             ->selectRaw('COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
             ->first();
 
+        $shift1Multi = DB::connection('sqlsrv')->table('trscale_headers')
+            ->whereNotNull('net_weight')
+            ->whereIn('status', ['COMPLETED', 'APPROVED'])
+            ->whereDate('weigh_out_time', Carbon::now())
+            ->whereTime('weigh_out_time', '>=', '08:00:00')
+            ->whereTime('weigh_out_time', '<', '12:00:00')
+            ->selectRaw('COUNT(id) as totalTruk, ISNULL(SUM(net_weight), 0) as totalNetto')
+            ->first();
+
+        $shift1 = (object)[
+            'totalTruk' => ($shift1Single->totalTruk ?? 0) + ($shift1Multi->totalTruk ?? 0),
+            'totalNetto' => ($shift1Single->totalNetto ?? 0) + ($shift1Multi->totalNetto ?? 0)
+        ];
+
         // Shift 2: 12:00 - 16:00
-        $shift2 = DB::connection('sqlsrv')->table('trscale')
+        $shift2Single = DB::connection('sqlsrv')->table('trscale')
             ->join('createspms', 'createspms.id', 'trscale.spmID')
             ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
             ->whereNotNull('netto')
@@ -85,8 +135,22 @@ class Fgdashboard extends Component
             ->selectRaw('COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
             ->first();
 
+        $shift2Multi = DB::connection('sqlsrv')->table('trscale_headers')
+            ->whereNotNull('net_weight')
+            ->whereIn('status', ['COMPLETED', 'APPROVED'])
+            ->whereDate('weigh_out_time', Carbon::now())
+            ->whereTime('weigh_out_time', '>=', '12:00:00')
+            ->whereTime('weigh_out_time', '<', '16:00:00')
+            ->selectRaw('COUNT(id) as totalTruk, ISNULL(SUM(net_weight), 0) as totalNetto')
+            ->first();
+
+        $shift2 = (object)[
+            'totalTruk' => ($shift2Single->totalTruk ?? 0) + ($shift2Multi->totalTruk ?? 0),
+            'totalNetto' => ($shift2Single->totalNetto ?? 0) + ($shift2Multi->totalNetto ?? 0)
+        ];
+
         // Shift 3: 16:00 - 20:00
-        $shift3 = DB::connection('sqlsrv')->table('trscale')
+        $shift3Single = DB::connection('sqlsrv')->table('trscale')
             ->join('createspms', 'createspms.id', 'trscale.spmID')
             ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
             ->whereNotNull('netto')
@@ -97,8 +161,22 @@ class Fgdashboard extends Component
             ->selectRaw('COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
             ->first();
 
+        $shift3Multi = DB::connection('sqlsrv')->table('trscale_headers')
+            ->whereNotNull('net_weight')
+            ->whereIn('status', ['COMPLETED', 'APPROVED'])
+            ->whereDate('weigh_out_time', Carbon::now())
+            ->whereTime('weigh_out_time', '>=', '16:00:00')
+            ->whereTime('weigh_out_time', '<', '20:00:00')
+            ->selectRaw('COUNT(id) as totalTruk, ISNULL(SUM(net_weight), 0) as totalNetto')
+            ->first();
+
+        $shift3 = (object)[
+            'totalTruk' => ($shift3Single->totalTruk ?? 0) + ($shift3Multi->totalTruk ?? 0),
+            'totalNetto' => ($shift3Single->totalNetto ?? 0) + ($shift3Multi->totalNetto ?? 0)
+        ];
+
         // Outside Shift: Sebelum 08:00 atau setelah 20:00
-        $shiftOutside = DB::connection('sqlsrv')->table('trscale')
+        $shiftOutsideSingle = DB::connection('sqlsrv')->table('trscale')
             ->join('createspms', 'createspms.id', 'trscale.spmID')
             ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
             ->whereNotNull('netto')
@@ -110,6 +188,22 @@ class Fgdashboard extends Component
             })
             ->selectRaw('COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
             ->first();
+
+        $shiftOutsideMulti = DB::connection('sqlsrv')->table('trscale_headers')
+            ->whereNotNull('net_weight')
+            ->whereIn('status', ['COMPLETED', 'APPROVED'])
+            ->whereDate('weigh_out_time', Carbon::now())
+            ->where(function ($query) {
+                $query->whereTime('weigh_out_time', '<', '08:00:00')
+                    ->orWhereTime('weigh_out_time', '>=', '20:00:00');
+            })
+            ->selectRaw('COUNT(id) as totalTruk, ISNULL(SUM(net_weight), 0) as totalNetto')
+            ->first();
+
+        $shiftOutside = (object)[
+            'totalTruk' => ($shiftOutsideSingle->totalTruk ?? 0) + ($shiftOutsideMulti->totalTruk ?? 0),
+            'totalNetto' => ($shiftOutsideSingle->totalNetto ?? 0) + ($shiftOutsideMulti->totalNetto ?? 0)
+        ];
 
         // Get quota hari ini
         $quotaToday = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
@@ -229,6 +323,7 @@ class Fgdashboard extends Component
         // dd($dataout);
         return view('livewire.fgdashboard', [
             'datafgtruk' => $data,
+            'datamultifgtruk' => $datamulti,
             'data7hari' => $data7hari,
             'datatrukout' => $dataout,
             'antrianskr' => $antrianskr,

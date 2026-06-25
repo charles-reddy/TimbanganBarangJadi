@@ -81,7 +81,7 @@
             <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <div class="card bg-info h-100">
                     <div class="card-body text-center p-3">
-                        <h2 class="card-title mb-1">{{ $datafgtruk->loading }}</h2>
+                        <h2 class="card-title mb-1">{{ $datafgtruk->loading + $datamultifgtruk->loading }}</h2>
                         <h6 class="card-text mb-0">
                             <a href="/cardloading" class="text-white text-decoration-none">
                                 Sedang Muat
@@ -109,7 +109,7 @@
             <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <div class="card bg-success h-100">
                     <div class="card-body text-center p-3">
-                        <h2 class="card-title mb-1">{{ $datafgtruk->timout }}</h2>
+                        <h2 class="card-title mb-1">{{ $datafgtruk->timout + $datamultifgtruk->timout }}</h2>
                         <h6 class="card-text mb-0">
                             <a href="/cardwbout" class="text-white text-decoration-none">
                                 Timb. Keluar

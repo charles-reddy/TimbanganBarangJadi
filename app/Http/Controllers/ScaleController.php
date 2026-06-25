@@ -16,14 +16,14 @@ class ScaleController extends Controller
     {
         $mpdf = new \Mpdf\Mpdf();
         $tgl1 = Carbon::now();
-        $tglnow=date('d-m-Y H:i',strtotime($tgl1));
-        $tgl=date('Y-m-d',strtotime($tgl1));
+        $tglnow = date('d-m-Y H:i', strtotime($tgl1));
+        $tgl = date('Y-m-d', strtotime($tgl1));
         // $strukout =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('id',$id)->get();
-         $strukout =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms', 'createspms.id', 'trscale.spmID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->select('trscale.id','trscale.driver','trscale.carID','trscale.custID','trscale.transpID','trscale.itemCode','products.itemName','trscale.doNo','trscale.poNo','trscale.remarks','trscale.timbangout','trscale.netto','trscale.timbangin','trscale.timbanganID','trscale.timbanganoutID','trscale.grossBeforeDed','trscale.jam_in','trscale.jam_out','trscale.userIDIN','trscale.userIDOUT','trscale.usernameOUT','trscale.spmID','trscale.b10QtyKarung','trscale.b10BatchNo','trscale.avgKarung','trscale.isApp','trscale.isAppID','trscale.isAppDate','customers.custName','customers.custAdd','products.deduction','products.type','products.uom','createspms.spmNo','createsppbs.sppbNo','createspms.dnNo','createspms.sealNo','createspms.kontainerNo','createspms.buktiPGI')->where('trscale.id',$id)->get();
-       
+        $strukout =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms', 'createspms.id', 'trscale.spmID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->select('trscale.id', 'trscale.driver', 'trscale.carID', 'trscale.custID', 'trscale.transpID', 'trscale.itemCode', 'products.itemName', 'trscale.doNo', 'trscale.poNo', 'trscale.remarks', 'trscale.timbangout', 'trscale.netto', 'trscale.timbangin', 'trscale.timbanganID', 'trscale.timbanganoutID', 'trscale.grossBeforeDed', 'trscale.jam_in', 'trscale.jam_out', 'trscale.userIDIN', 'trscale.userIDOUT', 'trscale.usernameOUT', 'trscale.spmID', 'trscale.b10QtyKarung', 'trscale.b10BatchNo', 'trscale.avgKarung', 'trscale.isApp', 'trscale.isAppID', 'trscale.isAppDate', 'customers.custName', 'customers.custAdd', 'products.deduction', 'products.type', 'products.uom', 'createspms.spmNo', 'createsppbs.sppbNo', 'createspms.dnNo', 'createspms.sealNo', 'createspms.kontainerNo', 'createspms.buktiPGI')->where('trscale.id', $id)->get();
+
         // dd($strukout);
-            // return view('cetakout1', compact('strukout'));
-       $html = view('cetakout1', compact('strukout'));
+        // return view('cetakout1', compact('strukout'));
+        $html = view('cetakout1', compact('strukout'));
 
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
@@ -34,12 +34,36 @@ class ScaleController extends Controller
     {
         $mpdf = new \Mpdf\Mpdf();
         $tgl1 = Carbon::now();
-        $tglnow=date('d-m-Y H:i',strtotime($tgl1));
-        $tgl=date('Y-m-d',strtotime($tgl1));
-        $strukout =  DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->where('id',$id)->get();
+        $tglnow = date('d-m-Y H:i', strtotime($tgl1));
+        $tgl = date('Y-m-d', strtotime($tgl1));
+        $strukout =  DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->where('id', $id)->get();
         // dd($strukout);
-            // return view('cetakout1', compact('strukout'));
-       $html = view('cetakoutm1', compact('strukout'));
+        // return view('cetakout1', compact('strukout'));
+        $html = view('cetakoutm1', compact('strukout'));
+
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output();
+    }
+
+    public function cetakoutmp($id)
+    {
+        // Cetak multi-product weighing
+        $header = DB::table('trscale_headers')
+            ->where('id', $id)
+            ->first();
+
+        $details = DB::table('trscale_details')
+            ->join('products', 'products.itemCode', '=', 'trscale_details.itemCode')
+            ->where('trscale_details.header_id', $id)
+            ->select(
+                'trscale_details.*',
+                'products.itemName',
+                'products.uom'
+            )
+            ->get();
+
+        $html = view('cetakoutmp', compact('header', 'details'));
 
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
@@ -48,15 +72,15 @@ class ScaleController extends Controller
 
     public function cetakspm($id)
     {
-        
+
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [90, 36]]);
         $tgl1 = Carbon::now();
-        $tglnow=date('d-m-Y H:i',strtotime($tgl1));
-        $tgl=date('Y-m-d',strtotime($tgl1));
-        $strukspm =  DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('products', 'products.itemCode', 'createspms.itemCode')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->where('createspms.id',$id)->get();
+        $tglnow = date('d-m-Y H:i', strtotime($tgl1));
+        $tgl = date('Y-m-d', strtotime($tgl1));
+        $strukspm =  DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('products', 'products.itemCode', 'createspms.itemCode')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->where('createspms.id', $id)->get();
         //   dd($strukspm);
-            // return view('cetakspm', compact('strukspm'));
-       $html = view('cetakspm', compact('strukspm'));
+        // return view('cetakspm', compact('strukspm'));
+        $html = view('cetakspm', compact('strukspm'));
 
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
@@ -65,21 +89,21 @@ class ScaleController extends Controller
 
     public function cetaksegel($id)
     {
-        
-        $mpdf = new \Mpdf\Mpdf();
-        $tgl1 = Carbon::now();
-        $tglnow=date('d-m-Y H:i',strtotime($tgl1));
-        $tgl=date('Y-m-d',strtotime($tgl1));
-        $struksegel =  DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('products', 'products.itemCode', 'createspms.itemCode')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('trscale', 'trscale.spmID', 'createspms.id')->where('createspms.id',$id)->get();
-        // $logtimbavg =  DB::connection('sqlsrv')->table('logAppAvgKarung')->where('trscaleID',)->get(); 
-        // dd($struksegel);
-            // return view('cetaksegel', compact('struksegel'));
-            // $mpdf->Image('storage/uploads/segel/SPM-7-5-2025-1.jpg', 0, 0, 210, 297, 'jpg', '', true, false);
-            // $mpdf->Image('storage/uploads/segel/SPM-5-4-2025-2.jpg', 0, 0, 210, 297, 'jpg', '', true, false);
-       $html = view('cetaksegel', compact('struksegel'));
 
         $mpdf = new \Mpdf\Mpdf();
-       
+        $tgl1 = Carbon::now();
+        $tglnow = date('d-m-Y H:i', strtotime($tgl1));
+        $tgl = date('Y-m-d', strtotime($tgl1));
+        $struksegel =  DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('products', 'products.itemCode', 'createspms.itemCode')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('trscale', 'trscale.spmID', 'createspms.id')->where('createspms.id', $id)->get();
+        // $logtimbavg =  DB::connection('sqlsrv')->table('logAppAvgKarung')->where('trscaleID',)->get(); 
+        // dd($struksegel);
+        // return view('cetaksegel', compact('struksegel'));
+        // $mpdf->Image('storage/uploads/segel/SPM-7-5-2025-1.jpg', 0, 0, 210, 297, 'jpg', '', true, false);
+        // $mpdf->Image('storage/uploads/segel/SPM-5-4-2025-2.jpg', 0, 0, 210, 297, 'jpg', '', true, false);
+        $html = view('cetaksegel', compact('struksegel'));
+
+        $mpdf = new \Mpdf\Mpdf();
+
         $mpdf->WriteHTML($html);
         $mpdf->Output();
     }
@@ -90,14 +114,14 @@ class ScaleController extends Controller
         // dd($id);
         $mpdf = new \Mpdf\Mpdf();
         $tgl1 = Carbon::now();
-        $tglnow=date('d-m-Y H:i',strtotime($tgl1));
-        $tgl=date('Y-m-d',strtotime($tgl1));
+        $tglnow = date('d-m-Y H:i', strtotime($tgl1));
+        $tgl = date('Y-m-d', strtotime($tgl1));
         // $struksj =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms', 'createspms.id', 'trscale.spmID')->join('createsppbs', 'createsppbs.id', 'trscale.doNo')->where('trscale.id',$id)->get();
-        $struksj =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('createspms', 'createspms.id', 'trscale.spmID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->where('trscale.id',$id)->get();
-       
+        $struksj =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('createspms', 'createspms.id', 'trscale.spmID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->where('trscale.id', $id)->get();
+
         //  dd($struksj);
-            // return view('cetaksj', compact('struksj'));
-       $html = view('cetaksj', compact('struksj'));
+        // return view('cetaksj', compact('struksj'));
+        $html = view('cetaksj', compact('struksj'));
 
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
@@ -109,14 +133,49 @@ class ScaleController extends Controller
         // dd($id);
         $mpdf = new \Mpdf\Mpdf();
         $tgl1 = Carbon::now();
-        $tglnow=date('d-m-Y H:i',strtotime($tgl1));
-        $tgl=date('Y-m-d',strtotime($tgl1));
+        $tglnow = date('d-m-Y H:i', strtotime($tgl1));
+        $tgl = date('Y-m-d', strtotime($tgl1));
         // $struksj =  DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->join('createspms', 'createspms.id', 'trscale.spmID')->join('createsppbs', 'createsppbs.id', 'trscale.doNo')->where('trscale.id',$id)->get();
         $struksj =  DB::connection('sqlsrv')->table('createspms')->join('customers', 'customers.custID', 'createspms.custID')->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')->join('products', 'products.itemCode', 'createspms.itemCode')->where('createspms.id', $id)->get();
-       
+
         //  dd($struksj);
-            // return view('cetaksj', compact('struksj'));
-       $html = view('cetaksj-eksesmol', compact('struksj'));
+        // return view('cetaksj', compact('struksj'));
+        $html = view('cetaksj-eksesmol', compact('struksj'));
+
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output();
+    }
+
+    public function cetaksjmp($headerId)
+    {
+        // Get header data
+        $header = DB::connection('sqlsrv')->table('trscale_headers')
+            ->leftJoin('customers', 'customers.custID', 'trscale_headers.custID')
+            ->where('trscale_headers.id', $headerId)
+            ->select('trscale_headers.*', 'customers.custName', 'customers.custAdd')
+            ->first();
+
+        // Get all product details for this header
+        $details = DB::connection('sqlsrv')->table('trscale_details')
+            ->leftJoin('createspms', 'createspms.id', 'trscale_details.spm_id')
+            ->leftJoin('createsppbs', 'createsppbs.id', 'trscale_details.sppb_id')
+            ->where('trscale_details.header_id', $headerId)
+            ->select(
+                'trscale_details.*',
+                'createspms.spmNo',
+                'createspms.tglSpm',
+                'createspms.sealNo',
+                'createspms.qtyKg',
+                'createspms.packingID',
+                'createsppbs.sppbNo'
+            )
+            ->get();
+
+        // Get first detail for header info (spmNo, sppbNo, etc)
+        $firstDetail = $details->first();
+
+        $html = view('cetaksjmp', compact('header', 'details', 'firstDetail'));
 
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
@@ -129,9 +188,9 @@ class ScaleController extends Controller
     {
         $mpdf = new \Mpdf\Mpdf();
         $tgl1 = Carbon::now();
-        $tglnow=date('d-m-Y H:i',strtotime($tgl1));
-        $tgl=date('Y-m-d',strtotime($tgl1));
-        $struktiketmuat =  DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('jenistruks','jenistruks.id', 'create_t_m_s.jenisTruk')->join('customers','customers.custID', 'create_t_m_s.custID')->join('products','products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id','pendfNo', 'tmQtyKg','tmQtyKarung','sppbNo','tmCarID','isMktApp','tmDriver','noHpDriver','jenistruks.jenisTruk','tglDaftar','tmTranspName','tglMuat','custName', 'itemName')->where('create_t_m_s.id',$id)->get();
+        $tglnow = date('d-m-Y H:i', strtotime($tgl1));
+        $tgl = date('Y-m-d', strtotime($tgl1));
+        $struktiketmuat =  DB::connection('sqlsrv')->table('create_t_m_s')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->select('create_t_m_s.id', 'pendfNo', 'tmQtyKg', 'tmQtyKarung', 'sppbNo', 'tmCarID', 'isMktApp', 'tmDriver', 'noHpDriver', 'jenistruks.jenisTruk', 'tglDaftar', 'tmTranspName', 'tglMuat', 'custName', 'itemName')->where('create_t_m_s.id', $id)->get();
         // dd($struktiketmuat);
         // return view('cetakstrukmuat', compact('struktiketmuat', 'tglnow'));
         $html = view('cetakstrukmuat', compact('struktiketmuat', 'tglnow'));
@@ -142,22 +201,22 @@ class ScaleController extends Controller
         $mpdf->WriteHTML($html);
         $mpdf->Output();
     }
-    
+
 
     public function ttdstore(Request $request)
     {
         // dd($request->image1);
-                                    // ######### proses upload brix
-                                    $img1 = $request->image1;
-                                    $folderPath1 = "public/uploads/ttd/";
-                                    $formatName1 = 'ttdmanager'; 
-                                    $image_parts1 = explode(";base64", $img1);
-                                    $image_base641 = base64_decode($image_parts1[1]);
-                                    $fileName1 = $formatName1 . ".png";
-                                    $file1 = $folderPath1 . $fileName1;
-                                    Storage::put($file1, $image_base641);
-                                    // ######### proses upload brix
-                                    return view('dashboard');
+        // ######### proses upload brix
+        $img1 = $request->image1;
+        $folderPath1 = "public/uploads/ttd/";
+        $formatName1 = 'ttdmanager';
+        $image_parts1 = explode(";base64", $img1);
+        $image_base641 = base64_decode($image_parts1[1]);
+        $fileName1 = $formatName1 . ".png";
+        $file1 = $folderPath1 . $fileName1;
+        Storage::put($file1, $image_base641);
+        // ######### proses upload brix
+        return view('dashboard');
     }
 
 
@@ -170,6 +229,4 @@ class ScaleController extends Controller
         // return view('testingimportmenu')->with('message', 'Your action was successful!');
 
     }
-
-    
 }

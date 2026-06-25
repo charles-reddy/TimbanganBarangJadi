@@ -1,39 +1,38 @@
 <div>
     @if (session('error'))
-    <div class="pt-3">
-        <div class="alert alert-danger">
-            <span class="sr-only">WARNING</span>
-            <div>
-            <span class="font-medium">Danger alert!</span> {{ session("error") }}
+        <div class="pt-3">
+            <div class="alert alert-danger">
+                <span class="sr-only">WARNING</span>
+                <div>
+                    <span class="font-medium">Danger alert!</span> {{ session('error') }}
+                </div>
             </div>
         </div>
-    </div>
     @endif
 
-    
+
     @if ($errors->any())
-    <div class="pt-3">
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $item)
-                    <li>{{ $item }}</li>
-                @endforeach
-            </ul>
+        <div class="pt-3">
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $item)
+                        <li>{{ $item }}</li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
-    </div>
-        
+
     @endif
 
 
     @if (session()->has('message'))
-    <div class="pt-3">
-        <div class="alert alert-success">
-            {{ session('message') }}
+        <div class="pt-3">
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
         </div>
-    </div>
-        
     @endif
-    
+
     <!-- START FORM -->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <div>
@@ -79,44 +78,46 @@
                             <input type="text" class="form-control w-50" wire:model="itemName" disabled>
                         </div>
                     </div>
-                    
-                    
-                    
+
+
+
 
 
                 </div>
-               
+
             </div>
-            
-           
-            
-            
-            
-          
+
+
+
+
+
+
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
-                   
-                        <button type="button" class="btn btn-primary" name="submit" wire:click="store()">MULAI LOADING</button>
-                   
-                        <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
-                    
+
+                    <button type="button" class="btn btn-primary" name="submit" wire:click="store()">MULAI
+                        LOADING</button>
+
+                    <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
+
                 </div>
             </div>
         </form>
     </div>
     <!-- AKHIR FORM -->
-    
-     
+
+
 
     <!-- START DATA tiket muat-->
-    <div class="my-3 p-3 bg-body rounded shadow-sm"  >
+    <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h1>Data Siap Muat</h1>
         <div class="pb-3 pt-3">
-            <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Car ID" wire:model.live="katakunci">
+            <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Car ID"
+                wire:model.live="katakunci">
         </div>
 
-        
+
 
         {{ $siaploading->links() }}
         <table class="table table-striped table-sortable">
@@ -124,41 +125,50 @@
                 <tr>
                     <th></th>
                     <th class="col-md">No</th>
-                    <th class="col-md" >driver</th>
-                    <th class="col-md" >Car ID</th>
-                    <th class="col-md" >Customer</th>
-                    <th class="col-md" >Item Name</th>
-                    <th class="col-md" >Bobot IN</th>
-                    <th class="col-md" >Date IN</th>
-                    
-                    
-                    
+                    <th class="col-md">Type</th>
+                    <th class="col-md">Driver</th>
+                    <th class="col-md">Car ID</th>
+                    <th class="col-md">Customer</th>
+                    <th class="col-md">Item Name</th>
+                    <th class="col-md">Bobot IN</th>
+                    <th class="col-md">Date IN</th>
+
+
+
                 </tr>
             </thead>
             <tbody>
                 @foreach ($siaploading as $key => $value)
-                <tr>
-                    <td></td>
-                    <td>{{ $siaploading->firstItem() + $key }}</td>
-                    <td>{{ $value->driver }}</td>
-                    <td>{{ $value->carID }}</td>
-                    <td>{{ $value->custName }}</td>
-                    <td>{{ $value->itemName }}</td>
-                    <td>{{ $value->timbangin }}</td>
-                    <td>{{ $value->jam_in }}</td>
-                    
-                    <td>
-                        <a wire:click="edit({{ $value->id }})" class="btn btn-primary btn-sm">Start</a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td></td>
+                        <td>{{ $siaploading->firstItem() + $key }}</td>
+                        <td>
+                            @if ($value->trans_type === 'multi')
+                                <span class="badge bg-info">Multi</span>
+                            @else
+                                <span class="badge bg-secondary">Single</span>
+                            @endif
+                        </td>
+                        <td>{{ $value->driver }}</td>
+                        <td>{{ $value->carID }}</td>
+                        <td>{{ $value->custName }}</td>
+                        <td>{{ $value->itemName }}</td>
+                        <td>{{ number_format($value->weight, 2) }}</td>
+                        <td>{{ $value->jam_in }}</td>
+
+                        <td>
+                            <a wire:click="edit({{ $value->id }}, '{{ $value->trans_type }}')"
+                                class="btn btn-primary btn-sm">Start</a>
+                        </td>
+                    </tr>
                 @endforeach
-                
+
             </tbody>
         </table>
     </div>
     <!-- AKHIR DATA Tiket Muat -->
-    
-    
+
+
 
 
 

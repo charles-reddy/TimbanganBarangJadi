@@ -22,7 +22,7 @@
                     </x-nav-link>
                 </div>
 
-                
+
                 {{-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('createspm')" :active="request()->routeIs('dashboard')">
                         {{ __('Buat SPM') }}
@@ -37,17 +37,21 @@
                 <div class="hidden sm:flex space-x-8 sm:items-center sm:ms-10 pt-1">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                            <button
+                                class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                 <div>Master</div>
-                
+
                                 <div class="ml-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 </div>
                             </button>
                         </x-slot>
-                
+
                         <x-slot name="content">
                             <x-dropdown-link :href="route('mastercustomer')" active="request()->routeIs('dashboard')">
                                 {{ __('Tambah Customer') }}
@@ -61,7 +65,7 @@
                             <!-- <x-dropdown-link :href="route('createsppb')" active="request()->routeIs('dashboard')">
                                 {{ __('Buat SPPB') }}
                             </x-dropdown-link> -->
-                           
+
                         </x-slot>
                     </x-dropdown>
                 </div>
@@ -69,17 +73,21 @@
                 <div class="hidden sm:flex space-x-8 sm:items-center sm:ms-10 pt-1">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                            <button
+                                class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                 <div>Registrasi</div>
-                
+
                                 <div class="ml-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 </div>
                             </button>
                         </x-slot>
-                
+
                         <x-slot name="content">
                             <x-dropdown-link :href="route('createspm')" active="request()->routeIs('dashboard')">
                                 {{ __('Buat SPM') }}
@@ -99,7 +107,7 @@
                             <x-dropdown-link :href="route('listtmpersppb')" active="request()->routeIs('dashboard')">
                                 {{ __('Check SPPB-Tiket Muat-WB') }}
                             </x-dropdown-link>
-                           
+
                         </x-slot>
                     </x-dropdown>
                 </div>
@@ -123,17 +131,21 @@
                 <div class="hidden sm:flex space-x-8 sm:items-center sm:ms-10 pt-1">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                            <button
+                                class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                 <div>Timbangan</div>
-                
+
                                 <div class="ml-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 </div>
                             </button>
                         </x-slot>
-                
+
                         <x-slot name="content">
                             <x-dropdown-link :href="route('timmasuk')" active="request()->routeIs('dashboard')">
                                 {{ __('Timbangan Masuk (FG)') }}
@@ -152,6 +164,23 @@
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('laporantimbanganmaterial')" active="request()->routeIs('dashboard')">
                                 {{ __('Laporan Timbangan Keluar (Material)') }}
+                            </x-dropdown-link>
+                            <!-- Multi-Product Weighing -->
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <x-dropdown-link :href="route('multi-product-weighing-in')"
+                                active="request()->routeIs('multi-product-weighing-in')">
+                                {{ __('Timbang Multi-Product IN') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('multi-product-weighing-out')"
+                                active="request()->routeIs('multi-product-weighing-out')">
+                                {{ __('Timbang Multi-Product OUT') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('multi-product-approval')" active="request()->routeIs('multi-product-approval')">
+                                {{ __('Approval Multi-Product') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('weighing-report-dashboard')"
+                                active="request()->routeIs('weighing-report-dashboard')">
+                                {{ __('Laporan Gabungan') }}
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
@@ -173,21 +202,25 @@
                         {{ __('Laporan Surat Jalan ') }}
                     </x-nav-link>
                 </div> --}}
-                
+
                 <div class="hidden sm:flex space-x-8 sm:items-center sm:ms-10 pt-1">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                            <button
+                                class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                 <div>Barang Jadi</div>
-                
+
                                 <div class="ml-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 </div>
                             </button>
                         </x-slot>
-                
+
                         <x-slot name="content">
                             <x-dropdown-link :href="route('startloading')" active="request()->routeIs('dashboard')">
                                 {{ __('Mulai Loading') }}
@@ -210,7 +243,7 @@
                             <x-dropdown-link :href="route('lappemuatanfg')" active="request()->routeIs('dashboard')">
                                 {{ __('Laporan Pemuatan FG') }}
                             </x-dropdown-link>
-                            
+
                             <x-dropdown-link :href="route('createpembatasanharian')" active="request()->routeIs('createpembatasanharian')">
                                 {{ __('Input Pembatasan Harian') }}
                             </x-dropdown-link>
@@ -221,17 +254,21 @@
                 <div class="hidden sm:flex space-x-8 sm:items-center sm:ms-10 pt-1">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                            <button
+                                class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                 <div>Marketing</div>
-                
+
                                 <div class="ml-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 </div>
                             </button>
                         </x-slot>
-                
+
                         <x-slot name="content">
                             <x-dropdown-link :href="route('createsppb')" active="request()->routeIs('dashboard')">
                                 {{ __('Buat SPPB') }}
@@ -260,22 +297,26 @@
                 <div class="hidden sm:flex space-x-8 sm:items-center sm:ms-10 pt-1">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                            <button
+                                class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                 <div>Security</div>
-                
+
                                 <div class="ml-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 </div>
                             </button>
                         </x-slot>
-                
+
                         <x-slot name="content">
                             <x-dropdown-link :href="route('appsecurity')" active="request()->routeIs('appsecurity')">
                                 {{ __('Cek Tiket Muat') }}
                             </x-dropdown-link>
-                            
+
                         </x-slot>
                     </x-dropdown>
                 </div>
@@ -285,12 +326,16 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button
+                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
 
                             <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clip-rule="evenodd" />
                                 </svg>
                             </div>
                         </button>
@@ -306,7 +351,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -317,10 +362,14 @@
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open"
+                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
@@ -330,10 +379,10 @@
     <!-- Responsive Navigation Menu -->
 
     <!-- Navigation Links -->
-                
 
 
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+
+    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('fgdashboard')" :active="request()->routeIs('fgdashboard')">
                 {{ __('Dashboard') }}
@@ -347,219 +396,251 @@
 
         <div class="px-4 pt-4 pb-1 ">
             <x-dropdown align="left" width="48">
-                            <x-slot name="trigger">
-                                <button class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                                    <div>Master</div>
-                    
-                                    <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-                    
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('mastercustomer')" active="request()->routeIs('dashboard')">
-                                    {{ __('Tambah Customer') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('mastersupplier')" active="request()->routeIs('dashboard')">
-                                    {{ __('Tambah Supplier') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('masterproduct')" active="request()->routeIs('dashboard')">
-                                    {{ __('Tambah Produk') }}
-                                </x-dropdown-link>
-                            
-                            </x-slot>
+                <x-slot name="trigger">
+                    <button
+                        class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                        <div>Master</div>
+
+                        <div class="ml-1">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
+                </x-slot>
+
+                <x-slot name="content">
+                    <x-dropdown-link :href="route('mastercustomer')" active="request()->routeIs('dashboard')">
+                        {{ __('Tambah Customer') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('mastersupplier')" active="request()->routeIs('dashboard')">
+                        {{ __('Tambah Supplier') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('masterproduct')" active="request()->routeIs('dashboard')">
+                        {{ __('Tambah Produk') }}
+                    </x-dropdown-link>
+
+                </x-slot>
             </x-dropdown>
         </div>
 
         <div class="px-4 pt-4 pb-1 ">
             <x-dropdown align="left" width="48">
-                            <x-slot name="trigger">
-                                <button class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                                    <div>Registrasi</div>
-                    
-                                    <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-                    
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('createspm')" active="request()->routeIs('dashboard')">
-                                    {{ __('Buat SPM') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('createpgi')" active="request()->routeIs('dashboard')">
-                                    {{ __('Upload PGI') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('sjeksesmolases')" active="request()->routeIs('dashboard')">
-                                    {{ __('Surat Jalan Additional Molases') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('gantitgltm')" active="request()->routeIs('dashboard')">
-                                    {{ __('Ganti Tgl Tiket Muat') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('registrasimaterial')" active="request()->routeIs('dashboard')">
-                                    {{ __('Registrasi timbang masuk') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('listtmpersppb')" active="request()->routeIs('dashboard')">
-                                    {{ __('Check SPPB-Tiket Muat-WB') }}
-                                </x-dropdown-link>
-                            
-                            </x-slot>
-            </x-dropdown>
-        </div>
+                <x-slot name="trigger">
+                    <button
+                        class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                        <div>Registrasi</div>
 
+                        <div class="ml-1">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
+                </x-slot>
 
-        <div class="px-4 pt-4 pb-1 ">
-            <x-dropdown align="left" width="48">
-                            <x-slot name="trigger">
-                                <button class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                                    <div>Timbangan</div>
-                    
-                                    <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-                    
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('timmasuk')" active="request()->routeIs('dashboard')">
-                                    {{ __('Timbangan Masuk (FG)') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('timkeluar')" active="request()->routeIs('dashboard')">
-                                    {{ __('Timbangan Keluar  (FG)') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('laptim')" active="request()->routeIs('dashboard')">
-                                    {{ __('Laporan Timbangan Keluar (FG)') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('timbanginmaterial')" active="request()->routeIs('dashboard')">
-                                    {{ __('Timbangan Masuk (Material)') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('timbangoutmaterial')" active="request()->routeIs('dashboard')">
-                                    {{ __('Timbangan Keluar (Material)') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('laporantimbanganmaterial')" active="request()->routeIs('dashboard')">
-                                    {{ __('Laporan Timbangan Keluar (Material)') }}
-                                </x-dropdown-link>
-                            
-                            </x-slot>
+                <x-slot name="content">
+                    <x-dropdown-link :href="route('createspm')" active="request()->routeIs('dashboard')">
+                        {{ __('Buat SPM') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('createpgi')" active="request()->routeIs('dashboard')">
+                        {{ __('Upload PGI') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('sjeksesmolases')" active="request()->routeIs('dashboard')">
+                        {{ __('Surat Jalan Additional Molases') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('gantitgltm')" active="request()->routeIs('dashboard')">
+                        {{ __('Ganti Tgl Tiket Muat') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('registrasimaterial')" active="request()->routeIs('dashboard')">
+                        {{ __('Registrasi timbang masuk') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('listtmpersppb')" active="request()->routeIs('dashboard')">
+                        {{ __('Check SPPB-Tiket Muat-WB') }}
+                    </x-dropdown-link>
+
+                </x-slot>
             </x-dropdown>
         </div>
 
 
         <div class="px-4 pt-4 pb-1 ">
             <x-dropdown align="left" width="48">
-                            <x-slot name="trigger">
-                                <button class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                                    <div>Barang Jadi</div>
-                    
-                                    <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-                    
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('startloading')" active="request()->routeIs('dashboard')">
-                                    {{ __('Mulai Loading') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('inputkarung')" active="request()->routeIs('dashboard')">
-                                    {{ __('Input Qty Karung') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('segeltruk')" active="request()->routeIs('dashboard')">
-                                    {{ __('Seal Truk') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('uploadappkarung')" active="request()->routeIs('dashboard')">
-                                    {{ __('Upload Bukti Pengecekan karung') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('appavgkarung')" active="request()->routeIs('dashboard')">
-                                    {{ __('Approval avg Karung') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('lapsj')" active="request()->routeIs('dashboard')">
-                                    {{ __('Laporan Surat Jalan') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('lappemuatanfg')" active="request()->routeIs('dashboard')">
-                                    {{ __('Laporan Pemuatan FG') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('createpembatasanharian')" active="request()->routeIs('createpembatasanharian')">
-                                    {{ __('Input Pembatasan Harian') }}
-                                </x-dropdown-link>
-                            
-                            </x-slot>
+                <x-slot name="trigger">
+                    <button
+                        class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                        <div>Timbangan</div>
+
+                        <div class="ml-1">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
+                </x-slot>
+
+                <x-slot name="content">
+                    <x-dropdown-link :href="route('timmasuk')" active="request()->routeIs('dashboard')">
+                        {{ __('Timbangan Masuk (FG)') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('timkeluar')" active="request()->routeIs('dashboard')">
+                        {{ __('Timbangan Keluar  (FG)') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('laptim')" active="request()->routeIs('dashboard')">
+                        {{ __('Laporan Timbangan Keluar (FG)') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('timbanginmaterial')" active="request()->routeIs('dashboard')">
+                        {{ __('Timbangan Masuk (Material)') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('timbangoutmaterial')" active="request()->routeIs('dashboard')">
+                        {{ __('Timbangan Keluar (Material)') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('laporantimbanganmaterial')" active="request()->routeIs('dashboard')">
+                        {{ __('Laporan Timbangan Keluar (Material)') }}
+                    </x-dropdown-link>
+                    <!-- Multi-Product Weighing -->
+                    <div class="border-t border-gray-100 my-1"></div>
+                    <x-dropdown-link :href="route('multi-product-weighing-in')" active="request()->routeIs('multi-product-weighing-in')">
+                        {{ __('Timbang Multi-Product IN') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('multi-product-weighing-out')" active="request()->routeIs('multi-product-weighing-out')">
+                        {{ __('Timbang Multi-Product OUT') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('multi-product-approval')" active="request()->routeIs('multi-product-approval')">
+                        {{ __('Approval Multi-Product') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('weighing-report-dashboard')" active="request()->routeIs('weighing-report-dashboard')">
+                        {{ __('Laporan Gabungan') }}
+                    </x-dropdown-link>
+
+                </x-slot>
             </x-dropdown>
         </div>
 
 
         <div class="px-4 pt-4 pb-1 ">
             <x-dropdown align="left" width="48">
-                            <x-slot name="trigger">
-                                <button class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                                    <div>Marketing</div>
-                    
-                                    <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-                    
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('createsppb')" active="request()->routeIs('createsppb')">
-                                    {{ __('Buat SPPB') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('approvaltiketmuat')" active="request()->routeIs('approvaltiketmuat')">
-                                    {{ __('Approval Tiket Muat') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('laptiketmuatapproved')" active="request()->routeIs('laptiketmuatapproved')">
-                                    {{ __('Tiket Muat - Approved') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('quotaharian')" active="request()->routeIs('quotaharian')">
-                                    {{ __('Quota Harian') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('monitortiketmuat')" active="request()->routeIs('monitortiketmuat')">
-                                    {{ __('Monitor Tiket Muat') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('customerlist')" active="request()->routeIs('customerlist')">
-                                    {{ __('Customer List') }}
-                                </x-dropdown-link>
-                            
-                            </x-slot>
+                <x-slot name="trigger">
+                    <button
+                        class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                        <div>Barang Jadi</div>
+
+                        <div class="ml-1">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
+                </x-slot>
+
+                <x-slot name="content">
+                    <x-dropdown-link :href="route('startloading')" active="request()->routeIs('dashboard')">
+                        {{ __('Mulai Loading') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('inputkarung')" active="request()->routeIs('dashboard')">
+                        {{ __('Input Qty Karung') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('segeltruk')" active="request()->routeIs('dashboard')">
+                        {{ __('Seal Truk') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('uploadappkarung')" active="request()->routeIs('dashboard')">
+                        {{ __('Upload Bukti Pengecekan karung') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('appavgkarung')" active="request()->routeIs('dashboard')">
+                        {{ __('Approval avg Karung') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('lapsj')" active="request()->routeIs('dashboard')">
+                        {{ __('Laporan Surat Jalan') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('lappemuatanfg')" active="request()->routeIs('dashboard')">
+                        {{ __('Laporan Pemuatan FG') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('createpembatasanharian')" active="request()->routeIs('createpembatasanharian')">
+                        {{ __('Input Pembatasan Harian') }}
+                    </x-dropdown-link>
+
+                </x-slot>
+            </x-dropdown>
+        </div>
+
+
+        <div class="px-4 pt-4 pb-1 ">
+            <x-dropdown align="left" width="48">
+                <x-slot name="trigger">
+                    <button
+                        class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                        <div>Marketing</div>
+
+                        <div class="ml-1">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
+                </x-slot>
+
+                <x-slot name="content">
+                    <x-dropdown-link :href="route('createsppb')" active="request()->routeIs('createsppb')">
+                        {{ __('Buat SPPB') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('approvaltiketmuat')" active="request()->routeIs('approvaltiketmuat')">
+                        {{ __('Approval Tiket Muat') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('laptiketmuatapproved')" active="request()->routeIs('laptiketmuatapproved')">
+                        {{ __('Tiket Muat - Approved') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('quotaharian')" active="request()->routeIs('quotaharian')">
+                        {{ __('Quota Harian') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('monitortiketmuat')" active="request()->routeIs('monitortiketmuat')">
+                        {{ __('Monitor Tiket Muat') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('customerlist')" active="request()->routeIs('customerlist')">
+                        {{ __('Customer List') }}
+                    </x-dropdown-link>
+
+                </x-slot>
             </x-dropdown>
         </div>
         <div class="px-4 pt-4 pb-1 ">
             <x-dropdown align="left" width="48">
-                            <x-slot name="trigger">
-                                <button class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                                    <div>Registrasi</div>
-                    
-                                    <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-                    
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('gantitgltm')" active="request()->routeIs('createsppb')">
-                                    {{ __('Ganti tgl Tiket Muat') }}
-                                </x-dropdown-link>
-                                
-                            
-                            </x-slot>
+                <x-slot name="trigger">
+                    <button
+                        class="flex items-center text-xl font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                        <div>Registrasi</div>
+
+                        <div class="ml-1">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
+                </x-slot>
+
+                <x-slot name="content">
+                    <x-dropdown-link :href="route('gantitgltm')" active="request()->routeIs('createsppb')">
+                        {{ __('Ganti tgl Tiket Muat') }}
+                    </x-dropdown-link>
+
+
+                </x-slot>
             </x-dropdown>
         </div>
-  
-        
-        
+
+
+
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
@@ -578,7 +659,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

@@ -101,7 +101,7 @@ class Timbanganoa extends Component
                         $data = "http://10.20.1.63:3000/api/weight/SCALE_09";
                         break;   
 
-                    case '3':
+                    case 3:
                         $data = "http://10.20.1.63:3000/api/weight/SCALE_08";
                         break; 
 
