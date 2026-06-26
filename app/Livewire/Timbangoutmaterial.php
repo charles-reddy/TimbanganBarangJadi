@@ -205,10 +205,10 @@ class Timbangoutmaterial extends Component
     public function render()
     {
         if ($this->katakunci   !=null) {
-            $data = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->where('driver','like','%' . $this->katakunci . '%')->wherenotnull('timbangin')->wherenull('netto')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->join('m_timbangan', 'm_timbangan.timbanganID', 'trscaleb19s.timbanganInID')->where('driver','like','%' . $this->katakunci . '%')->wherenotnull('timbangin')->wherenull('netto')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
             // $sdhout = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->where('driver','like','%' . $this->katakunci . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         } else {
-            $data = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->wherenotnull('timbangin')->wherenull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->join('m_timbangan', 'm_timbangan.timbanganID', 'trscaleb19s.timbanganInID')->wherenotnull('timbangin')->wherenull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
             // $sdhout = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         }
 
@@ -219,7 +219,7 @@ class Timbangoutmaterial extends Component
             // $data = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->wherenotnull('timbangin')->wherenull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
             $sdhout = DB::connection('sqlsrv')->table('trscaleb19s')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->join('products', 'products.itemCode', 'trscaleb19s.itemCode')->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
         }
-
+        // dd($data);
         $timinlist = DB::connection('sqlsrv')->table('trscaleb19s')->select('trscaleb19s.id','trscaleb19s.carID','suppliers.suppName','suppliers.suppID', 'trscaleb19s.timbangin', 'trscaleb19s.netto')->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')->wherenotnull('timbangin')->wherenull('netto')->get();
         $timbangan = JembatanTimbang::all();
         return view('livewire.timbangoutmaterial',['datascaleout' => $sdhout,'datatim' => $data, 'datareg1' => $timinlist, 'timbangan' => $timbangan]);
