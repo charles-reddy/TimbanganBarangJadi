@@ -267,27 +267,71 @@
                             <table class="table table-sm table-bordered">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Product</th>
-                                        <th class="text-center">Qty Karung</th>
-                                        <th class="text-end">Weight Std</th>
-                                        <th class="text-end">Theoretical</th>
+                                        <th rowspan="2">Product</th>
+                                        <th rowspan="2" class="text-center">Qty Karung</th>
+                                        <th rowspan="2" class="text-end">Weight Std</th>
+                                        <th rowspan="2" class="text-end">Theoretical</th>
+                                        <th colspan="2" class="text-center bg-warning">Range per Kemasan</th>
+                                        <th colspan="2" class="text-center bg-info text-white">Total Range</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-end bg-warning">Min</th>
+                                        <th class="text-end bg-warning">Max</th>
+                                        <th class="text-end bg-info text-white">Min</th>
+                                        <th class="text-end bg-info text-white">Max</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $totalRangeMin = 0;
+                                        $totalRangeMax = 0;
+                                    @endphp
                                     @foreach ($selectedTransaction->details as $detail)
+                                        @php
+                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
+                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            $totalRangeMin += $rangeMinTotal;
+                                            $totalRangeMax += $rangeMaxTotal;
+                                        @endphp
                                         <tr>
                                             <td>
                                                 <small class="text-muted">{{ $detail->itemCode }}</small><br>
                                                 <strong>{{ $detail->itemName }}</strong>
                                             </td>
-                                            <td class="text-center">{{ $detail->qty_karung }}</td>
+                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
                                             <td class="text-end">{{ number_format($detail->weight_std, 2) }}</td>
-                                            <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
+                                            <td class="text-end">
+                                                <strong>{{ number_format($detail->theoretical_weight, 2) }}</strong>
+                                            </td>
+                                            <td class="text-end">{{ number_format($detail->gross_min, 2) }}</td>
+                                            <td class="text-end">{{ number_format($detail->gross_max, 2) }}</td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMinTotal, 2) }}</strong>
+                                            </td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMaxTotal, 2) }}</strong>
                                             </td>
                                         </tr>
                                     @endforeach
+                                    <tr class="table-primary fw-bold">
+                                        <td colspan="6" class="text-end">TOTAL RANGE NETTO:</td>
+                                        <td class="text-end bg-success text-white">
+                                            {{ number_format($totalRangeMin, 2) }} kg</td>
+                                        <td class="text-end bg-success text-white">
+                                            {{ number_format($totalRangeMax, 2) }} kg</td>
+                                    </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <!-- Range Info Alert -->
+                        <div class="alert alert-warning">
+                            <strong><i class="bi bi-info-circle"></i> Penjelasan Range:</strong><br>
+                            • <strong>Range per Kemasan:</strong> Berat min/max untuk setiap karung/kemasan produk<br>
+                            • <strong>Total Range:</strong> Qty Karung × Range per Kemasan<br>
+                            • <strong>Total Range Netto:</strong> Penjumlahan total range dari semua produk<br>
+                            • Hasil timbang netto harus berada di antara <strong>{{ number_format($totalRangeMin, 2) }}
+                                - {{ number_format($totalRangeMax, 2) }} kg</strong> untuk tidak perlu approval
                         </div>
 
                         <!-- Manual Mode Toggle -->
@@ -391,6 +435,59 @@
                             wire:click="closeDetailModal"></button>
                     </div>
                     <div class="modal-body">
+                        <!-- Status Badge (untuk transaksi selesai) -->
+                        @if (in_array($selectedTransaction->status, ['COMPLETED', 'APPROVED', 'PENDING_APPROVAL']))
+                            <div class="text-center mb-3">
+                                @if ($selectedTransaction->status === 'COMPLETED')
+                                    <h4><span class="badge bg-success">✓ COMPLETED</span></h4>
+                                @elseif ($selectedTransaction->status === 'APPROVED')
+                                    <h4><span class="badge bg-primary">✓ APPROVED</span></h4>
+                                @elseif ($selectedTransaction->status === 'PENDING_APPROVAL')
+                                    <h4><span class="badge bg-warning text-dark">⏳ PENDING APPROVAL</span></h4>
+                                @endif
+                            </div>
+
+                            <!-- Range Summary (jika sudah timbang keluar) -->
+                            @if ($selectedTransaction->net_weight)
+                                <div
+                                    class="alert {{ $selectedTransaction->need_approval ? 'alert-warning' : 'alert-success' }} mb-3">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">
+                                            <strong>Range Netto Min:</strong><br>
+                                            <span
+                                                class="fs-5">{{ number_format($selectedTransaction->total_range_min ?? 0, 2) }}
+                                                kg</span>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <strong>Net Weight Actual:</strong><br>
+                                            <span
+                                                class="fs-5 {{ $selectedTransaction->need_approval ? 'text-danger' : 'text-success' }}">
+                                                <strong>{{ number_format($selectedTransaction->net_weight, 2) }}
+                                                    kg</strong>
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <strong>Range Netto Max:</strong><br>
+                                            <span
+                                                class="fs-5">{{ number_format($selectedTransaction->total_range_max ?? 0, 2) }}
+                                                kg</span>
+                                        </div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="text-center">
+                                        @if ($selectedTransaction->need_approval)
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                            <strong>Out of Range</strong> - Net weight berada di luar range yang
+                                            diizinkan
+                                        @else
+                                            <i class="bi bi-check-circle"></i>
+                                            <strong>In Range</strong> - Net weight berada dalam range yang diizinkan
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
+
                         <!-- Header Info -->
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -421,19 +518,53 @@
                                         <td width="40%"><strong>Tare Weight:</strong></td>
                                         <td>{{ number_format($selectedTransaction->tare_weight, 2) }} kg</td>
                                     </tr>
+                                    @if ($selectedTransaction->gross_weight)
+                                        <tr>
+                                            <td><strong>Gross Weight:</strong></td>
+                                            <td><span
+                                                    class="badge bg-primary">{{ number_format($selectedTransaction->gross_weight, 2) }}
+                                                    kg</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Net Weight Actual:</strong></td>
+                                            <td><span
+                                                    class="badge bg-success">{{ number_format($selectedTransaction->net_weight, 2) }}
+                                                    kg</span></td>
+                                        </tr>
+                                    @endif
                                     <tr>
                                         <td><strong>Theoretical:</strong></td>
                                         <td>{{ number_format($selectedTransaction->theoretical_weight, 2) }} kg</td>
                                     </tr>
+                                    @if ($selectedTransaction->correction_factor)
+                                        <tr>
+                                            <td><strong>Correction Factor:</strong></td>
+                                            <td><span
+                                                    class="badge bg-secondary">{{ number_format($selectedTransaction->correction_factor, 4) }}</span>
+                                            </td>
+                                        </tr>
+                                    @endif
                                     <tr>
                                         <td><strong>Timbang Masuk:</strong></td>
                                         <td>{{ $selectedTransaction->weigh_in_time ? $selectedTransaction->weigh_in_time->format('d/m/Y H:i') : '-' }}
                                         </td>
                                     </tr>
+                                    @if ($selectedTransaction->weigh_out_time)
+                                        <tr>
+                                            <td><strong>Timbang Keluar:</strong></td>
+                                            <td>{{ $selectedTransaction->weigh_out_time->format('d/m/Y H:i') }}</td>
+                                        </tr>
+                                    @endif
                                     <tr>
                                         <td><strong>User Masuk:</strong></td>
                                         <td>{{ $selectedTransaction->userIn->name ?? '-' }}</td>
                                     </tr>
+                                    @if ($selectedTransaction->userOut)
+                                        <tr>
+                                            <td><strong>User Keluar:</strong></td>
+                                            <td>{{ $selectedTransaction->userOut->name ?? '-' }}</td>
+                                        </tr>
+                                    @endif
                                 </table>
                             </div>
                         </div>
@@ -449,23 +580,59 @@
                                         <th class="text-center">Qty Karung</th>
                                         <th class="text-end">Weight Std</th>
                                         <th class="text-end">Theoretical</th>
-                                        <th class="text-end">Range Min</th>
-                                        <th class="text-end">Range Max</th>
+                                        @if ($selectedTransaction->net_weight)
+                                            <th class="text-end bg-light">Actual</th>
+                                            <th class="text-end bg-light">Avg/Karung</th>
+                                        @endif
+                                        <th class="text-end bg-warning">Range Min</th>
+                                        <th class="text-end bg-warning">Range Max</th>
+                                        <th class="text-end bg-info text-white">Total Range Min</th>
+                                        <th class="text-end bg-info text-white">Total Range Max</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $totalRangeMinDetail = 0;
+                                        $totalRangeMaxDetail = 0;
+                                    @endphp
                                     @foreach ($selectedTransaction->details as $detail)
+                                        @php
+                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
+                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            $totalRangeMinDetail += $rangeMinTotal;
+                                            $totalRangeMaxDetail += $rangeMaxTotal;
+                                        @endphp
                                         <tr>
                                             <td>{{ $detail->itemCode }}</td>
                                             <td>{{ $detail->itemName }}</td>
-                                            <td class="text-center">{{ $detail->qty_karung }}</td>
+                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
                                             <td class="text-end">{{ number_format($detail->weight_std, 2) }}</td>
                                             <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
                                             </td>
+                                            @if ($selectedTransaction->net_weight)
+                                                <td class="text-end bg-light">
+                                                    <strong>{{ number_format($detail->actual_weight, 2) }}</strong>
+                                                </td>
+                                                <td class="text-end bg-light">
+                                                    <strong>{{ number_format($detail->avg_per_karung, 2) }}</strong>
+                                                </td>
+                                            @endif
                                             <td class="text-end">{{ number_format($detail->gross_min, 2) }}</td>
                                             <td class="text-end">{{ number_format($detail->gross_max, 2) }}</td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMinTotal, 2) }}</strong>
+                                            </td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMaxTotal, 2) }}</strong>
+                                            </td>
                                         </tr>
                                     @endforeach
+                                    <tr class="table-success fw-bold">
+                                        <td colspan="{{ $selectedTransaction->net_weight ? '9' : '7' }}"
+                                            class="text-end">TOTAL RANGE NETTO:</td>
+                                        <td class="text-end">{{ number_format($totalRangeMinDetail, 2) }} kg</td>
+                                        <td class="text-end">{{ number_format($totalRangeMaxDetail, 2) }} kg</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

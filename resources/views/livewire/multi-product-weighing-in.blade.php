@@ -85,12 +85,22 @@
                             </button>
                         </div>
                         <div id="selectedSpmsList" class="mt-2 d-none">
+                            <small class="text-muted mb-2 d-block">
+                                <i class="bi bi-exclamation-circle"></i> Pastikan semua SPM dari <strong>truk yang
+                                    sama</strong> (No. Polisi harus sama).<br>
+                                <i class="bi bi-info-circle"></i> Driver boleh berbeda. Spasi dan huruf besar/kecil pada
+                                plat nomor akan diabaikan<br>
+                                <small class="text-muted fst-italic">Contoh: "B 123CD", "b123 cd", "B123CD" dianggap
+                                    sama</small>
+                            </small>
                             <ul class="mb-0">
                                 @foreach ($selectedSpmDetails as $spm)
                                     <li>
                                         <strong>{{ $spm->spmNo }}</strong> -
                                         {{ $spm->product->itemName ?? 'N/A' }}
                                         ({{ $spm->qtyKarung }} karung)
+                                        -
+                                        <span class="badge bg-secondary">{{ $spm->carID }}</span>
                                     </li>
                                 @endforeach
                             </ul>
@@ -306,7 +316,12 @@
                             <div class="alert alert-info">
                                 <strong><i class="bi bi-info-circle"></i> Info:</strong><br>
                                 • Total {{ count($selectedSpms) }} product akan ditimbang<br>
-                                • Theoretical weight akan dihitung otomatis berdasarkan qty karung × weight standard
+                                • Theoretical weight akan dihitung otomatis berdasarkan qty karung × weight standard<br>
+                                • <strong>Catatan:</strong> SPM yang dipilih harus dari <u>truk/kendaraan yang sama</u>
+                                (No. Polisi sama), driver boleh berbeda<br>
+                                • Spasi dan huruf besar/kecil pada plat nomor akan diabaikan dalam pengecekan
+                                <small class="d-block text-muted fst-italic mt-1">Contoh: "B 123CD", "b123 cd",
+                                    "B123CD" dianggap sama</small>
                             </div>
                         </form>
                     </div>

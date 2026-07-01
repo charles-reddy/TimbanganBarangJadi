@@ -136,36 +136,57 @@
                     <th style="text-align: right;">Theoretical (kg)</th>
                     <th style="text-align: right;">Actual (kg)</th>
                     <th style="text-align: right;">Avg/Karung (kg)</th>
-                    <th style="text-align: center;">Status</th>
+                    <th style="text-align: right;">Range Min</th>
+                    <th style="text-align: right;">Range Max</th>
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $totalRangeMin = 0;
+                    $totalRangeMax = 0;
+                @endphp
                 @foreach ($details as $index => $detail)
+                    @php
+                        $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
+                        $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                        $totalRangeMin += $rangeMinTotal;
+                        $totalRangeMax += $rangeMaxTotal;
+                    @endphp
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $detail->itemCode }}</td>
                         <td>{{ $detail->itemName }}</td>
-                        <td style="text-align: center;">{{ $detail->qty_karung }}</td>
+                        <td style="text-align: center;">{{ number_format($detail->qty_karung) }}</td>
                         <td style="text-align: right;">{{ number_format($detail->theoretical_weight, 2) }}</td>
                         <td style="text-align: right;">{{ number_format($detail->actual_weight, 2) }}</td>
                         <td style="text-align: right;">{{ number_format($detail->avg_per_karung, 2) }}</td>
-                        <td style="text-align: center;">
-                            @if ($detail->is_in_range)
-                                <span style="color: green;">✓ In Range</span>
-                            @else
-                                <span style="color: red;">✗ Out of Range</span>
-                            @endif
-                        </td>
+                        <td style="text-align: right;">{{ number_format($detail->gross_min, 2) }}</td>
+                        <td style="text-align: right;">{{ number_format($detail->gross_max, 2) }}</td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr style="font-weight: bold;">
                     <td colspan="3" style="text-align: right;">TOTAL:</td>
-                    <td style="text-align: center;">{{ $details->sum('qty_karung') }}</td>
+                    <td style="text-align: center;">{{ number_format($details->sum('qty_karung')) }}</td>
                     <td style="text-align: right;">{{ number_format($details->sum('theoretical_weight'), 2) }}</td>
                     <td style="text-align: right;">{{ number_format($details->sum('actual_weight'), 2) }}</td>
-                    <td colspan="2"></td>
+                    <td colspan="3"></td>
+                </tr>
+                <tr style="font-weight: bold; background-color: #e0e0e0;">
+                    <td colspan="7" style="text-align: right;">TOTAL RANGE NETTO:</td>
+                    <td style="text-align: right;">{{ number_format($totalRangeMin, 2) }}</td>
+                    <td style="text-align: right;">{{ number_format($totalRangeMax, 2) }}</td>
+                </tr>
+                <tr style="font-weight: bold; background-color: {{ $header->need_approval ? '#ffcccc' : '#ccffcc' }};">
+                    <td colspan="7" style="text-align: right;">STATUS TRANSAKSI:</td>
+                    <td colspan="2" style="text-align: center;">
+                        @if ($header->need_approval)
+                            ✗ OUT OF RANGE (Perlu Approval)
+                        @else
+                            ✓ IN RANGE
+                        @endif
+                    </td>
                 </tr>
             </tfoot>
         </table>

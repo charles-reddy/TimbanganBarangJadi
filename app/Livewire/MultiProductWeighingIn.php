@@ -86,11 +86,11 @@ class MultiProductWeighingIn extends Component
                 $selectedSpm = Createspm::find($spmId);
                 $firstSelectedSpm = Createspm::find($this->selectedSpms[0]);
 
-                if ($selectedSpm && $firstSelectedSpm && (
+                // Validasi hanya carID yang harus sama, driver boleh berbeda
+                if ($selectedSpm && $firstSelectedSpm && 
                     $this->normalizeIdentityValue($selectedSpm->carID) !== $this->normalizeIdentityValue($firstSelectedSpm->carID)
-                    || $this->normalizeIdentityValue($selectedSpm->driver) !== $this->normalizeIdentityValue($firstSelectedSpm->driver)
-                )) {
-                    session()->flash('error', 'Semua SPM harus dari truk dan driver yang sama');
+                ) {
+                    session()->flash('error', 'Semua SPM harus dari truk/kendaraan yang sama (No. Polisi harus sama). Driver boleh berbeda.');
                     return;
                 }
             }

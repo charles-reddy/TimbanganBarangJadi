@@ -185,23 +185,44 @@
                             wire:click="closeApproveModal"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Summary Info -->
+                        <!-- Weighing Info Alert -->
                         <div class="alert alert-warning">
-                            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Produk Out of Range:
-                            </h6>
-                            <ul class="mb-0">
-                                @foreach ($selectedTransaction->details as $detail)
-                                    @if (!$detail->is_in_range)
-                                        <li>
-                                            <strong>{{ $detail->itemName }}</strong>:
-                                            Avg {{ number_format($detail->avg_per_karung, 2) }} kg/karung
-                                            (Range: {{ number_format($detail->gross_min, 2) }} -
-                                            {{ number_format($detail->gross_max, 2) }})
-                                            <span class="badge bg-danger">{{ $detail->deviation_status }}</span>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
+                            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Transaksi Out of
+                                Range</h6>
+                            @php
+                                $totalRangeMin = $selectedTransaction->total_range_min ?? 0;
+                                $totalRangeMax = $selectedTransaction->total_range_max ?? 0;
+                                $netWeight = $selectedTransaction->net_weight ?? 0;
+                            @endphp
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <strong>Tare Weight:</strong><br>
+                                    <span class="fs-6">{{ number_format($selectedTransaction->tare_weight, 2) }}
+                                        kg</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Gross Weight:</strong><br>
+                                    <span class="fs-6">{{ number_format($selectedTransaction->gross_weight, 2) }}
+                                        kg</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Net Weight:</strong><br>
+                                    <span class="fs-6 text-danger"><strong>{{ number_format($netWeight, 2) }}
+                                            kg</strong></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Theoretical:</strong><br>
+                                    <span
+                                        class="fs-6">{{ number_format($selectedTransaction->theoretical_weight, 2) }}
+                                        kg</span>
+                                </div>
+                            </div>
+                            <hr class="my-2">
+                            <p class="mb-0 text-center">
+                                <strong>Range Netto:</strong> {{ number_format($totalRangeMin, 2) }} -
+                                {{ number_format($totalRangeMax, 2) }} kg<br>
+                                Net weight <strong class="text-danger">di luar range</strong>, memerlukan approval.
+                            </p>
                         </div>
 
                         <!-- Transaction Details -->
@@ -211,18 +232,77 @@
                                 <td>{{ $selectedTransaction->carID }} - {{ $selectedTransaction->driver }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Net Weight:</strong></td>
-                                <td>{{ number_format($selectedTransaction->net_weight, 2) }} kg</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Correction Factor:</strong></td>
-                                <td>{{ number_format($selectedTransaction->correction_factor, 4) }}</td>
+                                <td><strong>Correction Factor (K):</strong></td>
+                                <td><span
+                                        class="badge bg-secondary">{{ number_format($selectedTransaction->correction_factor, 4) }}</span>
+                                </td>
                             </tr>
                             <tr>
                                 <td><strong>Total Products:</strong></td>
                                 <td>{{ $selectedTransaction->details->count() }} product</td>
                             </tr>
                         </table>
+
+                        <!-- Product Details Table -->
+                        <h6 class="text-primary">Detail Produk:</h6>
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th rowspan="2">Product</th>
+                                        <th rowspan="2" class="text-center">Qty</th>
+                                        <th rowspan="2" class="text-end">Theoretical</th>
+                                        <th rowspan="2" class="text-end">Actual</th>
+                                        <th rowspan="2" class="text-end">Avg/Karung</th>
+                                        <th colspan="2" class="text-center bg-warning">Range per Kemasan</th>
+                                        <th colspan="2" class="text-center bg-info text-white">Total Range</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-end bg-warning">Min</th>
+                                        <th class="text-end bg-warning">Max</th>
+                                        <th class="text-end bg-info text-white">Min</th>
+                                        <th class="text-end bg-info text-white">Max</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $totalRangeMinCalc = 0;
+                                        $totalRangeMaxCalc = 0;
+                                    @endphp
+                                    @foreach ($selectedTransaction->details as $detail)
+                                        @php
+                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
+                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            $totalRangeMinCalc += $rangeMinTotal;
+                                            $totalRangeMaxCalc += $rangeMaxTotal;
+                                        @endphp
+                                        <tr>
+                                            <td><strong>{{ $detail->itemName }}</strong><br><small
+                                                    class="text-muted">{{ $detail->itemCode }}</small></td>
+                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
+                                            <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
+                                            </td>
+                                            <td class="text-end">{{ number_format($detail->actual_weight, 2) }}</td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($detail->avg_per_karung, 2) }}</strong></td>
+                                            <td class="text-end">{{ number_format($detail->gross_min, 2) }}</td>
+                                            <td class="text-end">{{ number_format($detail->gross_max, 2) }}</td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMinTotal, 2) }}</strong></td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMaxTotal, 2) }}</strong></td>
+                                        </tr>
+                                    @endforeach
+                                    <tr class="table-primary fw-bold">
+                                        <td colspan="7" class="text-end">TOTAL RANGE NETTO:</td>
+                                        <td class="text-end bg-success text-white">
+                                            {{ number_format($totalRangeMinCalc, 2) }}</td>
+                                        <td class="text-end bg-success text-white">
+                                            {{ number_format($totalRangeMaxCalc, 2) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
                         <!-- Remarks -->
                         <div class="mb-3">
@@ -264,23 +344,44 @@
                             wire:click="closeRejectModal"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Summary Info -->
+                        <!-- Weighing Info Alert -->
                         <div class="alert alert-danger">
-                            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Produk Out of Range:
-                            </h6>
-                            <ul class="mb-0">
-                                @foreach ($selectedTransaction->details as $detail)
-                                    @if (!$detail->is_in_range)
-                                        <li>
-                                            <strong>{{ $detail->itemName }}</strong>:
-                                            Avg {{ number_format($detail->avg_per_karung, 2) }} kg/karung
-                                            (Range: {{ number_format($detail->gross_min, 2) }} -
-                                            {{ number_format($detail->gross_max, 2) }})
-                                            <span class="badge bg-danger">{{ $detail->deviation_status }}</span>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
+                            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Transaksi Out of
+                                Range - Perlu Reject</h6>
+                            @php
+                                $totalRangeMin = $selectedTransaction->total_range_min ?? 0;
+                                $totalRangeMax = $selectedTransaction->total_range_max ?? 0;
+                                $netWeight = $selectedTransaction->net_weight ?? 0;
+                            @endphp
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <strong>Tare Weight:</strong><br>
+                                    <span class="fs-6">{{ number_format($selectedTransaction->tare_weight, 2) }}
+                                        kg</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Gross Weight:</strong><br>
+                                    <span class="fs-6">{{ number_format($selectedTransaction->gross_weight, 2) }}
+                                        kg</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Net Weight:</strong><br>
+                                    <span class="fs-6 text-danger"><strong>{{ number_format($netWeight, 2) }}
+                                            kg</strong></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Theoretical:</strong><br>
+                                    <span
+                                        class="fs-6">{{ number_format($selectedTransaction->theoretical_weight, 2) }}
+                                        kg</span>
+                                </div>
+                            </div>
+                            <hr class="my-2">
+                            <p class="mb-0 text-center">
+                                <strong>Range Netto:</strong> {{ number_format($totalRangeMin, 2) }} -
+                                {{ number_format($totalRangeMax, 2) }} kg<br>
+                                Net weight <strong class="text-danger">di luar range</strong>, perlu di-reject.
+                            </p>
                         </div>
 
                         <!-- Transaction Details -->
@@ -290,14 +391,77 @@
                                 <td>{{ $selectedTransaction->carID }} - {{ $selectedTransaction->driver }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Net Weight:</strong></td>
-                                <td>{{ number_format($selectedTransaction->net_weight, 2) }} kg</td>
+                                <td><strong>Correction Factor (K):</strong></td>
+                                <td><span
+                                        class="badge bg-secondary">{{ number_format($selectedTransaction->correction_factor, 4) }}</span>
+                                </td>
                             </tr>
                             <tr>
-                                <td><strong>Correction Factor:</strong></td>
-                                <td>{{ number_format($selectedTransaction->correction_factor, 4) }}</td>
+                                <td><strong>Total Products:</strong></td>
+                                <td>{{ $selectedTransaction->details->count() }} product</td>
                             </tr>
                         </table>
+
+                        <!-- Product Details Table -->
+                        <h6 class="text-primary">Detail Produk:</h6>
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th rowspan="2">Product</th>
+                                        <th rowspan="2" class="text-center">Qty</th>
+                                        <th rowspan="2" class="text-end">Theoretical</th>
+                                        <th rowspan="2" class="text-end">Actual</th>
+                                        <th rowspan="2" class="text-end">Avg/Karung</th>
+                                        <th colspan="2" class="text-center bg-warning">Range per Kemasan</th>
+                                        <th colspan="2" class="text-center bg-info text-white">Total Range</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-end bg-warning">Min</th>
+                                        <th class="text-end bg-warning">Max</th>
+                                        <th class="text-end bg-info text-white">Min</th>
+                                        <th class="text-end bg-info text-white">Max</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $totalRangeMinCalc = 0;
+                                        $totalRangeMaxCalc = 0;
+                                    @endphp
+                                    @foreach ($selectedTransaction->details as $detail)
+                                        @php
+                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
+                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            $totalRangeMinCalc += $rangeMinTotal;
+                                            $totalRangeMaxCalc += $rangeMaxTotal;
+                                        @endphp
+                                        <tr>
+                                            <td><strong>{{ $detail->itemName }}</strong><br><small
+                                                    class="text-muted">{{ $detail->itemCode }}</small></td>
+                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
+                                            <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
+                                            </td>
+                                            <td class="text-end">{{ number_format($detail->actual_weight, 2) }}</td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($detail->avg_per_karung, 2) }}</strong></td>
+                                            <td class="text-end">{{ number_format($detail->gross_min, 2) }}</td>
+                                            <td class="text-end">{{ number_format($detail->gross_max, 2) }}</td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMinTotal, 2) }}</strong></td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMaxTotal, 2) }}</strong></td>
+                                        </tr>
+                                    @endforeach
+                                    <tr class="table-primary fw-bold">
+                                        <td colspan="7" class="text-end">TOTAL RANGE NETTO:</td>
+                                        <td class="text-end bg-success text-white">
+                                            {{ number_format($totalRangeMinCalc, 2) }}</td>
+                                        <td class="text-end bg-success text-white">
+                                            {{ number_format($totalRangeMaxCalc, 2) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
                         <!-- Remarks (Required for Reject) -->
                         <div class="mb-3">
@@ -435,19 +599,30 @@
                                         <th class="text-end">Theoretical</th>
                                         <th class="text-end">Actual</th>
                                         <th class="text-end">Avg/Karung</th>
-                                        <th class="text-end">Range Min</th>
-                                        <th class="text-end">Range Max</th>
-                                        <th class="text-center">Status</th>
+                                        <th class="text-end bg-warning">Range Min</th>
+                                        <th class="text-end bg-warning">Range Max</th>
+                                        <th class="text-end bg-info text-white">Total Min</th>
+                                        <th class="text-end bg-info text-white">Total Max</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $totalRangeMinCalc = 0;
+                                        $totalRangeMaxCalc = 0;
+                                    @endphp
                                     @foreach ($selectedTransaction->details as $detail)
-                                        <tr class="{{ !$detail->is_in_range ? 'table-danger' : 'table-success' }}">
+                                        @php
+                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
+                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            $totalRangeMinCalc += $rangeMinTotal;
+                                            $totalRangeMaxCalc += $rangeMaxTotal;
+                                        @endphp
+                                        <tr>
                                             <td>
                                                 <small class="text-muted">{{ $detail->itemCode }}</small><br>
                                                 <strong>{{ $detail->itemName }}</strong>
                                             </td>
-                                            <td class="text-center">{{ $detail->qty_karung }}</td>
+                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
                                             <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
                                             </td>
                                             <td class="text-end">{{ number_format($detail->actual_weight, 2) }}</td>
@@ -456,16 +631,31 @@
                                             </td>
                                             <td class="text-end">{{ number_format($detail->gross_min, 2) }}</td>
                                             <td class="text-end">{{ number_format($detail->gross_max, 2) }}</td>
-                                            <td class="text-center">
-                                                @if ($detail->is_in_range)
-                                                    <span class="badge bg-success">✓ In Range</span>
-                                                @else
-                                                    <span class="badge bg-danger">✗ Out of Range</span><br>
-                                                    <small class="text-muted">{{ $detail->deviation_status }}</small>
-                                                @endif
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMinTotal, 2) }}</strong>
+                                            </td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($rangeMaxTotal, 2) }}</strong>
                                             </td>
                                         </tr>
                                     @endforeach
+                                    <tr class="table-primary fw-bold">
+                                        <td colspan="7" class="text-end">TOTAL RANGE NETTO:</td>
+                                        <td class="text-end bg-success text-white">
+                                            {{ number_format($totalRangeMinCalc, 2) }}</td>
+                                        <td class="text-end bg-success text-white">
+                                            {{ number_format($totalRangeMaxCalc, 2) }}</td>
+                                    </tr>
+                                    <tr class="table-warning fw-bold">
+                                        <td colspan="7" class="text-end">NET WEIGHT ACTUAL:</td>
+                                        <td colspan="2" class="text-center">
+                                            <span
+                                                class="badge {{ $selectedTransaction->is_in_range ? 'bg-success' : 'bg-danger' }} fs-6">
+                                                {{ number_format($selectedTransaction->net_weight, 2) }} kg
+                                                {{ $selectedTransaction->need_approval ? '(Out of Range)' : '(In Range)' }}
+                                            </span>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

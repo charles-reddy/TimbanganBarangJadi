@@ -37,20 +37,15 @@ class MultiProductWeighingService
                 throw new \Exception('SPM tidak ditemukan');
             }
 
-            // Validate all SPMs belong to same truck/driver
+            // Validate all SPMs belong to same truck (carID harus sama, driver boleh berbeda)
             // Normalize: hapus spasi & case-insensitive (B1234CD = b1234cd = B 1234 CD)
             $firstSpm = $spmDetails->first();
             foreach ($spmDetails as $spm) {
                 $normalizedSpmCarID = strtolower(preg_replace('/\s+/', '', trim((string) $spm->carID)));
                 $normalizedFirstCarID = strtolower(preg_replace('/\s+/', '', trim((string) $firstSpm->carID)));
-                $normalizedSpmDriver = strtolower(preg_replace('/\s+/', '', trim((string) $spm->driver)));
-                $normalizedFirstDriver = strtolower(preg_replace('/\s+/', '', trim((string) $firstSpm->driver)));
 
-                if (
-                    $normalizedSpmCarID !== $normalizedFirstCarID
-                    || $normalizedSpmDriver !== $normalizedFirstDriver
-                ) {
-                    throw new \Exception('Semua SPM harus dari truk dan driver yang sama');
+                if ($normalizedSpmCarID !== $normalizedFirstCarID) {
+                    throw new \Exception('Semua SPM harus dari truk/kendaraan yang sama (No. Polisi harus sama)');
                 }
             }
 
@@ -157,46 +152,63 @@ class MultiProductWeighingService
                 'status' => 'WEIGHING_OUT',
             ]);
 
-            // Calculate actual weight untuk setiap detail
-            $needApproval = false;
+            // Calculate total range min dan max dari semua produk
+            $totalRangeMin = 0;
+            $totalRangeMax = 0;
+            
+            foreach ($header->details as $detail) {
+                // Total range min = sum of (qty_karung × gross_min)
+                $totalRangeMin += $detail->qty_karung * $detail->gross_min;
+                
+                // Total range max = sum of (qty_karung × gross_max)
+                $totalRangeMax += $detail->qty_karung * $detail->gross_max;
+            }
+
+            // Check if net_weight is within total range
+            $isInRange = ($netWeight >= $totalRangeMin) && ($netWeight <= $totalRangeMax);
+            $needApproval = !$isInRange;
+
+            // Calculate actual weight untuk setiap detail (untuk display)
             $outOfRangeProducts = [];
 
             foreach ($header->details as $detail) {
                 // actual_weight = theoretical_weight × correction_factor
                 $actualWeight = $detail->theoretical_weight * $correctionFactor;
 
-                // avg_per_karung = actual_weight / qty_karung
+                // avg_per_karung = actual_weight / qty_karung (untuk display/pembanding)
                 $avgPerKarung = $detail->qty_karung > 0
                     ? $actualWeight / $detail->qty_karung
                     : 0;
-
-                // Check if in range
-                $isInRange = ($avgPerKarung >= $detail->gross_min)
-                    && ($avgPerKarung <= $detail->gross_max);
 
                 // Update detail
                 $detail->update([
                     'actual_weight' => $actualWeight,
                     'avg_per_karung' => $avgPerKarung,
-                    'is_in_range' => $isInRange,
+                    'is_in_range' => $isInRange, // Semua detail punya status yang sama (based on total range)
                     'isLoadingDone' => True, // Mark detail as completed
                     'isLoadingDoneDate' => Carbon::now(), // Set loading date
                 ]);
 
-                // Jika ada yang out of range, perlu approval
-                if (!$isInRange) {
-                    $needApproval = true;
+                // Jika transaksi out of range, simpan info semua produk untuk approval
+                if ($needApproval) {
                     $outOfRangeProducts[] = [
                         'itemCode' => $detail->itemCode,
                         'itemName' => $detail->itemName,
+                        'qty_karung' => $detail->qty_karung,
                         'avg_per_karung' => $avgPerKarung,
                         'gross_min' => $detail->gross_min,
                         'gross_max' => $detail->gross_max,
-                        'deviation' => $detail->deviation,
-                        'deviation_percent' => $detail->deviation_percent,
+                        'range_min_total' => $detail->qty_karung * $detail->gross_min,
+                        'range_max_total' => $detail->qty_karung * $detail->gross_max,
                     ];
                 }
             }
+
+            // Tambahkan informasi range total ke header untuk tracking
+            $header->update([
+                'total_range_min' => $totalRangeMin,
+                'total_range_max' => $totalRangeMax,
+            ]);
 
             // Update status berdasarkan apakah perlu approval
             if ($needApproval) {
