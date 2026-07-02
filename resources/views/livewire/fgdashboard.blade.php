@@ -67,7 +67,7 @@
             <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <div class="card bg-primary h-100">
                     <div class="card-body text-center p-3">
-                        <h2 class="card-title mb-1">{{ $datafgtruk->timIn }}</h2>
+                        <h2 class="card-title mb-1">{{ $datafgtruk->timIn + $datamultifgtruk->timIn }}</h2>
                         <h6 class="card-text mb-0">
                             <a href="/cardwbin" class="text-white text-decoration-none">
                                 Timb. Masuk
@@ -95,7 +95,7 @@
             <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <div class="card bg-danger h-100">
                     <div class="card-body text-center p-3">
-                        <h2 class="card-title mb-1">{{ $datafgtruk->appavg }}</h2>
+                        <h2 class="card-title mb-1">{{ $datafgtruk->appavg + $datamultifgtruk->appavg }}</h2>
                         <h6 class="card-text mb-0">
                             <a href="/cardabnormal" class="text-white text-decoration-none">
                                 Avg Abnormal
@@ -123,7 +123,7 @@
             <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <div class="card bg-primary h-100">
                     <div class="card-body text-center p-3">
-                        <h2 class="card-title mb-1">{{ $datafgtruk->pgi }}</h2>
+                        <h2 class="card-title mb-1">{{ $datafgtruk->pgi + $datamultifgtruk->pgi }}</h2>
                         <h6 class="card-text mb-0">
                             <a href="/cardpgi" class="text-white text-decoration-none">
                                 Sudah PGI

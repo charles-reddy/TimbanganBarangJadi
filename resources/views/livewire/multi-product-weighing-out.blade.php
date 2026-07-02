@@ -334,7 +334,7 @@
                                 - {{ number_format($totalRangeMax, 2) }} kg</strong> untuk tidak perlu approval
                         </div>
 
-                        <!-- Manual Mode Toggle -->
+                        {{-- <!-- Manual Mode Toggle -->
                         <div class="mb-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="manualModeOut"
@@ -344,7 +344,7 @@
                                         tidak tersedia)</small>
                                 </label>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Weighing Scale Section -->
                         <form wire:submit.prevent="processWeighOut">

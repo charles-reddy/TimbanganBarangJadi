@@ -94,6 +94,7 @@ class Cardwbout extends Component
             ->whereNotNull('trscale_headers.net_weight')
             ->whereNotNull('createspms.sealNo1')
             ->whereNull('createspms.buktiPGI');
+           
 
         // Apply filters based on conditions
         if ($this->katakunci != null) {

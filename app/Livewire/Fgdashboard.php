@@ -90,8 +90,49 @@ class Fgdashboard extends Component
         $tmsdhmasuk = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat', '=', date('Y-m-d', strtotime(Carbon::now())))->wherenotnull('isSecCek')->count('id');
         $pendingkmr = $timbanginkmrblmkeluar + $registrasikmrblmmasuk + $tidakdatang;
         // dd($tmsdhmasuk);
-        $data = DB::connection('sqlsrv')->table('vwSummaryTruckFG')->orderBy('tgl', 'desc')->first();
-        $datamulti = DB::connection('sqlsrv')->table('vwSummaryTruckFGMulti')->orderBy('tgl', 'desc')->first();
+        $data = DB::connection('sqlsrv')->table('vwSummaryTruckFG')->whereDate('tgl', '=', Carbon::now()->format('Y-m-d'))->orderBy('tgl', 'desc')->first();
+        $datamulti = DB::connection('sqlsrv')->table('vwSummaryTruckFGMulti')->whereDate('tgl', '=', Carbon::now()->format('Y-m-d'))->orderBy('tgl', 'desc')->first();
+        
+        // Set default values jika data tidak ditemukan
+        if (!$data) {
+            $data = (object)[
+                'timIn' => 0,
+                'loading' => 0,
+                'timout' => 0,
+                'appavg' => 0,
+                'pgi' => 0,
+                'belum' => 0,
+                'tgl' => Carbon::now()->format('Y-m-d'),
+                'trukGKP65' => 0,
+                'netGKP65' => 0,
+                'trukGKP500g' => 0,
+                'netGKP500g' => 0,
+                'trukGKP1kg' => 0,
+                'netGKP1kg' => 0,
+                'trukGKP50Kg' => 0,
+                'netGKP50Kg' => 0,
+                'trukGKPbulk' => 0,
+                'netGKPbulk' => 0,
+                'trukGKPMol' => 0,
+                'netGKPMol' => 0,
+                'trukGKR50Kg' => 0,
+                'netGKR50Kg' => 0,
+                'trukGKRbulk' => 0,
+                'netGKRbulk' => 0,
+                'trukGKRMol' => 0,
+                'netGKRMol' => 0,
+            ];
+        }
+        
+        if (!$datamulti) {
+            $datamulti = (object)[
+                'timIn' => 0,
+                'loading' => 0,
+                'timout' => 0,
+                'belum' => 0,
+                'tgl' => Carbon::now()->format('Y-m-d'),
+            ];
+        }
         // dd($data, $datamulti);
         $data7hari = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')->whereBetween('tglMuat', [Carbon::now(), Carbon::now()->addDays(+7)])->where('create_t_m_s.tmQtyKg', '>', 0)->orderBy('tglMuat', 'asc')->paginate(10);
         // dd($data7hari);

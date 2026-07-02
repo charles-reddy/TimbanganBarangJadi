@@ -254,7 +254,7 @@
                             </div>
 
                             <!-- Manual Mode Toggle -->
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="manualMode"
                                         wire:model="manualMode">
@@ -263,7 +263,7 @@
                                             timbangan tidak tersedia)</small>
                                     </label>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <!-- Weighing Scale Section -->
                             <div class="mb-3" x-data="{ manualMode: @entangle('manualMode') }">

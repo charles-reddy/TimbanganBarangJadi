@@ -8,9 +8,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        @page {
+            size: landscape;
+            margin: 10mm;
+        }
+
         @media print {
             #print {
                 display: none;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 100%;
             }
         }
 
@@ -38,7 +53,7 @@
         <a class="btn-primary" href='/multi-product-weighing-out' id="print">Back</a>
 
         <div class="row text-center">
-            <h3>BUKTI TIMBANG MULTI PRODUCT</h3>
+            <h3>BUKTI TIMBANG </h3>
             <h4>PT Kebun Tebu Mas</h4>
             <h4>Jl Raya Babat Jombang Km 25.5</h4>
             <h4>Ds. Lamongrejo Kec. Ngimbang - Lamongan</h4>
@@ -100,20 +115,18 @@
                 <td>
                     &nbsp;
                 </td>
-                <td>
+                {{-- <td>
                     <h4>K Factor: {{ number_format($header->correction_factor, 4) }}</h4>
-                </td>
+                </td> --}}
             </tr>
             <tr>
                 <td>
-                    <h4>Customer ID: {{ $header->custID }}</h4>
+                    <h4>Customer : {{ $header->custName }}</h4>
                 </td>
                 <td>
                     &nbsp;
                 </td>
-                <td>
-                    <h4>Status: {{ $header->status }}</h4>
-                </td>
+
             </tr>
             @if ($header->remarks)
                 <tr>
@@ -133,11 +146,11 @@
                     <th>Item Code</th>
                     <th>Nama Produk</th>
                     <th style="text-align: center;">Qty Karung</th>
-                    <th style="text-align: right;">Theoretical (kg)</th>
+                    {{-- <th style="text-align: right;">Theoretical (kg)</th> --}}
                     <th style="text-align: right;">Actual (kg)</th>
                     <th style="text-align: right;">Avg/Karung (kg)</th>
-                    <th style="text-align: right;">Range Min</th>
-                    <th style="text-align: right;">Range Max</th>
+                    {{-- <th style="text-align: right;">Range Min</th>
+                    <th style="text-align: right;">Range Max</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -157,11 +170,11 @@
                         <td>{{ $detail->itemCode }}</td>
                         <td>{{ $detail->itemName }}</td>
                         <td style="text-align: center;">{{ number_format($detail->qty_karung) }}</td>
-                        <td style="text-align: right;">{{ number_format($detail->theoretical_weight, 2) }}</td>
+                        {{-- <td style="text-align: right;">{{ number_format($detail->theoretical_weight, 2) }}</td> --}}
                         <td style="text-align: right;">{{ number_format($detail->actual_weight, 2) }}</td>
                         <td style="text-align: right;">{{ number_format($detail->avg_per_karung, 2) }}</td>
-                        <td style="text-align: right;">{{ number_format($detail->gross_min, 2) }}</td>
-                        <td style="text-align: right;">{{ number_format($detail->gross_max, 2) }}</td>
+                        {{-- <td style="text-align: right;">{{ number_format($detail->gross_min, 2) }}</td>
+                        <td style="text-align: right;">{{ number_format($detail->gross_max, 2) }}</td> --}}
                     </tr>
                 @endforeach
             </tbody>
@@ -169,11 +182,11 @@
                 <tr style="font-weight: bold;">
                     <td colspan="3" style="text-align: right;">TOTAL:</td>
                     <td style="text-align: center;">{{ number_format($details->sum('qty_karung')) }}</td>
-                    <td style="text-align: right;">{{ number_format($details->sum('theoretical_weight'), 2) }}</td>
+                    {{-- <td style="text-align: right;">{{ number_format($details->sum('theoretical_weight'), 2) }}</td> --}}
                     <td style="text-align: right;">{{ number_format($details->sum('actual_weight'), 2) }}</td>
                     <td colspan="3"></td>
                 </tr>
-                <tr style="font-weight: bold; background-color: #e0e0e0;">
+                {{-- <tr style="font-weight: bold; background-color: #e0e0e0;">
                     <td colspan="7" style="text-align: right;">TOTAL RANGE NETTO:</td>
                     <td style="text-align: right;">{{ number_format($totalRangeMin, 2) }}</td>
                     <td style="text-align: right;">{{ number_format($totalRangeMax, 2) }}</td>
@@ -187,7 +200,7 @@
                             ✓ IN RANGE
                         @endif
                     </td>
-                </tr>
+                </tr> --}}
             </tfoot>
         </table>
 
