@@ -235,11 +235,11 @@ Route::get('/multi-product-weighing-out', function () {
 
 Route::get('/multi-product-approval', function () {
     return view('multi-product-approval');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi'])->name('multi-product-approval');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-b10'])->name('multi-product-approval');
 
 Route::get('/weighing-report-dashboard', function () {
     return view('weighing-report-dashboard');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|marketing'])->name('weighing-report-dashboard');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|marketing|supervisor-b10'])->name('weighing-report-dashboard');
 
 Route::get('/laptiketmuatapproved', function () {
     return view('laptiketmuatapproved');

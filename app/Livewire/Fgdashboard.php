@@ -129,6 +129,8 @@ class Fgdashboard extends Component
                 'timIn' => 0,
                 'loading' => 0,
                 'timout' => 0,
+                'appavg' => 0,
+                'pgi' => 0,
                 'belum' => 0,
                 'tgl' => Carbon::now()->format('Y-m-d'),
             ];
