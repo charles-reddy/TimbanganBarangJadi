@@ -425,18 +425,21 @@ class Gantitgltm extends Component
         [$startTime, $endTime] = $timeRanges[$shift];
 
         // Calculate total weight for this shift on the selected date
+        // EXCLUDE FG-L type products from quota calculation
         $query = DB::connection('sqlsrv')->table('create_t_m_s')
-            ->where('tglMuat', $tglMuat)
-            ->whereTime('jamMuat', '>=', $startTime)
-            ->whereTime('jamMuat', '<=', $endTime)
-            ->where('id', '!=', $this->transID ?? 0); // Exclude current transaction
+            ->join('products', 'products.itemCode', '=', 'create_t_m_s.itemCode')
+            ->where('create_t_m_s.tglMuat', $tglMuat)
+            ->whereTime('create_t_m_s.jamMuat', '>=', $startTime)
+            ->whereTime('create_t_m_s.jamMuat', '<=', $endTime)
+            ->where('create_t_m_s.id', '!=', $this->transID ?? 0) // Exclude current transaction
+            ->where('products.type', '<>', 'FG-L'); // Exclude FG-L products
 
         // Filter by SPPB jika diberikan
         if ($sppbID !== null) {
-            $query->where('tmSppbID', $sppbID);
+            $query->where('create_t_m_s.tmSppbID', $sppbID);
         }
 
-        $totalUsage = $query->sum('tmQtyKg');
+        $totalUsage = $query->sum('create_t_m_s.tmQtyKg');
 
         return $totalUsage ?? 0;
     }

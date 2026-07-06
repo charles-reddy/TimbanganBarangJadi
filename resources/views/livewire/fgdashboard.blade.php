@@ -15,6 +15,12 @@
                                 Antrian Besok
                             </a>
                         </h6>
+                        @if ($sisaQuotaBesok !== null)
+                            <small class="text-white d-block mt-1" style="font-size: 0.65rem; line-height: 1.2;">
+                                <strong>Sisa Kuota:</strong><br>
+                                {{ number_format($sisaQuotaBesok, 0) }} / {{ number_format($totalQuotaTomorrow, 0) }} Kg
+                            </small>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -31,6 +37,12 @@
                                 Antrian Hari Ini
                             </a>
                         </h6>
+                        @if ($sisaQuotaHariIni !== null)
+                            <small class="text-white d-block mt-1" style="font-size: 0.65rem; line-height: 1.2;">
+                                <strong>Sisa Kuota:</strong><br>
+                                {{ number_format($sisaQuotaHariIni, 0) }} / {{ number_format($totalQuotaToday, 0) }} Kg
+                            </small>
+                        @endif
                     </div>
                 </div>
             </div>
