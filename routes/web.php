@@ -175,6 +175,10 @@ Route::get('/cardantrianbesok', function () {
     return view('cardantrianbesok');
 })->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|marketing|operator-b10|supervisor-b10|audit|operator-registrasi|kpi-factory'])->name('cardantrianbesok');
 
+Route::get('/cardantriansenin', function () {
+    return view('cardantriansenin');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|marketing|operator-b10|supervisor-b10|audit|operator-registrasi|kpi-factory'])->name('cardantriansenin');
+
 Route::get('/cardtmsdhmasuk', function () {
     return view('cardtmsdhmasuk');
 })->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|marketing|operator-b10|supervisor-b10|audit|operator-registrasi|kpi-factory'])->name('cardtmsdhmasuk');

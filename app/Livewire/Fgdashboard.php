@@ -458,6 +458,62 @@ class Fgdashboard extends Component
             $sisaQuotaBesok = max(0, $totalQuotaTomorrow - ($usageTomorrow ?? 0));
         }
 
+        // Calculate Monday's queue and quota (for Friday/Saturday/Sunday display)
+        $currentDayOfWeek = Carbon::now()->dayOfWeek; // 0=Sunday, 5=Friday, 6=Saturday
+        $showMondayCard = in_array($currentDayOfWeek, [0, 5, 6]); // Friday, Saturday, Sunday
+        $antrianSenin = null;
+        $sisaQuotaSenin = null;
+        $totalQuotaMonday = 0;
+
+        if ($showMondayCard) {
+            // Calculate next Monday
+            $nextMonday = Carbon::now();
+            if ($currentDayOfWeek == 5) { // Friday
+                $nextMonday->addDays(3);
+            } elseif ($currentDayOfWeek == 6) { // Saturday
+                $nextMonday->addDays(2);
+            } elseif ($currentDayOfWeek == 0) { // Sunday
+                $nextMonday->addDays(1);
+            }
+
+            // Get Monday's queue
+            $antrianSenin = DB::connection('sqlsrv')->table('vwTiketMuat')
+                ->whereDate('tgl', '=', $nextMonday)
+                ->orderBy('tgl', 'desc')
+                ->select('antrian')
+                ->first();
+
+            // Get quota loading for Monday
+            $quotaMonday = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
+                ->whereDate('quotaTglDatang', $nextMonday)
+                ->where('isApprove', true)
+                ->first();
+
+            // If no specific quota for Monday, get default quota
+            if (!$quotaMonday) {
+                $quotaMonday = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
+                    ->whereNull('quotaTglDatang')
+                    ->where('isApprove', true)
+                    ->orderBy('id', 'desc')
+                    ->first();
+            }
+
+            // Calculate total usage for Monday (non-FG-L only)
+            $usageMonday = DB::connection('sqlsrv')->table('create_t_m_s')
+                ->join('products', 'products.itemCode', 'create_t_m_s.itemCode')
+                ->whereDate('create_t_m_s.tglMuat', $nextMonday)
+                ->where('products.type', '<>', 'FG-L')
+                ->sum('create_t_m_s.tmQtyKg');
+
+            // Calculate remaining quota for Monday
+            if ($quotaMonday) {
+                $totalQuotaMonday = ($quotaMonday->quota1 ?? 0) + 
+                                    ($quotaMonday->quota2 ?? 0) + 
+                                    ($quotaMonday->quota3 ?? 0);
+                $sisaQuotaSenin = max(0, $totalQuotaMonday - ($usageMonday ?? 0));
+            }
+        }
+
         return view('livewire.fgdashboard', [
             'datafgtruk' => $data,
             'datamultifgtruk' => $datamulti,
@@ -465,10 +521,14 @@ class Fgdashboard extends Component
             'datatrukout' => $dataout,
             'antrianskr' => $antrianskr,
             'antrianbsk' => $antrianbsk,
+            'antrianSenin' => $antrianSenin,
+            'showMondayCard' => $showMondayCard,
             'sisaQuotaHariIni' => $sisaQuotaHariIni,
             'sisaQuotaBesok' => $sisaQuotaBesok,
+            'sisaQuotaSenin' => $sisaQuotaSenin,
             'totalQuotaTomorrow' => $totalQuotaTomorrow ?? 0,
             'totalQuotaToday' => $totalQuotaToday ?? 0,
+            'totalQuotaMonday' => $totalQuotaMonday,
             'registered' => $registrasi,
             'pendingkmr' => $pendingkmr,
             'tidakdatang' => $tidakdatang,

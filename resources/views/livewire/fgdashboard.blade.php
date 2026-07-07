@@ -3,6 +3,31 @@
 
         <!-- Cards Section -->
         <div class="row g-3 mb-4">
+            <!-- Antrian Senin (only show on Friday/Saturday/Sunday) -->
+            @if ($showMondayCard)
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <div class="card bg-purple h-100" style="background-color: #6f42c1 !important;">
+                        <div class="card-body text-center p-3">
+                            <h2 class="card-title mb-1 text-white">
+                                {{ $antrianSenin->antrian ?? '0' }}
+                            </h2>
+                            <h6 class="card-text mb-0">
+                                <a href="/cardantriansenin" class="text-white text-decoration-none">
+                                    Antrian Senin
+                                </a>
+                            </h6>
+                            @if ($sisaQuotaSenin !== null)
+                                <small class="text-white d-block mt-1" style="font-size: 0.65rem; line-height: 1.2;">
+                                    <strong>Sisa Kuota:</strong><br>
+                                    {{ number_format($sisaQuotaSenin, 0) }} / {{ number_format($totalQuotaMonday, 0) }}
+                                    Kg
+                                </small>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Antrian Besok -->
             <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <div class="card bg-warning h-100">
@@ -179,7 +204,8 @@
                                 <small class="text-muted">Truk</small>
                             </div>
                             <div class="col-6">
-                                <h3 class="mb-0 text-primary">{{ number_format(($shift1->totalNetto ?? 0) / 1000, 2) }}
+                                <h3 class="mb-0 text-primary">
+                                    {{ number_format(($shift1->totalNetto ?? 0) / 1000, 2) }}
                                 </h3>
                                 <small class="text-muted">MT</small>
                             </div>
