@@ -32,25 +32,123 @@ class exportTrukTransaction implements FromCollection, WithHeadings
 
     public function collection()
     {
+        $baseQuery = DB::connection('sqlsrv')->table('trscale')
+            ->join('createspms', 'createspms.id', 'trscale.spmID')
+            ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+            ->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')
+            ->join('products', 'products.itemCode', 'trscale.itemCode')
+            ->join('customers', 'customers.custID', 'trscale.custID')
+            ->whereNotNull('trscale.netto');
 
-        $tglout = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->orderBy('id', 'desc')->first();
-        // dd($tglout);
         if ($this->katakunci != null) {
-            // dd('katakunci');
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('carID', 'like', '%' . $this->katakunci . '%')->orWhere('dnNo', 'like', '%' . $this->katakunci . '%')->orWhere('sppbNo', 'like', '%' . $this->katakunci . '%')->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
-        } elseif (($this->katacust)  != null) {
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->where('custName', 'like', '%' . $this->katacust . '%')->orWhere('dnNo', 'like', '%' . $this->katacust . '%')->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
-            } elseif (($this->tglout1)  != null) {
-            // dd('tgl');
-            // $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->wheredate('tgl','=',$this->tglout1)->whereNotNull('netto')->orderBy('id', 'desc')->select('tgl', 'spmNo','pendfNo','custName','itemName', 'type', 'carID', 'driver','timbangin','timbangout','netto','b10QtyKarung','dnNo','avgKarung')->get();
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereBetween('tgl', [$this->tglout1, $this->tglout2])->whereNotNull('netto')->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
+            $hasil = $baseQuery
+                ->where(function ($query) {
+                    $query->where('createspms.carID', 'like', '%' . $this->katakunci . '%')
+                        ->orWhere('createspms.dnNo', 'like', '%' . $this->katakunci . '%')
+                        ->orWhere('createsppbs.sppbNo', 'like', '%' . $this->katakunci . '%');
+                })
+                ->orderBy('trscale.id', 'desc')
+                ->select(
+                    'create_t_m_s.isSecCekDate',
+                    'trscale.jam_in as tgl_tim_in',
+                    'trscale.jam_out as tgl',
+                    'createsppbs.sppbNo',
+                    'createspms.spmNo',
+                    'create_t_m_s.pendfNo',
+                    'customers.custName',
+                    'products.itemName',
+                    'products.type',
+                    'createspms.carID',
+                    'createspms.driver',
+                    'trscale.timbangin',
+                    'trscale.timbangout',
+                    'trscale.netto',
+                    'trscale.b10QtyKarung',
+                    'createspms.dnNo',
+                    'trscale.avgkarung as avgKarung',
+                    DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm")
+                )
+                ->get();
+        } elseif ($this->katacust != null) {
+            $hasil = $baseQuery
+                ->where(function ($query) {
+                    $query->where('customers.custName', 'like', '%' . $this->katacust . '%')
+                        ->orWhere('createspms.dnNo', 'like', '%' . $this->katacust . '%');
+                })
+                ->orderBy('trscale.id', 'desc')
+                ->select(
+                    'create_t_m_s.isSecCekDate',
+                    'trscale.jam_in as tgl_tim_in',
+                    'trscale.jam_out as tgl',
+                    'createsppbs.sppbNo',
+                    'createspms.spmNo',
+                    'create_t_m_s.pendfNo',
+                    'customers.custName',
+                    'products.itemName',
+                    'products.type',
+                    'createspms.carID',
+                    'createspms.driver',
+                    'trscale.timbangin',
+                    'trscale.timbangout',
+                    'trscale.netto',
+                    'trscale.b10QtyKarung',
+                    'createspms.dnNo',
+                    'trscale.avgkarung as avgKarung',
+                    DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm")
+                )
+                ->get();
+        } elseif ($this->tglout1 != null) {
+            $hasil = $baseQuery
+                ->whereBetween('trscale.jam_out', [$this->tglout1, $this->tglout2])
+                ->orderBy('trscale.id', 'desc')
+                ->select(
+                    'create_t_m_s.isSecCekDate',
+                    'trscale.jam_in as tgl_tim_in',
+                    'trscale.jam_out as tgl',
+                    'createsppbs.sppbNo',
+                    'createspms.spmNo',
+                    'create_t_m_s.pendfNo',
+                    'customers.custName',
+                    'products.itemName',
+                    'products.type',
+                    'createspms.carID',
+                    'createspms.driver',
+                    'trscale.timbangin',
+                    'trscale.timbangout',
+                    'trscale.netto',
+                    'trscale.b10QtyKarung',
+                    'createspms.dnNo',
+                    'trscale.avgkarung as avgKarung',
+                    DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm")
+                )
+                ->get();
         } else {
-            // dd('kosong');
-            $this->tglout1 = $tglout->tgl;
-            // dd($tglout->tgl);
-            $hasil = DB::connection('sqlsrv')->table('vw_truktransaction')->whereNotNull('netto')->whereBetween('tgl', [Carbon::now()->addDays(-14), Carbon::now()])->orderBy('id', 'desc')->select('isSecCekDate','tgl_tim_in','tgl','sppbNo', 'spmNo', 'pendfNo', 'custName', 'itemName', 'type', 'carID', 'driver', 'timbangin', 'timbangout', 'netto', 'b10QtyKarung', 'dnNo', 'avgKarung')->get();
+            $hasil = $baseQuery
+                ->whereBetween('trscale.jam_out', [Carbon::now()->addDays(-14), Carbon::now()])
+                ->orderBy('trscale.id', 'desc')
+                ->select(
+                    'create_t_m_s.isSecCekDate',
+                    'trscale.jam_in as tgl_tim_in',
+                    'trscale.jam_out as tgl',
+                    'createsppbs.sppbNo',
+                    'createspms.spmNo',
+                    'create_t_m_s.pendfNo',
+                    'customers.custName',
+                    'products.itemName',
+                    'products.type',
+                    'createspms.carID',
+                    'createspms.driver',
+                    'trscale.timbangin',
+                    'trscale.timbangout',
+                    'trscale.netto',
+                    'trscale.b10QtyKarung',
+                    'createspms.dnNo',
+                    'trscale.avgkarung as avgKarung',
+                    DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm")
+                )
+                ->get();
         }
-        // dd($hasil);
+        
         return $hasil;
     }
 
@@ -75,19 +173,7 @@ class exportTrukTransaction implements FromCollection, WithHeadings
             'qty Karung',
             'No DN',
             'Rata-Rata Karung',
-
-
-        ];
-    }
-
-
-
-    public function map($hasil): array
-    {
-
-        return [
-            $hasil->tgl,
-
+            'Shift Tiket Muat',
         ];
     }
 }

@@ -69,7 +69,7 @@
                         {{-- <a wire:click="deleteConfirmation({{ $value->id }})" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Del</a> --}}
                         </td>
                         <td>
-                            @if ($value->trans_type == 'multi')
+                            @if (isset($value->trans_type) && $value->trans_type == 'multi')
                                 <a href="/cetaksjmp/{{ $value->header_id }} " class="btn btn-primary"
                                     target="_blank">Cetak Surat Jalan</a>
                             @else
