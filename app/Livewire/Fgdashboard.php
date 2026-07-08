@@ -293,6 +293,7 @@ class Fgdashboard extends Component
         $quotaToday = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
             ->whereDate('quotaTglDatang', Carbon::now())
             ->where('isApprove', true)
+            ->orderBy('id', 'desc')
             ->first();
 
         // Jika tidak ada, ambil quota default (quotaTglDatang = NULL)
@@ -431,6 +432,7 @@ class Fgdashboard extends Component
         $quotaTomorrow = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
             ->whereDate('quotaTglDatang', $tomorrow)
             ->where('isApprove', true)
+            ->orderBy('id', 'desc')
             ->first();
 
         // If no specific quota for tomorrow, get default quota
@@ -487,6 +489,7 @@ class Fgdashboard extends Component
             $quotaMonday = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
                 ->whereDate('quotaTglDatang', $nextMonday)
                 ->where('isApprove', true)
+                ->orderBy('id', 'desc')
                 ->first();
 
             // If no specific quota for Monday, get default quota

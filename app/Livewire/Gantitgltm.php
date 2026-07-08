@@ -111,6 +111,7 @@ class Gantitgltm extends Component
             $quotaHarian = DB::connection('sqlsrv')->table('tbl_QuotaHarian')
                 ->where('quotaTmSppbID', $this->sppbID)
                 ->where('quotaTglDaftar', $this->tglMuat)
+                ->orderBy('id', 'desc')
                 ->first();
 
             // Jika ada quota SPPB, validasi
@@ -128,6 +129,7 @@ class Gantitgltm extends Component
                 $quotaLama = DB::connection('sqlsrv')->table('tbl_QuotaHarian')
                     ->where('quotaTmSppbID', $this->sppbID)
                     ->where('quotaTglDaftar', $this->tglMuat1)
+                    ->orderBy('id', 'desc')
                     ->first();
 
                 if ($quotaLama) {
@@ -340,6 +342,7 @@ class Gantitgltm extends Component
                         $quotaHarian = DB::connection('sqlsrv')->table('tbl_QuotaHarian')
                             ->where('quotaTmSppbID', $this->sppbID)
                             ->where('quotaTglDaftar', $this->tglMuat)
+                            ->orderBy('id', 'desc')
                             ->first();
 
                         if ($quotaHarian) {
@@ -395,6 +398,7 @@ class Gantitgltm extends Component
         $quota = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
             ->where('quotaTglDatang', $tglMuat)
             ->where('isApprove', true)
+            ->orderBy('id', 'desc')
             ->first();
 
         // Jika tidak ada, ambil yang quotaTglDatang NULL (default)
