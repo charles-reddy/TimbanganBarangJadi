@@ -40,20 +40,66 @@ class ExportTimbangOutFG implements FromCollection, WithHeadings, WithMapping
 
         if (($this->katakunciout )  !=null) { 
             
-            //  dd('satu');   
-            // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->wheredate('jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->get();
-            $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->leftJoin('createspms', 'createspms.id', 'trscale.spmID')->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->wheredate('jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->get();
+            $hasil = DB::connection('sqlsrv')->table('trscale')
+                ->join('customers', 'customers.custID', 'trscale.custID')
+                ->join('products', 'products.itemCode', 'trscale.itemCode')
+                ->leftJoin('createspms', 'createspms.id', 'trscale.spmID')
+                ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                ->select('trscale.*', 'customers.custName', 'products.itemName', 'create_t_m_s.tmTranspName', 'createspms.sealNo', 'create_t_m_s.jamMuat',
+                    DB::raw("CASE 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' 
+                        ELSE 'Luar Jam Shift' 
+                    END as shift_tiket")
+                )
+                ->where('driver','like','%' . $this->katakunciout . '%')
+                ->whereNotNull('netto')
+                ->orwhere('carID','like','%' . $this->katakunciout . '%')
+                ->wheredate('jam_in','>=',$this->tglin)
+                ->orderby($this->sortColumn ,$this->sortDirection)
+                ->get();
             
         } elseif (($this->tglin  )  !=null) {
-            // dd('dua'); 
-            // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
-            $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->leftJoin('createspms', 'createspms.id', 'trscale.spmID')->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
+            
+            $hasil = DB::connection('sqlsrv')->table('trscale')
+                ->join('customers', 'customers.custID', 'trscale.custID')
+                ->join('products', 'products.itemCode', 'trscale.itemCode')
+                ->leftJoin('createspms', 'createspms.id', 'trscale.spmID')
+                ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                ->select('trscale.*', 'customers.custName', 'products.itemName', 'create_t_m_s.tmTranspName', 'createspms.sealNo', 'create_t_m_s.jamMuat',
+                    DB::raw("CASE 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' 
+                        ELSE 'Luar Jam Shift' 
+                    END as shift_tiket")
+                )
+                ->wheredate('jam_in','>=',$this->tglin)
+                ->whereNotNull('netto')
+                ->orderby($this->sortColumn ,$this->sortDirection)
+                ->get();
         
         } else {
              
             $this->tglin = $tglawal;
-            // $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('transporters', 'transporters.transpID', 'trscale.transpID')->join('products', 'products.itemCode', 'trscale.itemCode')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
-            $hasil = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->leftJoin('createspms', 'createspms.id', 'trscale.spmID')->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->get();
+            $hasil = DB::connection('sqlsrv')->table('trscale')
+                ->join('customers', 'customers.custID', 'trscale.custID')
+                ->join('products', 'products.itemCode', 'trscale.itemCode')
+                ->leftJoin('createspms', 'createspms.id', 'trscale.spmID')
+                ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                ->select('trscale.*', 'customers.custName', 'products.itemName', 'create_t_m_s.tmTranspName', 'createspms.sealNo', 'create_t_m_s.jamMuat',
+                    DB::raw("CASE 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' 
+                        ELSE 'Luar Jam Shift' 
+                    END as shift_tiket")
+                )
+                ->wheredate('jam_in','>=',$this->tglin)
+                ->whereNotNull('netto')
+                ->orderby($this->sortColumn ,$this->sortDirection)
+                ->get();
         
         }
         // dd($hasil);
@@ -77,18 +123,33 @@ class ExportTimbangOutFG implements FromCollection, WithHeadings, WithMapping
                 'Netto',
                 'Date IN',
                 'Date OUT',
-               
+                'Shift Tiket',
+                'Shift Muat',
             ];
         }
 
         public function map($hasil): array
         {
+            // Calculate Shift Muat based on jam_in
+            $shiftMuat = '-';
+            if (!is_null($hasil->jam_in)) {
+                $jamIn = date('H:i', strtotime($hasil->jam_in));
+                if ($jamIn >= '08:00' && $jamIn < '12:00') {
+                    $shiftMuat = 'Shift 1 (08:00-12:00)';
+                } elseif ($jamIn >= '12:00' && $jamIn < '16:00') {
+                    $shiftMuat = 'Shift 2 (12:00-16:00)';
+                } elseif ($jamIn >= '16:00' && $jamIn < '20:00') {
+                    $shiftMuat = 'Shift 3 (16:00-20:00)';
+                } else {
+                    $shiftMuat = 'Luar Jam Shift';
+                }
+            }
             
             return [
                 $hasil->doNo,
                 $hasil->poNo,
-                $hasil->tmTranspName,
-                $hasil->sealNo,
+                $hasil->tmTranspName ?? '-',
+                $hasil->sealNo ?? '-',
                 $hasil->driver,
                 $hasil->carID,
                 $hasil->custName,
@@ -98,7 +159,8 @@ class ExportTimbangOutFG implements FromCollection, WithHeadings, WithMapping
                 $hasil->netto,
                 date('d-m-Y H:i:s',strtotime( $hasil->jam_in)),
                 date('d-m-Y H:i:s',strtotime( $hasil->jam_out)),
-                
-                ];
+                $hasil->shift_tiket ?? '-',
+                $shiftMuat,
+            ];
         }
 }

@@ -54,23 +54,70 @@ class Lappemuatanfg extends Component
         if (($this->katakunciout )  !=null) {
             
             //  dd('satu');   
-            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->leftJoin('createspms', 'createspms.id', 'trscale.spmID')->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->where('driver','like','%' . $this->katakunciout . '%')->whereNotNull('netto')->orwhere('carID','like','%' . $this->katakunciout . '%')->wheredate('jam_in','>=',$this->tglin)->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $sdhout = DB::connection('sqlsrv')->table('trscale')
+                ->join('customers', 'customers.custID', 'trscale.custID')
+                ->join('products', 'products.itemCode', 'trscale.itemCode')
+                ->leftJoin('createspms', 'createspms.id', 'trscale.spmID')
+                ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                ->select('trscale.*', 'customers.custName', 'products.itemName', 'create_t_m_s.tmTranspName', 'createspms.sealNo', 'create_t_m_s.jamMuat',
+                    DB::raw("CASE 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' 
+                        ELSE 'Luar Jam Shift' 
+                    END as shift_tiket")
+                )
+                ->where('driver','like','%' . $this->katakunciout . '%')
+                ->whereNotNull('netto')
+                ->orwhere('carID','like','%' . $this->katakunciout . '%')
+                ->wheredate('jam_in','>=',$this->tglin)
+                ->orderby($this->sortColumn ,$this->sortDirection)
+                ->paginate(5);
         
             
  
             
         } elseif (($this->tglin  )  !=null) {
             // dd('dua'); 
-            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->leftJoin('createspms', 'createspms.id', 'trscale.spmID')->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $sdhout = DB::connection('sqlsrv')->table('trscale')
+                ->join('customers', 'customers.custID', 'trscale.custID')
+                ->join('products', 'products.itemCode', 'trscale.itemCode')
+                ->leftJoin('createspms', 'createspms.id', 'trscale.spmID')
+                ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                ->select('trscale.*', 'customers.custName', 'products.itemName', 'create_t_m_s.tmTranspName', 'createspms.sealNo', 'create_t_m_s.jamMuat',
+                    DB::raw("CASE 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' 
+                        ELSE 'Luar Jam Shift' 
+                    END as shift_tiket")
+                )
+                ->wheredate('jam_in','>=',$this->tglin)
+                ->whereNotNull('netto')
+                ->orderby($this->sortColumn ,$this->sortDirection)
+                ->paginate(5);
         } else {
              
             $this->tglin = $tglawal;
             // dd($tglawal, $this->jam_in);
-            $sdhout = DB::connection('sqlsrv')->table('trscale')->join('customers', 'customers.custID', 'trscale.custID')->join('products', 'products.itemCode', 'trscale.itemCode')->leftJoin('createspms', 'createspms.id', 'trscale.spmID')->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')->wheredate('jam_in','>=',$this->tglin)->whereNotNull('netto')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $sdhout = DB::connection('sqlsrv')->table('trscale')
+                ->join('customers', 'customers.custID', 'trscale.custID')
+                ->join('products', 'products.itemCode', 'trscale.itemCode')
+                ->leftJoin('createspms', 'createspms.id', 'trscale.spmID')
+                ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                ->select('trscale.*', 'customers.custName', 'products.itemName', 'create_t_m_s.tmTranspName', 'createspms.sealNo', 'create_t_m_s.jamMuat',
+                    DB::raw("CASE 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' 
+                        WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' 
+                        ELSE 'Luar Jam Shift' 
+                    END as shift_tiket")
+                )
+                ->whereNotNull('netto')
+                ->orderby($this->sortColumn ,$this->sortDirection)
+                ->paginate(5);
         
         }
-
-        // dd($sdhout);
        
         $timbangan = JembatanTimbang::all();
         $pelanggan = Customer::all();
