@@ -278,9 +278,9 @@ class MultiProductWeighingOut extends Component
 
     public function render()
     {
-        // Get transactions yang statusnya WEIGHING_IN (sudah timbang masuk, belum keluar)
+        // Get transactions yang statusnya READY_FOR_WEIGH_OUT (sudah input B10, siap timbang keluar)
         $transactions = TrscaleHeader::with(['details', 'approvals'])
-            ->where('status', 'WEIGHING_IN')
+            ->where('status', 'READY_FOR_WEIGH_OUT')
             ->where(function ($query) {
                 if (!empty($this->search)) {
                     $query->where('trans_no', 'like', '%' . $this->search . '%')

@@ -160,8 +160,10 @@
                 @endphp
                 @foreach ($details as $index => $detail)
                     @php
-                        $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
-                        $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                        // Gunakan b10QtyKarung (qty yang sudah dikoreksi) jika ada, jika tidak ada gunakan qty_karung (SPM)
+                        $qtyKarungActual = $detail->b10QtyKarung ?? $detail->qty_karung;
+                        $rangeMinTotal = $qtyKarungActual * $detail->gross_min;
+                        $rangeMaxTotal = $qtyKarungActual * $detail->gross_max;
                         $totalRangeMin += $rangeMinTotal;
                         $totalRangeMax += $rangeMaxTotal;
                     @endphp
@@ -169,7 +171,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $detail->itemCode }}</td>
                         <td>{{ $detail->itemName }}</td>
-                        <td style="text-align: center;">{{ number_format($detail->qty_karung) }}</td>
+                        <td style="text-align: center;">{{ number_format($qtyKarungActual) }}</td>
                         {{-- <td style="text-align: right;">{{ number_format($detail->theoretical_weight, 2) }}</td> --}}
                         <td style="text-align: right;">{{ number_format($detail->actual_weight, 2) }}</td>
                         <td style="text-align: right;">{{ number_format($detail->avg_per_karung, 2) }}</td>
@@ -181,7 +183,9 @@
             <tfoot>
                 <tr style="font-weight: bold;">
                     <td colspan="3" style="text-align: right;">TOTAL:</td>
-                    <td style="text-align: center;">{{ number_format($details->sum('qty_karung')) }}</td>
+                    <td style="text-align: center;">
+                        {{ number_format($details->sum(function ($d) {return $d->b10QtyKarung ?? $d->qty_karung;})) }}
+                    </td>
                     {{-- <td style="text-align: right;">{{ number_format($details->sum('theoretical_weight'), 2) }}</td> --}}
                     <td style="text-align: right;">{{ number_format($details->sum('actual_weight'), 2) }}</td>
                     <td colspan="3"></td>

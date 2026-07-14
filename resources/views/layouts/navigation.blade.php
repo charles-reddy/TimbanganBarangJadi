@@ -228,11 +228,17 @@
                             <x-dropdown-link :href="route('inputkarung')" active="request()->routeIs('dashboard')">
                                 {{ __('Input Qty Karung') }}
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('multi-product-input-b10')" active="request()->routeIs('dashboard')">
+                                {{ __('Input Qty Karung (Multi Produk)') }}
+                            </x-dropdown-link>
                             <x-dropdown-link :href="route('segeltruk')" active="request()->routeIs('dashboard')">
                                 {{ __('Seal Truk') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('uploadappkarung')" active="request()->routeIs('dashboard')">
                                 {{ __('Upload Bukti Pengecekan karung') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('multi-product-koreksi-b10')" active="request()->routeIs('dashboard')">
+                                {{ __('Koreksi B10 (Multi Produk)') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('appavgkarung')" active="request()->routeIs('dashboard')">
                                 {{ __('Approval avg Karung') }}
@@ -548,11 +554,17 @@
                     <x-dropdown-link :href="route('inputkarung')" active="request()->routeIs('dashboard')">
                         {{ __('Input Qty Karung') }}
                     </x-dropdown-link>
+                    <x-dropdown-link :href="route('multi-product-input-b10')" active="request()->routeIs('dashboard')">
+                        {{ __('Input Qty Karung (Multi Produk)') }}
+                    </x-dropdown-link>
                     <x-dropdown-link :href="route('segeltruk')" active="request()->routeIs('dashboard')">
                         {{ __('Seal Truk') }}
                     </x-dropdown-link>
                     <x-dropdown-link :href="route('uploadappkarung')" active="request()->routeIs('dashboard')">
                         {{ __('Upload Bukti Pengecekan karung') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('multi-product-koreksi-b10')" active="request()->routeIs('dashboard')">
+                        {{ __('Koreksi B10 (Multi Produk)') }}
                     </x-dropdown-link>
                     <x-dropdown-link :href="route('appavgkarung')" active="request()->routeIs('dashboard')">
                         {{ __('Approval avg Karung') }}

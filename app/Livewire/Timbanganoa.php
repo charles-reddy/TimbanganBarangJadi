@@ -94,20 +94,20 @@ class Timbanganoa extends Component
 
                 switch ($this->timbanganID) {
                     case 1:
-                        $data = "http://10.20.1.63:3000/api/weight/SCALE_10";
+                        $data = "http://10.20.1.49:3000/api/weight/SCALE_10";
                         break;
                     
                     case '2':
-                        $data = "http://10.20.1.63:3000/api/weight/SCALE_09";
+                        $data = "http://10.20.1.49:3000/api/weight/SCALE_09";
                         break;   
 
                     case 3:
-                        $data = "http://10.20.1.63:3000/api/weight/SCALE_08";
+                        $data = "http://10.20.1.49:3000/api/weight/SCALE_08";
                         break; 
 
                     
                     case '5':
-                        $data = "http://10.20.1.63:3000/api/weight/SCALE_02";
+                        $data = "http://10.20.1.49:3000/api/weight/SCALE_02";
                         break; 
 
                     default:

@@ -56,7 +56,7 @@
                         &nbsp;
                     </td>
                     <td >
-                        <h4>Gross : {{ number_format($item->timbangout) }}</h4>
+                        <h4>Gross : {{ number_format($item->timbangin) }} </h4>
                     </td>
                 </tr>
                 <tr>
@@ -68,7 +68,7 @@
                         &nbsp;
                     </td>
                     <td >
-                        <h4>Berat Kendaraan : {{ number_format($item->timbangin) }}</h4>
+                        <h4>Berat Kendaraan : {{ number_format($item->timbangout) }}</h4>
                     </td>
                 </tr>
                 <tr>

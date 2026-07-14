@@ -39,6 +39,20 @@ class TrscaleDetail extends Model
         'isLoadingDate',
         'isLoadingDone',
         'isLoadingDoneDate',
+        // B10 Input fields
+        'b10QtyKarung',
+        'b10BatchNo',
+        'kontainerNo',
+        'krani',
+        'imgFormLoading',
+        // B10 Correction fields
+        'b10QtyKarung_original',
+        'b10_correction_count',
+        'b10_corrected_by',
+        'b10_corrected_at',
+        'buktiKoreksi1',
+        'buktiKoreksi2',
+        'buktiKoreksi3',
     ];
 
     /**
@@ -54,6 +68,12 @@ class TrscaleDetail extends Model
         'avg_per_karung' => 'decimal:2',
         'is_in_range' => 'boolean',
         'need_approval' => 'boolean',
+        'b10QtyKarung' => 'integer',
+        'b10QtyKarung_original' => 'integer',
+        'b10_correction_count' => 'integer',
+        'b10_corrected_at' => 'datetime',
+        'isLoadingDate' => 'datetime',
+        'isLoadingDoneDate' => 'datetime',
     ];
 
     /**
@@ -118,6 +138,38 @@ class TrscaleDetail extends Model
     public function needsApproval(): bool
     {
         return $this->need_approval ?? false;
+    }
+
+    /**
+     * Get all corrections for this detail.
+     */
+    public function corrections()
+    {
+        return $this->hasMany(TrscaleB10Correction::class, 'detail_id');
+    }
+
+    /**
+     * Get the user who made the last correction.
+     */
+    public function corrector(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'b10_corrected_by');
+    }
+
+    /**
+     * Check if B10 data has been inputted.
+     */
+    public function hasB10Data(): bool
+    {
+        return !empty($this->b10QtyKarung);
+    }
+
+    /**
+     * Check if detail has been corrected.
+     */
+    public function hasCorrected(): bool
+    {
+        return $this->b10_correction_count > 0;
     }
 
     /**

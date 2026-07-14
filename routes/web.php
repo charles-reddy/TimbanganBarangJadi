@@ -241,6 +241,15 @@ Route::get('/multi-product-approval', function () {
     return view('multi-product-approval');
 })->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-b10'])->name('multi-product-approval');
 
+// Multi-Product B10 Routes
+Route::get('/multi-product-input-b10', function () {
+    return view('multi-product-input-b10');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('multi-product-input-b10');
+
+Route::get('/multi-product-koreksi-b10', function () {
+    return view('multi-product-koreksi-b10');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('multi-product-koreksi-b10');
+
 Route::get('/weighing-report-dashboard', function () {
     return view('weighing-report-dashboard');
 })->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|marketing|supervisor-b10'])->name('weighing-report-dashboard');

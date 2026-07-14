@@ -126,8 +126,15 @@ class MultiProductWeighingService
             $header = TrscaleHeader::with('details')->findOrFail($headerId);
 
             // Validate status
-            if ($header->status !== 'WEIGHING_IN') {
-                throw new \Exception('Status transaksi harus WEIGHING_IN untuk melakukan timbang keluar');
+            if ($header->status !== 'READY_FOR_WEIGH_OUT') {
+                throw new \Exception('Status transaksi harus READY_FOR_WEIGH_OUT (Input B10 sudah selesai) untuk melakukan timbang keluar');
+            }
+
+            // Validate all details have B10 data
+            foreach ($header->details as $detail) {
+                if (empty($detail->b10QtyKarung)) {
+                    throw new \Exception("Product {$detail->itemName} belum ada input B10. Silakan lengkapi input B10 terlebih dahulu.");
+                }
             }
 
             // Calculate net weight
@@ -152,73 +159,55 @@ class MultiProductWeighingService
                 'status' => 'WEIGHING_OUT',
             ]);
 
-            // Calculate total range min dan max dari semua produk
+            // Calculate total range min dan max MENGGUNAKAN B10QtyKarung
             $totalRangeMin = 0;
             $totalRangeMax = 0;
             
             foreach ($header->details as $detail) {
-                // Total range min = sum of (qty_karung × gross_min)
-                $totalRangeMin += $detail->qty_karung * $detail->gross_min;
-                
-                // Total range max = sum of (qty_karung × gross_max)
-                $totalRangeMax += $detail->qty_karung * $detail->gross_max;
+                // ** KEY CHANGE: Gunakan b10QtyKarung bukan qty_karung **
+                $totalRangeMin += $detail->b10QtyKarung * $detail->gross_min;
+                $totalRangeMax += $detail->b10QtyKarung * $detail->gross_max;
             }
 
             // Check if net_weight is within total range
             $isInRange = ($netWeight >= $totalRangeMin) && ($netWeight <= $totalRangeMax);
-            $needApproval = !$isInRange;
+            $needCorrection = !$isInRange;
 
-            // Calculate actual weight untuk setiap detail (untuk display)
-            $outOfRangeProducts = [];
-
+            // Calculate actual weight untuk setiap detail
             foreach ($header->details as $detail) {
                 // actual_weight = theoretical_weight × correction_factor
                 $actualWeight = $detail->theoretical_weight * $correctionFactor;
 
-                // avg_per_karung = actual_weight / qty_karung (untuk display/pembanding)
-                $avgPerKarung = $detail->qty_karung > 0
-                    ? $actualWeight / $detail->qty_karung
+                // ** KEY CHANGE: avg_per_karung = actual_weight / B10QtyKarung **
+                $avgPerKarung = $detail->b10QtyKarung > 0
+                    ? $actualWeight / $detail->b10QtyKarung
                     : 0;
 
                 // Update detail
                 $detail->update([
                     'actual_weight' => $actualWeight,
                     'avg_per_karung' => $avgPerKarung,
-                    'is_in_range' => $isInRange, // Semua detail punya status yang sama (based on total range)
-                    'isLoadingDone' => True, // Mark detail as completed
-                    'isLoadingDoneDate' => Carbon::now(), // Set loading date
+                    'is_in_range' => $isInRange,
                 ]);
-
-                // Jika transaksi out of range, simpan info semua produk untuk approval
-                if ($needApproval) {
-                    $outOfRangeProducts[] = [
-                        'itemCode' => $detail->itemCode,
-                        'itemName' => $detail->itemName,
-                        'qty_karung' => $detail->qty_karung,
-                        'avg_per_karung' => $avgPerKarung,
-                        'gross_min' => $detail->gross_min,
-                        'gross_max' => $detail->gross_max,
-                        'range_min_total' => $detail->qty_karung * $detail->gross_min,
-                        'range_max_total' => $detail->qty_karung * $detail->gross_max,
-                    ];
-                }
             }
 
-            // Tambahkan informasi range total ke header untuk tracking
+            // Update header dengan range info
             $header->update([
                 'total_range_min' => $totalRangeMin,
                 'total_range_max' => $totalRangeMax,
             ]);
 
-            // Update status berdasarkan apakah perlu approval
-            if ($needApproval) {
+            // Tentukan status final
+            if ($needCorrection) {
                 $header->update([
                     'need_approval' => true,
-                    'status' => 'PENDING_APPROVAL',
+                    'needs_b10_correction' => true,
+                    'status' => 'PENDING_B10_CORRECTION', // Status baru: menunggu koreksi B10
                 ]);
             } else {
                 $header->update([
                     'need_approval' => false,
+                    'needs_b10_correction' => false,
                     'status' => 'COMPLETED',
                 ]);
             }
@@ -247,8 +236,19 @@ class MultiProductWeighingService
             $header = TrscaleHeader::with('details')->findOrFail($headerId);
 
             // Validate status
-            if ($header->status !== 'PENDING_APPROVAL') {
-                throw new \Exception('Transaksi harus dalam status PENDING_APPROVAL untuk di-approve');
+            if (!in_array($header->status, ['PENDING_APPROVAL', 'PENDING_B10_CORRECTION'])) {
+                throw new \Exception('Transaksi harus dalam status PENDING_APPROVAL atau PENDING_B10_CORRECTION untuk di-approve');
+            }
+
+            // Untuk PENDING_B10_CORRECTION, harus sudah ada koreksi minimal 1x
+            if ($header->status === 'PENDING_B10_CORRECTION') {
+                $hasCorrectionAttempt = $header->details->some(function ($detail) {
+                    return $detail->b10_correction_count >= 1;
+                });
+
+                if (!$hasCorrectionAttempt) {
+                    throw new \Exception('Transaksi harus sudah dikoreksi minimal 1x sebelum bisa di-approve');
+                }
             }
 
             // Get out of range products
@@ -457,8 +457,19 @@ class MultiProductWeighingService
             $header = TrscaleHeader::with('details')->findOrFail($headerId);
 
             // Validate status
-            if ($header->status !== 'REJECTED') {
-                throw new \Exception('Hanya transaksi dengan status REJECTED yang bisa di-reweigh');
+            if (!in_array($header->status, ['REJECTED', 'PENDING_APPROVAL', 'PENDING_B10_CORRECTION'])) {
+                throw new \Exception('Hanya transaksi dengan status REJECTED, PENDING_APPROVAL, atau PENDING_B10_CORRECTION yang bisa di-reweigh');
+            }
+
+            // Untuk PENDING_B10_CORRECTION, harus sudah ada koreksi minimal 1x
+            if ($header->status === 'PENDING_B10_CORRECTION') {
+                $hasCorrectionAttempt = $header->details->some(function ($detail) {
+                    return $detail->b10_correction_count >= 1;
+                });
+
+                if (!$hasCorrectionAttempt) {
+                    throw new \Exception('Transaksi harus sudah dikoreksi minimal 1x sebelum bisa di-reweigh');
+                }
             }
 
             // Reset header data
@@ -469,8 +480,10 @@ class MultiProductWeighingService
                 'scale_out_id' => null,
                 'weigh_out_time' => null,
                 'user_out_id' => null,
-                'status' => 'WEIGHING_IN',
+                'status' => 'READY_FOR_WEIGH_OUT', // Kembali ke READY_FOR_WEIGH_OUT (bukan WEIGHING_IN)
                 'need_approval' => false,
+                'needs_b10_correction' => false,
+                'correction_submitted' => false,
                 'approved_by' => null,
                 'approved_at' => null,
                 'approval_note' => null,

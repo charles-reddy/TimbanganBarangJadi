@@ -50,7 +50,9 @@
                             <i class="bi bi-funnel"></i> Filter Status
                         </label>
                         <select class="form-select" id="filterStatus" wire:model.live="filterStatus">
-                            <option value="PENDING_APPROVAL">⏳ Pending Approval</option>
+                            <option value="PENDING">⏳ Pending (Approval + B10 Correction)</option>
+                            <option value="PENDING_APPROVAL">⏳ Pending Approval Only</option>
+                            <option value="PENDING_B10_CORRECTION">🔧 Pending B10 Correction Only</option>
                             <option value="APPROVED">✓ Approved</option>
                             <option value="REJECTED">✗ Rejected</option>
                             <option value="ALL">Semua Status</option>
@@ -117,7 +119,16 @@
                                     </td>
                                     <td class="text-center align-middle">
                                         @if ($trans->status === 'PENDING_APPROVAL')
-                                            <span class="badge bg-warning text-dark">⏳ Pending</span>
+                                            <span class="badge bg-warning text-dark">⏳ Pending Approval</span>
+                                        @elseif ($trans->status === 'PENDING_B10_CORRECTION')
+                                            <span class="badge bg-info text-dark">🔧 Pending B10 Correction</span>
+                                            @php
+                                                $correctionCount = $trans->details->max('b10_correction_count') ?? 0;
+                                            @endphp
+                                            @if ($correctionCount > 0)
+                                                <br><small class="badge bg-secondary mt-1">{{ $correctionCount }}x
+                                                    koreksi</small>
+                                            @endif
                                         @elseif ($trans->status === 'APPROVED')
                                             <span class="badge bg-success">✓ Approved</span>
                                         @elseif ($trans->status === 'REJECTED')
@@ -142,6 +153,26 @@
                                                 wire:click="openRejectModal({{ $trans->id }})" title="Reject">
                                                 <i class="bi bi-x-circle"></i> Reject
                                             </button>
+                                        @elseif ($trans->status === 'PENDING_B10_CORRECTION')
+                                            @php
+                                                $hasCorrectionAttempt = $trans->details->some(function ($detail) {
+                                                    return $detail->b10_correction_count >= 1;
+                                                });
+                                            @endphp
+                                            @if ($hasCorrectionAttempt)
+                                                <button type="button" class="btn btn-sm btn-success me-1"
+                                                    wire:click="openApproveModal({{ $trans->id }})"
+                                                    title="Approve (sudah dikoreksi)">
+                                                    <i class="bi bi-check-circle"></i> Approve
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-warning"
+                                                    onclick="if(confirm('Reset transaksi ini untuk ditimbang keluar ulang dengan data B10 yang sudah dikoreksi?')) { @this.call('reweighTransaction', {{ $trans->id }}) }"
+                                                    title="Re-Weigh dengan data B10 yang sudah dikoreksi">
+                                                    <i class="bi bi-arrow-clockwise"></i> Re-Weigh
+                                                </button>
+                                            @else
+                                                <span class="badge bg-secondary">Belum ada koreksi</span>
+                                            @endif
                                         @elseif ($trans->status === 'REJECTED')
                                             <button type="button" class="btn btn-sm btn-warning"
                                                 onclick="if(confirm('Reset transaksi ini untuk ditimbang keluar ulang?')) { @this.call('reweighTransaction', {{ $trans->id }}) }"
@@ -245,12 +276,31 @@
 
                         <!-- Product Details Table -->
                         <h6 class="text-primary">Detail Produk:</h6>
+
+                        {{-- Show B10 Correction Info if status is PENDING_B10_CORRECTION --}}
+                        @if ($selectedTransaction->status === 'PENDING_B10_CORRECTION')
+                            @php
+                                $hasCorrectionAttempt = $selectedTransaction->details->some(function ($detail) {
+                                    return $detail->b10_correction_count >= 1;
+                                });
+                            @endphp
+                            @if ($hasCorrectionAttempt)
+                                <div class="alert alert-info mb-3">
+                                    <i class="bi bi-info-circle"></i> <strong>Informasi Koreksi B10:</strong><br>
+                                    Transaksi ini sudah dilakukan koreksi B10. Data qty karung menggunakan input B10
+                                    yang sudah dikoreksi.
+                                </div>
+                            @endif
+                        @endif
+
                         <div class="table-responsive mb-3">
                             <table class="table table-sm table-bordered">
                                 <thead class="table-light">
                                     <tr>
                                         <th rowspan="2">Product</th>
-                                        <th rowspan="2" class="text-center">Qty</th>
+                                        <th rowspan="2" class="text-center">Qty Karung<br><small>(B10
+                                                Input)</small></th>
+                                        <th rowspan="2" class="text-center" style="width: 80px;">Koreksi</th>
                                         <th rowspan="2" class="text-end">Theoretical</th>
                                         <th rowspan="2" class="text-end">Actual</th>
                                         <th rowspan="2" class="text-end">Avg/Karung</th>
@@ -271,26 +321,49 @@
                                     @endphp
                                     @foreach ($selectedTransaction->details as $detail)
                                         @php
-                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
-                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            // Gunakan b10QtyKarung (qty yang sudah dikoreksi) jika ada, jika tidak ada gunakan qty_karung (SPM)
+                                            $qtyKarungActual = $detail->b10QtyKarung ?? $detail->qty_karung;
+                                            $rangeMinTotal = $qtyKarungActual * $detail->gross_min;
+                                            $rangeMaxTotal = $qtyKarungActual * $detail->gross_max;
                                             $totalRangeMinCalc += $rangeMinTotal;
                                             $totalRangeMaxCalc += $rangeMaxTotal;
                                         @endphp
                                         <tr>
                                             <td><strong>{{ $detail->itemName }}</strong><br><small
                                                     class="text-muted">{{ $detail->itemCode }}</small></td>
-                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
+                                            <td class="text-center">
+                                                {{ number_format($qtyKarungActual) }}
+                                                @if ($detail->b10QtyKarung && $detail->b10QtyKarung != $detail->qty_karung)
+                                                    <br><small class="text-muted">SPM:
+                                                        {{ number_format($detail->qty_karung) }}</small>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                @if ($detail->b10_correction_count > 0)
+                                                    <span
+                                                        class="badge bg-warning text-dark">{{ $detail->b10_correction_count }}x</span>
+                                                    @if ($detail->b10QtyKarung_original)
+                                                        <br><small class="text-muted">Awal:
+                                                            {{ number_format($detail->b10QtyKarung_original) }}</small>
+                                                    @endif
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
+                                            </td>
                                             <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
                                             </td>
                                             <td class="text-end">{{ number_format($detail->actual_weight, 2) }}</td>
                                             <td class="text-end">
-                                                <strong>{{ number_format($detail->avg_per_karung, 2) }}</strong></td>
+                                                <strong>{{ number_format($detail->avg_per_karung, 2) }}</strong>
+                                            </td>
                                             <td class="text-end">{{ number_format($detail->gross_min, 2) }}</td>
                                             <td class="text-end">{{ number_format($detail->gross_max, 2) }}</td>
                                             <td class="text-end">
-                                                <strong>{{ number_format($rangeMinTotal, 2) }}</strong></td>
+                                                <strong>{{ number_format($rangeMinTotal, 2) }}</strong>
+                                            </td>
                                             <td class="text-end">
-                                                <strong>{{ number_format($rangeMaxTotal, 2) }}</strong></td>
+                                                <strong>{{ number_format($rangeMaxTotal, 2) }}</strong>
+                                            </td>
                                         </tr>
                                     @endforeach
                                     <tr class="table-primary fw-bold">
@@ -430,26 +503,37 @@
                                     @endphp
                                     @foreach ($selectedTransaction->details as $detail)
                                         @php
-                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
-                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            // Gunakan b10QtyKarung (qty yang sudah dikoreksi) jika ada, jika tidak ada gunakan qty_karung (SPM)
+                                            $qtyKarungActual = $detail->b10QtyKarung ?? $detail->qty_karung;
+                                            $rangeMinTotal = $qtyKarungActual * $detail->gross_min;
+                                            $rangeMaxTotal = $qtyKarungActual * $detail->gross_max;
                                             $totalRangeMinCalc += $rangeMinTotal;
                                             $totalRangeMaxCalc += $rangeMaxTotal;
                                         @endphp
                                         <tr>
                                             <td><strong>{{ $detail->itemName }}</strong><br><small
                                                     class="text-muted">{{ $detail->itemCode }}</small></td>
-                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
+                                            <td class="text-center">
+                                                {{ number_format($qtyKarungActual) }}
+                                                @if ($detail->b10QtyKarung && $detail->b10QtyKarung != $detail->qty_karung)
+                                                    <br><small class="text-muted"
+                                                        title="Qty SPM: {{ number_format($detail->qty_karung) }}">(Dikoreksi)</small>
+                                                @endif
+                                            </td>
                                             <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
                                             </td>
                                             <td class="text-end">{{ number_format($detail->actual_weight, 2) }}</td>
                                             <td class="text-end">
-                                                <strong>{{ number_format($detail->avg_per_karung, 2) }}</strong></td>
+                                                <strong>{{ number_format($detail->avg_per_karung, 2) }}</strong>
+                                            </td>
                                             <td class="text-end">{{ number_format($detail->gross_min, 2) }}</td>
                                             <td class="text-end">{{ number_format($detail->gross_max, 2) }}</td>
                                             <td class="text-end">
-                                                <strong>{{ number_format($rangeMinTotal, 2) }}</strong></td>
+                                                <strong>{{ number_format($rangeMinTotal, 2) }}</strong>
+                                            </td>
                                             <td class="text-end">
-                                                <strong>{{ number_format($rangeMaxTotal, 2) }}</strong></td>
+                                                <strong>{{ number_format($rangeMaxTotal, 2) }}</strong>
+                                            </td>
                                         </tr>
                                     @endforeach
                                     <tr class="table-primary fw-bold">
@@ -612,8 +696,10 @@
                                     @endphp
                                     @foreach ($selectedTransaction->details as $detail)
                                         @php
-                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
-                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            // Gunakan b10QtyKarung (qty yang sudah dikoreksi) jika ada, jika tidak ada gunakan qty_karung (SPM)
+                                            $qtyKarungActual = $detail->b10QtyKarung ?? $detail->qty_karung;
+                                            $rangeMinTotal = $qtyKarungActual * $detail->gross_min;
+                                            $rangeMaxTotal = $qtyKarungActual * $detail->gross_max;
                                             $totalRangeMinCalc += $rangeMinTotal;
                                             $totalRangeMaxCalc += $rangeMaxTotal;
                                         @endphp
@@ -622,7 +708,13 @@
                                                 <small class="text-muted">{{ $detail->itemCode }}</small><br>
                                                 <strong>{{ $detail->itemName }}</strong>
                                             </td>
-                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
+                                            <td class="text-center">
+                                                {{ number_format($qtyKarungActual) }}
+                                                @if ($detail->b10QtyKarung && $detail->b10QtyKarung != $detail->qty_karung)
+                                                    <br><small class="text-muted"
+                                                        title="Qty SPM: {{ number_format($detail->qty_karung) }}">(Dikoreksi)</small>
+                                                @endif
+                                            </td>
                                             <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
                                             </td>
                                             <td class="text-end">{{ number_format($detail->actual_weight, 2) }}</td>

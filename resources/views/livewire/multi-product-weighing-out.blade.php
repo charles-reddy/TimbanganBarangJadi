@@ -1,21 +1,23 @@
 <div>
-    {{-- Success/Error Messages --}}
-    @if (session()->has('success'))
-        <div class="pt-3">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Berhasil!</strong> {!! session('success') !!}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    {{-- Success/Error Messages (Only show when modal is closed) --}}
+    @if (!$showModal)
+        @if (session()->has('success'))
+            <div class="pt-3">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Berhasil!</strong> {!! session('success') !!}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </div>
-        </div>
-    @endif
+        @endif
 
-    @if (session()->has('error'))
-        <div class="pt-3">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        @if (session()->has('error'))
+            <div class="pt-3">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </div>
-        </div>
+        @endif
     @endif
 
     <div class="my-3 p-3 bg-body rounded shadow-sm">
@@ -238,6 +240,37 @@
                         <button type="button" class="btn-close btn-close-white" wire:click="closeModal"></button>
                     </div>
                     <div class="modal-body">
+                        {{-- Error/Success Messages Inside Modal --}}
+                        @if ($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong><i class="bi bi-exclamation-triangle-fill"></i> Terdapat kesalahan:</strong>
+                                <ul class="mb-0 mt-2">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if (session()->has('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong><i class="bi bi-x-circle-fill"></i> Error!</strong> {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if (session()->has('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong><i class="bi bi-check-circle-fill"></i> Berhasil!</strong>
+                                {!! session('success') !!}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         <!-- Transaction Info -->
                         <div class="card mb-3 bg-light">
                             <div class="card-body">
@@ -288,8 +321,10 @@
                                     @endphp
                                     @foreach ($selectedTransaction->details as $detail)
                                         @php
-                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
-                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            // Gunakan b10QtyKarung (qty yang sudah dikoreksi) jika ada, jika tidak ada gunakan qty_karung (SPM)
+                                            $qtyKarungActual = $detail->b10QtyKarung ?? $detail->qty_karung;
+                                            $rangeMinTotal = $qtyKarungActual * $detail->gross_min;
+                                            $rangeMaxTotal = $qtyKarungActual * $detail->gross_max;
                                             $totalRangeMin += $rangeMinTotal;
                                             $totalRangeMax += $rangeMaxTotal;
                                         @endphp
@@ -298,7 +333,13 @@
                                                 <small class="text-muted">{{ $detail->itemCode }}</small><br>
                                                 <strong>{{ $detail->itemName }}</strong>
                                             </td>
-                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
+                                            <td class="text-center">
+                                                {{ number_format($qtyKarungActual) }}
+                                                @if ($detail->b10QtyKarung && $detail->b10QtyKarung != $detail->qty_karung)
+                                                    <br><small class="text-muted"
+                                                        title="Qty SPM: {{ number_format($detail->qty_karung) }}">(Dikoreksi)</small>
+                                                @endif
+                                            </td>
                                             <td class="text-end">{{ number_format($detail->weight_std, 2) }}</td>
                                             <td class="text-end">
                                                 <strong>{{ number_format($detail->theoretical_weight, 2) }}</strong>
@@ -334,7 +375,7 @@
                                 - {{ number_format($totalRangeMax, 2) }} kg</strong> untuk tidak perlu approval
                         </div>
 
-                        {{-- <!-- Manual Mode Toggle -->
+                        <!-- Manual Mode Toggle -->
                         <div class="mb-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="manualModeOut"
@@ -344,7 +385,7 @@
                                         tidak tersedia)</small>
                                 </label>
                             </div>
-                        </div> --}}
+                        </div>
 
                         <!-- Weighing Scale Section -->
                         <form wire:submit.prevent="processWeighOut">
@@ -597,15 +638,23 @@
                                     @endphp
                                     @foreach ($selectedTransaction->details as $detail)
                                         @php
-                                            $rangeMinTotal = $detail->qty_karung * $detail->gross_min;
-                                            $rangeMaxTotal = $detail->qty_karung * $detail->gross_max;
+                                            // Gunakan b10QtyKarung (qty yang sudah dikoreksi) jika ada, jika tidak ada gunakan qty_karung (SPM)
+                                            $qtyKarungActual = $detail->b10QtyKarung ?? $detail->qty_karung;
+                                            $rangeMinTotal = $qtyKarungActual * $detail->gross_min;
+                                            $rangeMaxTotal = $qtyKarungActual * $detail->gross_max;
                                             $totalRangeMinDetail += $rangeMinTotal;
                                             $totalRangeMaxDetail += $rangeMaxTotal;
                                         @endphp
                                         <tr>
                                             <td>{{ $detail->itemCode }}</td>
                                             <td>{{ $detail->itemName }}</td>
-                                            <td class="text-center">{{ number_format($detail->qty_karung) }}</td>
+                                            <td class="text-center">
+                                                {{ number_format($qtyKarungActual) }}
+                                                @if ($detail->b10QtyKarung && $detail->b10QtyKarung != $detail->qty_karung)
+                                                    <br><small class="text-muted"
+                                                        title="Qty SPM: {{ number_format($detail->qty_karung) }}">(Dikoreksi)</small>
+                                                @endif
+                                            </td>
                                             <td class="text-end">{{ number_format($detail->weight_std, 2) }}</td>
                                             <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
                                             </td>
@@ -646,4 +695,22 @@
             </div>
         </div>
     @endif
+
+    <script>
+        // Auto scroll to error messages inside modal
+        document.addEventListener('DOMContentLoaded', function() {
+            Livewire.hook('message.processed', (message, component) => {
+                // Scroll to error alerts in modal if exists
+                setTimeout(() => {
+                    const errorAlert = document.querySelector('.modal-body .alert-danger');
+                    if (errorAlert) {
+                        errorAlert.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }, 100);
+            });
+        });
+    </script>
 </div>

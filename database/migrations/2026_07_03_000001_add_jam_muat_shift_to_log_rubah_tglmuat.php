@@ -12,9 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('sqlsrv')->table('tbl_log_rubah_tglMuat', function (Blueprint $table) {
-            $table->time('jamMuat')->nullable()->after('tglMuat');
-            $table->time('jamMuat1')->nullable()->after('tglMuat1');
-            $table->string('shift', 50)->nullable()->after('jamMuat1');
+            if (!Schema::connection('sqlsrv')->hasColumn('tbl_log_rubah_tglMuat', 'jamMuat')) {
+                $table->time('jamMuat')->nullable()->after('tglMuat');
+            }
+            if (!Schema::connection('sqlsrv')->hasColumn('tbl_log_rubah_tglMuat', 'jamMuat1')) {
+                $table->time('jamMuat1')->nullable()->after('tglMuat1');
+            }
+            if (!Schema::connection('sqlsrv')->hasColumn('tbl_log_rubah_tglMuat', 'shift')) {
+                $table->string('shift', 50)->nullable();
+            }
         });
     }
 

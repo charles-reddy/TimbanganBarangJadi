@@ -15,7 +15,7 @@ class MultiProductApproval extends Component
 
     // Search & Filter
     public $search = '';
-    public $filterStatus = 'PENDING_APPROVAL'; // PENDING_APPROVAL, APPROVED, REJECTED, ALL
+    public $filterStatus = 'PENDING'; // PENDING (PENDING_APPROVAL + PENDING_B10_CORRECTION), APPROVED, REJECTED, ALL
 
     // Selected transaction for approval
     public $selectedTransactionId = null;
@@ -179,10 +179,21 @@ class MultiProductApproval extends Component
         $query = TrscaleHeader::with(['details', 'userOut', 'approver']);
 
         // Filter by status
-        if ($this->filterStatus !== 'ALL') {
+        if ($this->filterStatus === 'PENDING') {
+            // PENDING mencakup PENDING_APPROVAL dan PENDING_B10_CORRECTION yang sudah dikoreksi 1x
+            $query->where(function($q) {
+                $q->where('status', 'PENDING_APPROVAL')
+                  ->orWhere(function($subQ) {
+                      $subQ->where('status', 'PENDING_B10_CORRECTION')
+                           ->whereHas('details', function($detailQ) {
+                               $detailQ->where('b10_correction_count', '>=', 1);
+                           });
+                  });
+            });
+        } elseif ($this->filterStatus !== 'ALL') {
             $query->where('status', $this->filterStatus);
         } else {
-            $query->whereIn('status', ['PENDING_APPROVAL', 'APPROVED', 'REJECTED']);
+            $query->whereIn('status', ['PENDING_APPROVAL', 'PENDING_B10_CORRECTION', 'APPROVED', 'REJECTED']);
         }
 
         // Search
@@ -197,8 +208,14 @@ class MultiProductApproval extends Component
         $transactions = $query->orderBy('weigh_out_time', 'desc')
             ->paginate(10);
 
-        // Get pending count untuk badge
-        $pendingCount = TrscaleHeader::where('status', 'PENDING_APPROVAL')->count();
+        // Get pending count untuk badge (PENDING_APPROVAL + PENDING_B10_CORRECTION yang sudah dikoreksi 1x)
+        $pendingApprovalCount = TrscaleHeader::where('status', 'PENDING_APPROVAL')->count();
+        $pendingB10Count = TrscaleHeader::where('status', 'PENDING_B10_CORRECTION')
+            ->whereHas('details', function($q) {
+                $q->where('b10_correction_count', '>=', 1);
+            })
+            ->count();
+        $pendingCount = $pendingApprovalCount + $pendingB10Count;
 
         return view('livewire.multi-product-approval', [
             'transactions' => $transactions,

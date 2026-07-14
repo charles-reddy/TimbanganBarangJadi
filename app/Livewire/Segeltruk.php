@@ -278,6 +278,10 @@ class Segeltruk extends Component
 
     public function render()
     {
+        // Filter data 2 minggu terakhir hanya jika tidak ada pencarian
+        $twoWeeksAgo = Carbon::now()->subDays(14);
+        $isSearching = !empty($this->katakunci);
+        
         // ========== DATAGULA: Truk gula yang sudah jam_out tapi belum ada seal ==========
         // Single product query
         $gulaSingle = DB::connection('sqlsrv')->table('createspms')
@@ -300,8 +304,14 @@ class Segeltruk extends Component
             ->whereNotNull('jam_out')
             ->where('type', '<>', 'FG-L')
             ->whereNull('sealNo1');
+        
+        // Apply date filter only if not searching
+        if (!$isSearching) {
+            $gulaSingle->where('trscale.jam_in', '>=', $twoWeeksAgo);
+        }
 
         // Multi product query
+        $dateFilter = $isSearching ? '' : "AND h.weigh_in_time >= '" . $twoWeeksAgo->format('Y-m-d H:i:s') . "'";
         $gulaMulti = DB::connection('sqlsrv')
             ->table(DB::raw('(
                 SELECT 
@@ -317,6 +327,7 @@ class Segeltruk extends Component
                 LEFT JOIN trscale_details d ON d.header_id = h.id
                 WHERE 
                     h.weigh_out_time IS NOT NULL
+                    ' . $dateFilter . '
                 GROUP BY h.id, h.driver, h.carID, h.custName, h.weigh_in_time
             ) as multi_data'))
             ->leftJoin('createspms', 'createspms.id', '=', 'multi_data.first_spmID')
@@ -335,6 +346,12 @@ class Segeltruk extends Component
             )
             ->whereNull('createspms.sealNo1');
             // dd($gulaMulti);
+        
+        // Apply search filter if exists for datagula
+        if ($isSearching) {
+            $gulaSingle->where('createspms.carID', 'like', '%' . $this->katakunci . '%');
+            $gulaMulti->where('multi_data.carID', 'like', '%' . $this->katakunci . '%');
+        }
 
         $datagula = $gulaSingle->unionAll($gulaMulti)->orderBy('id', 'desc')->paginate(5, ['*'], 'gula_page');
 
@@ -360,8 +377,17 @@ class Segeltruk extends Component
             ->where('type', '=', 'FG-L')
             ->whereNotNull('trscale.isLoading')
             ->whereNull('trscale.isLoadingDone')
-            ->whereNull('sealNo1')
-            ->orderBy('createspms.id', 'desc')
+            ->whereNull('sealNo1');
+        
+        // Apply date filter only if not searching
+        if (!$isSearching) {
+            $datamol->where('trscale.jam_in', '>=', $twoWeeksAgo);
+        } else {
+            // Apply search filter if searching
+            $datamol->where('createspms.carID', 'like', '%' . $this->katakunci . '%');
+        }
+        
+        $datamol = $datamol->orderBy('createspms.id', 'desc')
             ->paginate(5, ['*'], 'mol_page');
 
         // ========== DONESEGEL: Truk yang sudah selesai disegel ==========
@@ -385,8 +411,14 @@ class Segeltruk extends Component
             )
             ->whereNotNull('trscale.isLoadingDone')
             ->whereNotNull('sealNo1');
+        
+        // Apply date filter only if not searching
+        if (!$isSearching) {
+            $sealSingle->where('trscale.jam_in', '>=', $twoWeeksAgo);
+        }
 
         // Multi product query
+        $dateFilterSeal = $isSearching ? '' : "AND h.weigh_in_time >= '" . $twoWeeksAgo->format('Y-m-d H:i:s') . "'";
         $sealMulti = DB::connection('sqlsrv')
             ->table(DB::raw('(
                 SELECT 
@@ -401,6 +433,7 @@ class Segeltruk extends Component
                 LEFT JOIN trscale_details d ON d.header_id = h.id
                 WHERE 
                     d.isLoadingDone IS NOT NULL
+                    ' . $dateFilterSeal . '
                 GROUP BY h.id, h.driver, h.carID, h.custName, h.weigh_in_time
             ) as multi_data'))
             ->leftJoin('createspms', 'createspms.id', '=', 'multi_data.first_spmID')
@@ -420,7 +453,7 @@ class Segeltruk extends Component
             ->whereNotNull('createspms.sealNo1');
 
         // Apply search filter if exists
-        if ($this->katakunci != null) {
+        if ($isSearching) {
             $sealSingle->where('createspms.carID', 'like', '%' . $this->katakunci . '%');
             $sealMulti->where('multi_data.carID', 'like', '%' . $this->katakunci . '%');
         }

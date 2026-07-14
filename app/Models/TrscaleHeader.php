@@ -51,6 +51,11 @@ class TrscaleHeader extends Model
         'remarks',
         'isLoading',
         'isLoadingDate',
+        // B10 tracking fields
+        'b10_input_by',
+        'b10_input_at',
+        'needs_b10_correction',
+        'correction_submitted',
     ];
 
     /**
@@ -69,6 +74,9 @@ class TrscaleHeader extends Model
         'weigh_out_time' => 'datetime',
         'approved_at' => 'datetime',
         'isLoadingDate' => 'datetime',
+        'b10_input_at' => 'datetime',
+        'needs_b10_correction' => 'boolean',
+        'correction_submitted' => 'boolean',
     ];
 
     /**
@@ -109,6 +117,22 @@ class TrscaleHeader extends Model
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    /**
+     * Get the user who input B10 data.
+     */
+    public function b10InputUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'b10_input_by');
+    }
+
+    /**
+     * Get all B10 corrections for this header.
+     */
+    public function b10Corrections(): HasMany
+    {
+        return $this->hasMany(TrscaleB10Correction::class, 'header_id');
     }
 
     /**
