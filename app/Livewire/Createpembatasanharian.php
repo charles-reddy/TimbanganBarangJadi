@@ -158,7 +158,7 @@ class Createpembatasanharian extends Component
                 'tbl_QuotaLoading.approvedAt',
                 'users.name as approvedByName'
             )
-            ->orderBy('tbl_QuotaLoading.quotaTglDatang', 'desc');
+            ->orderBy('tbl_QuotaLoading.id', 'desc');
 
         if ($this->katakunci) {
             // Jika input hanya tanda "-", tampilkan data dengan tanggal null

@@ -120,7 +120,7 @@
                                         </button>
                                         <button type="button" class="btn btn-sm btn-danger"
                                             onclick="if(confirm('Yakin ingin membatalkan transaksi ini?')) { @this.call('cancelTransaction', {{ $trans->id }}) }"
-                                            title="Batalkan">
+                                            title="Batalkan" hidden>
                                             <i class="bi bi-x-circle">Batalkan</i>
                                         </button>
                                     </td>
@@ -379,8 +379,8 @@
                         <div class="mb-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="manualModeOut"
-                                    wire:model="manualMode">
-                                <label class="form-check-label" for="manualModeOut">
+                                    wire:model="manualMode" hidden>
+                                <label class="form-check-label" for="manualModeOut" hidden>
                                     <strong>Mode Manual</strong> <small class="text-muted">(Aktifkan jika API timbangan
                                         tidak tersedia)</small>
                                 </label>
@@ -434,7 +434,7 @@
                                 <input type="number" step="0.01"
                                     class="form-control form-control-lg @error('grossWeight') is-invalid @enderror"
                                     wire:model="grossWeight" placeholder="Masukkan gross weight..." required
-                                    autofocus>
+                                    autofocus readonly>
                                 @error('grossWeight')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
