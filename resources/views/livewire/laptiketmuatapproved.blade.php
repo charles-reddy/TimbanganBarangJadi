@@ -127,6 +127,14 @@
                             <label for="tglmuat" class="form-label small text-muted">Tanggal Muat</label>
                             <input type="date" id="tglmuat" class="form-control" wire:model.live="tglMuat">
                         </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <label for="sudahpabrik" class="form-label small text-muted">Sudah di Pabrik</label>
+                            <select id="sudahpabrik" class="form-select" wire:model.live="sudahPabrik">
+                                <option value="">-- Semua --</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
                     </div>
 
 

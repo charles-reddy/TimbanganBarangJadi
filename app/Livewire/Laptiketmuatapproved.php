@@ -21,6 +21,7 @@ class Laptiketmuatapproved extends Component
     public $tglMuat;
     public $ip;
     public $kataproduct = [];
+    public $sudahPabrik;
 
 
     public function store()
@@ -127,6 +128,14 @@ class Laptiketmuatapproved extends Component
 
         if (!empty($this->kataproduct)) {
             $query->whereIn('products.itemCode', $this->kataproduct);
+        }
+
+        if ($this->sudahPabrik !== null && $this->sudahPabrik !== '') {
+            if ($this->sudahPabrik == '1') {
+                $query->whereNotNull('isSecCek');
+            } else {
+                $query->whereNull('isSecCek');
+            }
         }
 
         // Get all products for dropdown

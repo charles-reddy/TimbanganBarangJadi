@@ -55,11 +55,10 @@
         <div class="row text-center">
             <h3>BUKTI TIMBANG </h3>
             <h4>PT Kebun Tebu Mas</h4>
-            <h4>Jl Raya Babat Jombang Km 25.5</h4>
-            <h4>Ds. Lamongrejo Kec. Ngimbang - Lamongan</h4>
+            <h4>Jl Raya Babat Jombang Km 25.5 - Lamongan</h4>
         </div>
         <hr>
-        <br><br>
+        
 
         <table>
             <tr>
@@ -107,27 +106,20 @@
                 <td>
                     <h4>Netto: {{ number_format($header->net_weight, 2) }} kg</h4>
                 </td>
+                <td>
+                    <h4>Customer : {{ $header->custName }}</h4>
+                </td>
             </tr>
             <tr>
                 <td>
                     <h4>Driver: {{ $header->driver }}</h4>
                 </td>
-                <td>
-                    &nbsp;
-                </td>
+                
                 {{-- <td>
                     <h4>K Factor: {{ number_format($header->correction_factor, 4) }}</h4>
                 </td> --}}
             </tr>
-            <tr>
-                <td>
-                    <h4>Customer : {{ $header->custName }}</h4>
-                </td>
-                <td>
-                    &nbsp;
-                </td>
-
-            </tr>
+            
             @if ($header->remarks)
                 <tr>
                     <td colspan="3">
@@ -136,9 +128,8 @@
                 </tr>
             @endif
         </table>
-
-        <br>
-        <h4>Detail Produk:</h4>
+        
+        {{-- <h4>Detail Produk:</h4> --}}
         <table class="product-table">
             <thead>
                 <tr>
@@ -209,7 +200,7 @@
         </table>
 
         <hr>
-        <br><br>
+        <br>
         <table>
             <tr>
                 <td>Dibuat</td>
