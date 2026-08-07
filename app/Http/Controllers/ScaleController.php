@@ -55,11 +55,13 @@ class ScaleController extends Controller
 
         $details = DB::table('trscale_details')
             ->join('products', 'products.itemCode', '=', 'trscale_details.itemCode')
+            ->leftJoin('createspms', 'createspms.id', '=', 'trscale_details.spm_id')
             ->where('trscale_details.header_id', $id)
             ->select(
                 'trscale_details.*',
                 'products.itemName',
-                'products.uom'
+                'products.uom',
+                'createspms.buktiPGI'
             )
             ->get();
 

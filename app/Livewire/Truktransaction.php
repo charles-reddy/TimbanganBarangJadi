@@ -127,7 +127,7 @@ class Truktransaction extends Component
     public function export_out()
     {
 
-        return Excel::download(new exportTrukTransaction($this->tglout1, $this->tglout2, $this->katakunci, $this->katacust), "Truktransaction-export.xlsx");
+        return Excel::download(new exportTrukTransaction($this->tglout1, $this->tglout2, $this->katakunci, $this->katacust, $this->shift), "Truktransaction-export.xlsx");
     }
 
 
@@ -141,8 +141,9 @@ class Truktransaction extends Component
     {
         $tglout = DB::connection('sqlsrv')->table('trscale')->whereNotNull('netto')->orderBy('id', 'desc')->first();
         // dd($tglout);
-        if ($this->katakunci != null) {
-            $data = DB::connection('sqlsrv')->table('trscale')
+        if (!empty($this->katakunci)) {
+            // Single product query
+            $singleQuery = DB::connection('sqlsrv')->table('trscale')
                 ->join('createspms', 'createspms.id', 'trscale.spmID')
                 ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
                 ->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')
@@ -182,12 +183,67 @@ class Truktransaction extends Component
                     'createspms.id as spmID',
                     'create_t_m_s.tglDaftar',
                     DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
-                    DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin")
-                )
-                ->orderBy('trscale.id', 'desc')
-                ->paginate(10);
-        } elseif (($this->katacust)  != null) {
-            $data = DB::connection('sqlsrv')->table('trscale')
+                    DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                    DB::raw("'single' as trans_type"),
+                    DB::raw("NULL as header_id")
+                );
+
+            // Multi product query
+            $multiQuery = DB::connection('sqlsrv')->table('trscale_headers')
+                ->join('trscale_details', 'trscale_details.header_id', 'trscale_headers.id')
+                ->leftJoin('createspms', 'createspms.id', 'trscale_details.spm_id')
+                ->leftJoin('createsppbs', 'createsppbs.id', 'trscale_details.sppb_id')
+                ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                ->leftJoin('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')
+                ->whereNotNull('trscale_headers.net_weight')
+                ->where(function ($query) {
+                    $query->where('trscale_headers.carID', 'like', '%' . $this->katakunci . '%')
+                        ->orWhere('createspms.dnNo', 'like', '%' . $this->katakunci . '%')
+                        ->orWhere('createsppbs.sppbNo', 'like', '%' . $this->katakunci . '%');
+                })
+                ->when($this->shift, function ($query) {
+                    $query->whereRaw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
+                })
+                ->select(
+                    'trscale_details.id',
+                    'create_t_m_s.isSecCekDate',
+                    'trscale_headers.weigh_in_time as tgl_tim_in',
+                    'trscale_headers.weigh_out_time as tgl',
+                    'createsppbs.sppbNo',
+                    'createspms.spmNo',
+                    'create_t_m_s.pendfNo',
+                    'trscale_headers.custName',
+                    DB::raw("CONCAT('[MULTI] ', trscale_details.itemName) as itemName"),
+                    'trscale_details.itemType as type',
+                    'trscale_headers.carID',
+                    'trscale_headers.driver',
+                    'trscale_headers.tare_weight as timbangin',
+                    'trscale_headers.gross_weight as timbangout',
+                    'trscale_details.actual_weight as netto',
+                    'trscale_details.b10QtyKarung',
+                    'createspms.dnNo',
+                    'trscale_details.avg_per_karung as avgKarung',
+                    'trscale_details.need_approval as isApp',
+                    'createspms.buktiPGI',
+                    'createspms.id as spmID',
+                    'create_t_m_s.tglDaftar',
+                    DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
+                    DB::raw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                    DB::raw("'multi' as trans_type"),
+                    'trscale_headers.id as header_id'
+                );
+
+            // Combine queries
+            $unionQuery = $singleQuery->unionAll($multiQuery);
+
+            $data = DB::connection('sqlsrv')
+                ->query()
+                ->fromSub($unionQuery, 'combined')
+                ->orderBy('tgl', 'desc')
+                ->paginate(20);
+        } elseif (!empty($this->katacust)) {
+            // Single product query
+            $singleQuery = DB::connection('sqlsrv')->table('trscale')
                 ->join('createspms', 'createspms.id', 'trscale.spmID')
                 ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
                 ->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')
@@ -226,11 +282,65 @@ class Truktransaction extends Component
                     'createspms.id as spmID',
                     'create_t_m_s.tglDaftar',
                     DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
-                    DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin")
-                )
-                ->orderBy('trscale.id', 'desc')
-                ->paginate(10);
-        } elseif (($this->tglout1)  != null) {
+                    DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                    DB::raw("'single' as trans_type"),
+                    DB::raw("NULL as header_id")
+                );
+
+            // Multi product query
+            $multiQuery = DB::connection('sqlsrv')->table('trscale_headers')
+                ->join('trscale_details', 'trscale_details.header_id', 'trscale_headers.id')
+                ->leftJoin('createspms', 'createspms.id', 'trscale_details.spm_id')
+                ->leftJoin('createsppbs', 'createsppbs.id', 'trscale_details.sppb_id')
+                ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                ->leftJoin('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')
+                ->leftJoin('customers', 'customers.custName', 'trscale_headers.custName')
+                ->whereNotNull('trscale_headers.net_weight')
+                ->where(function ($query) {
+                    $query->where('trscale_headers.custName', 'like', '%' . $this->katacust . '%')
+                        ->orWhere('createspms.dnNo', 'like', '%' . $this->katacust . '%');
+                })
+                ->when($this->shift, function ($query) {
+                    $query->whereRaw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
+                })
+                ->select(
+                    'trscale_details.id',
+                    'create_t_m_s.isSecCekDate',
+                    'trscale_headers.weigh_in_time as tgl_tim_in',
+                    'trscale_headers.weigh_out_time as tgl',
+                    'createsppbs.sppbNo',
+                    'createspms.spmNo',
+                    'create_t_m_s.pendfNo',
+                    'trscale_headers.custName',
+                    DB::raw("CONCAT('[MULTI] ', trscale_details.itemName) as itemName"),
+                    'trscale_details.itemType as type',
+                    'trscale_headers.carID',
+                    'trscale_headers.driver',
+                    'trscale_headers.tare_weight as timbangin',
+                    'trscale_headers.gross_weight as timbangout',
+                    'trscale_details.actual_weight as netto',
+                    'trscale_details.b10QtyKarung',
+                    'createspms.dnNo',
+                    'trscale_details.avg_per_karung as avgKarung',
+                    'trscale_details.need_approval as isApp',
+                    'createspms.buktiPGI',
+                    'createspms.id as spmID',
+                    'create_t_m_s.tglDaftar',
+                    DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
+                    DB::raw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                    DB::raw("'multi' as trans_type"),
+                    'trscale_headers.id as header_id'
+                );
+
+            // Combine queries
+            $unionQuery = $singleQuery->unionAll($multiQuery);
+
+            $data = DB::connection('sqlsrv')
+                ->query()
+                ->fromSub($unionQuery, 'combined')
+                ->orderBy('tgl', 'desc')
+                ->paginate(20);
+        } elseif (!empty($this->tglout1)) {
             try {
                 // Pastikan tglout2 tidak null, jika null set ke hari ini
                 $tglout2 = $this->tglout2 ?? Carbon::now()->format('Y-m-d');
@@ -239,7 +349,8 @@ class Truktransaction extends Component
                 $tglFrom = Carbon::parse($this->tglout1)->format('Y-m-d');
                 $tglTo = Carbon::parse($tglout2)->format('Y-m-d');
 
-                $data = DB::connection('sqlsrv')->table('trscale')
+                // Single product query
+                $singleQuery = DB::connection('sqlsrv')->table('trscale')
                     ->join('createspms', 'createspms.id', 'trscale.spmID')
                     ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
                     ->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')
@@ -276,16 +387,69 @@ class Truktransaction extends Component
                         'createspms.id as spmID',
                         'create_t_m_s.tglDaftar',
                         DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
-                        DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin")
-                    )
-                    ->orderBy('trscale.id', 'desc')
-                    ->paginate(10);
+                        DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                        DB::raw("'single' as trans_type"),
+                        DB::raw("NULL as header_id")
+                    );
+
+                // Multi product query
+                $multiQuery = DB::connection('sqlsrv')->table('trscale_headers')
+                    ->join('trscale_details', 'trscale_details.header_id', 'trscale_headers.id')
+                    ->leftJoin('createspms', 'createspms.id', 'trscale_details.spm_id')
+                    ->leftJoin('createsppbs', 'createsppbs.id', 'trscale_details.sppb_id')
+                    ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                    ->leftJoin('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')
+                    ->whereNotNull('trscale_headers.net_weight')
+                    ->whereDate('trscale_headers.weigh_out_time', '>=', $tglFrom)
+                    ->whereDate('trscale_headers.weigh_out_time', '<=', $tglTo)
+                    ->when($this->shift, function ($query) {
+                        $query->whereRaw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
+                    })
+                    ->select(
+                        'trscale_details.id',
+                        'create_t_m_s.isSecCekDate',
+                        'trscale_headers.weigh_in_time as tgl_tim_in',
+                        'trscale_headers.weigh_out_time as tgl',
+                        'createsppbs.sppbNo',
+                        'createspms.spmNo',
+                        'create_t_m_s.pendfNo',
+                        'trscale_headers.custName',
+                        DB::raw("CONCAT('[MULTI] ', trscale_details.itemName) as itemName"),
+                        'trscale_details.itemType as type',
+                        'trscale_headers.carID',
+                        'trscale_headers.driver',
+                        'trscale_headers.tare_weight as timbangin',
+                        'trscale_headers.gross_weight as timbangout',
+                        'trscale_details.actual_weight as netto',
+                        'trscale_details.b10QtyKarung',
+                        'createspms.dnNo',
+                        'trscale_details.avg_per_karung as avgKarung',
+                        'trscale_details.need_approval as isApp',
+                        'createspms.buktiPGI',
+                        'createspms.id as spmID',
+                        'create_t_m_s.tglDaftar',
+                        DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
+                        DB::raw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                        DB::raw("'multi' as trans_type"),
+                        'trscale_headers.id as header_id'
+                    );
+
+                // Combine queries
+                $unionQuery = $singleQuery->unionAll($multiQuery);
+
+                $data = DB::connection('sqlsrv')
+                    ->query()
+                    ->fromSub($unionQuery, 'combined')
+                    ->orderBy('tgl', 'desc')
+                    ->paginate(20);
             } catch (\Exception $e) {
                 // Jika terjadi error parsing, reset dan tampilkan data default
                 $this->tglout1 = null;
                 $this->tglout2 = null;
                 session()->flash('error', 'Error parsing tanggal: Salah format tgl ');
-                $data = DB::connection('sqlsrv')->table('trscale')
+
+                // Single product query
+                $singleQuery = DB::connection('sqlsrv')->table('trscale')
                     ->join('createspms', 'createspms.id', 'trscale.spmID')
                     ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
                     ->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')
@@ -322,15 +486,67 @@ class Truktransaction extends Component
                         'createspms.id as spmID',
                         'create_t_m_s.tglDaftar',
                         DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
-                        DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin")
-                    )
-                    ->orderBy('trscale.id', 'desc')
-                    ->paginate(10);
+                        DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                        DB::raw("'single' as trans_type"),
+                        DB::raw("NULL as header_id")
+                    );
+
+                // Multi product query
+                $multiQuery = DB::connection('sqlsrv')->table('trscale_headers')
+                    ->join('trscale_details', 'trscale_details.header_id', 'trscale_headers.id')
+                    ->leftJoin('createspms', 'createspms.id', 'trscale_details.spm_id')
+                    ->leftJoin('createsppbs', 'createsppbs.id', 'trscale_details.sppb_id')
+                    ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                    ->leftJoin('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')
+                    ->whereNotNull('trscale_headers.net_weight')
+                    ->whereDate('trscale_headers.weigh_out_time', '>=', Carbon::now()->addDays(-14))
+                    ->whereDate('trscale_headers.weigh_out_time', '<=', Carbon::now())
+                    ->when($this->shift, function ($query) {
+                        $query->whereRaw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
+                    })
+                    ->select(
+                        'trscale_details.id',
+                        'create_t_m_s.isSecCekDate',
+                        'trscale_headers.weigh_in_time as tgl_tim_in',
+                        'trscale_headers.weigh_out_time as tgl',
+                        'createsppbs.sppbNo',
+                        'createspms.spmNo',
+                        'create_t_m_s.pendfNo',
+                        'trscale_headers.custName',
+                        DB::raw("CONCAT('[MULTI] ', trscale_details.itemName) as itemName"),
+                        'trscale_details.itemType as type',
+                        'trscale_headers.carID',
+                        'trscale_headers.driver',
+                        'trscale_headers.tare_weight as timbangin',
+                        'trscale_headers.gross_weight as timbangout',
+                        'trscale_details.actual_weight as netto',
+                        'trscale_details.b10QtyKarung',
+                        'createspms.dnNo',
+                        'trscale_details.avg_per_karung as avgKarung',
+                        'trscale_details.need_approval as isApp',
+                        'createspms.buktiPGI',
+                        'createspms.id as spmID',
+                        'create_t_m_s.tglDaftar',
+                        DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
+                        DB::raw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                        DB::raw("'multi' as trans_type"),
+                        'trscale_headers.id as header_id'
+                    );
+
+                // Combine queries
+                $unionQuery = $singleQuery->unionAll($multiQuery);
+
+                $data = DB::connection('sqlsrv')
+                    ->query()
+                    ->fromSub($unionQuery, 'combined')
+                    ->orderBy('tgl', 'desc')
+                    ->paginate(20);
             }
         } else {
-            $this->tglout1 = $tglout->jam_out;
             // dd($tglout->tgl);
-            $data = DB::connection('sqlsrv')->table('trscale')
+
+            // Single product query
+            $singleQuery = DB::connection('sqlsrv')->table('trscale')
                 ->join('createspms', 'createspms.id', 'trscale.spmID')
                 ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
                 ->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')
@@ -367,10 +583,61 @@ class Truktransaction extends Component
                     'createspms.id as spmID',
                     'create_t_m_s.tglDaftar',
                     DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
-                    DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin")
-                )
-                ->orderBy('trscale.id', 'desc')
-                ->paginate(10);
+                    DB::raw("CASE WHEN CAST(trscale.jam_in as TIME) >= '08:00' AND CAST(trscale.jam_in as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale.jam_in as TIME) >= '12:00' AND CAST(trscale.jam_in as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale.jam_in as TIME) >= '16:00' AND CAST(trscale.jam_in as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                    DB::raw("'single' as trans_type"),
+                    DB::raw("NULL as header_id")
+                );
+
+            // Multi product query
+            $multiQuery = DB::connection('sqlsrv')->table('trscale_headers')
+                ->join('trscale_details', 'trscale_details.header_id', 'trscale_headers.id')
+                ->leftJoin('createspms', 'createspms.id', 'trscale_details.spm_id')
+                ->leftJoin('createsppbs', 'createsppbs.id', 'trscale_details.sppb_id')
+                ->leftJoin('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
+                ->leftJoin('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')
+                ->whereNotNull('trscale_headers.net_weight')
+                ->whereDate('trscale_headers.weigh_out_time', '>=', Carbon::now()->addDays(-14))
+                ->whereDate('trscale_headers.weigh_out_time', '<=', Carbon::now())
+                ->when($this->shift, function ($query) {
+                    $query->whereRaw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END = ?", [$this->shift]);
+                })
+                ->select(
+                    'trscale_details.id',
+                    'create_t_m_s.isSecCekDate',
+                    'trscale_headers.weigh_in_time as tgl_tim_in',
+                    'trscale_headers.weigh_out_time as tgl',
+                    'createsppbs.sppbNo',
+                    'createspms.spmNo',
+                    'create_t_m_s.pendfNo',
+                    'trscale_headers.custName',
+                    DB::raw("CONCAT('[MULTI] ', trscale_details.itemName) as itemName"),
+                    'trscale_details.itemType as type',
+                    'trscale_headers.carID',
+                    'trscale_headers.driver',
+                    'trscale_headers.tare_weight as timbangin',
+                    'trscale_headers.gross_weight as timbangout',
+                    'trscale_details.actual_weight as netto',
+                    'trscale_details.b10QtyKarung',
+                    'createspms.dnNo',
+                    'trscale_details.avg_per_karung as avgKarung',
+                    'trscale_details.need_approval as isApp',
+                    'createspms.buktiPGI',
+                    'createspms.id as spmID',
+                    'create_t_m_s.tglDaftar',
+                    DB::raw("CASE WHEN CAST(create_t_m_s.jamMuat as TIME) >= '08:00' AND CAST(create_t_m_s.jamMuat as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '12:00' AND CAST(create_t_m_s.jamMuat as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(create_t_m_s.jamMuat as TIME) >= '16:00' AND CAST(create_t_m_s.jamMuat as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_tm"),
+                    DB::raw("CASE WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '08:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '12:00' THEN 'Shift 1' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '12:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '16:00' THEN 'Shift 2' WHEN CAST(trscale_headers.weigh_in_time as TIME) >= '16:00' AND CAST(trscale_headers.weigh_in_time as TIME) < '20:00' THEN 'Shift 3' ELSE 'Outside' END as shift_wbin"),
+                    DB::raw("'multi' as trans_type"),
+                    'trscale_headers.id as header_id'
+                );
+
+            // Combine queries
+            $unionQuery = $singleQuery->unionAll($multiQuery);
+
+            $data = DB::connection('sqlsrv')
+                ->query()
+                ->fromSub($unionQuery, 'combined')
+                ->orderBy('tgl', 'desc')
+                ->paginate(20);
         }
         // dd($data);
         return view('livewire.truktransaction', ['data' => $data]);

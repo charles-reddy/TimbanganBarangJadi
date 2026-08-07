@@ -58,7 +58,7 @@
             <h4>Jl Raya Babat Jombang Km 25.5 - Lamongan</h4>
         </div>
         <hr>
-        
+
 
         <table>
             <tr>
@@ -114,12 +114,12 @@
                 <td>
                     <h4>Driver: {{ $header->driver }}</h4>
                 </td>
-                
+
                 {{-- <td>
                     <h4>K Factor: {{ number_format($header->correction_factor, 4) }}</h4>
                 </td> --}}
             </tr>
-            
+
             @if ($header->remarks)
                 <tr>
                     <td colspan="3">
@@ -128,7 +128,7 @@
                 </tr>
             @endif
         </table>
-        
+
         {{-- <h4>Detail Produk:</h4> --}}
         <table class="product-table">
             <thead>
@@ -213,15 +213,45 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
-                <td>Diperiksa</td>
+                <td class="text-center">Diperiksa</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+
+                @php
+                    // Cek apakah ada buktiPGI dari salah satu detail
+                    $hasBuktiPGI = false;
+                    foreach ($details as $detail) {
+                        if (isset($detail->buktiPGI) && $detail->buktiPGI) {
+                            $hasBuktiPGI = true;
+                            break;
+                        }
+                    }
+                    // Atau jika buktiPGI ada di header
+                    if (isset($header->buktiPGI) && $header->buktiPGI) {
+                        $hasBuktiPGI = true;
+                    }
+                @endphp
+                @if ($hasBuktiPGI)
+                    <td style="padding-left: 30px;">
+                        @php
+                            $img = 'storage/ttd/aof.jpg';
+                            $formloading = $img;
+                        @endphp
+                        <img class="rounded mr-1 " style="width: 80px;" src="{{ $formloading }}">
+                    </td>
+                @else
+                    <td>&nbsp;</td>
+                @endif
             </tr>
             <tr>
                 <td>&nbsp;</td>
-            </tr>
-            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
             <tr>
@@ -235,7 +265,11 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
-                <td>____________</td>
+                @if ($hasBuktiPGI)
+                    <td class="text-center">Anuchit Kromthamma</td>
+                @else
+                    <td class="text-center">(..................)</td>
+                @endif
             </tr>
         </table>
     </div>

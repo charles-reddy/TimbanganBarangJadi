@@ -105,7 +105,12 @@
                             <td>{{ $value->spmNo }}</td>
                             <td>{{ $value->pendfNo }}</td>
                             <td>{{ $value->custName }}</td>
-                            <td>{{ $value->itemName }}</td>
+                            <td>
+                                {{ str_replace('[MULTI] ', '', $value->itemName) }}
+                                @if (str_contains($value->itemName, '[MULTI]'))
+                                    <span class="badge bg-info">MULTI</span>
+                                @endif
+                            </td>
                             <td>{{ $value->type }}</td>
                             <td>{{ $value->carID }}</td>
                             <td>{{ $value->driver }}</td>
