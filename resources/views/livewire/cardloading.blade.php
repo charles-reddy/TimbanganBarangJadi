@@ -21,6 +21,9 @@
                         <th></th>
                         <th class="col-md">No</th>
                         <th class="col-md" >SPM</th>
+                        <th class="col-md" >SO/SPPB</th>
+                        <th class="col-md" >PO</th>
+                        <th class="col-md" >Seal No</th>
                         <th class="col-md" >Driver</th>
                         <th class="col-md" >Car ID</th>
                         <th class="col-md" >Customer</th>
@@ -28,8 +31,7 @@
                         <th class="col-md" >Truck Type </th>
                         <th class="col-md" >Date In </th>
                         <th class="col-md" >Car</th>
-                        
-                        
+                                                
                         
                         
                         
@@ -42,6 +44,9 @@
                         <td></td>
                         <td>{{ $dataloading->firstItem() + $key }}</td>
                         <td>{{ $value->spmNo }}</td>
+                        <td>{{ $value->sppbNo }}</td>
+                        <td>{{ $value->poNo }}</td>
+                        <td>{{ $value->sealNo }}</td>
                         <td>{{ $value->driver }}</td>
                         <td>{{ $value->carID }}</td>
                         <td>{{ $value->custName }}</td>

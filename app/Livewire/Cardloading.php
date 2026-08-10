@@ -17,12 +17,14 @@ class Cardloading extends Component
         // Query untuk single product (trscale)
         $singleQuery = DB::connection('sqlsrv')->table('trscale')
             ->join('createspms', 'createspms.id', 'trscale.spmID')
+            ->join('createsppbs', 'createsppbs.id', 'createspms.sppbNo')
             ->join('products', 'products.itemCode', 'trscale.itemCode')
             ->join('customers', 'customers.custID', 'trscale.custID')
             ->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')
             ->select(
                 'createspms.id as spmID',
                 'createspms.sealNo1',
+                'createspms.sealNo',
                 'createspms.driver',
                 'createspms.carID',
                 'createspms.spmNo',
@@ -36,6 +38,8 @@ class Cardloading extends Component
                 'trscale.timbangin',
                 'trscale.timbangout',
                 'trscale.netto',
+                'createsppbs.sppbNo',
+                'createsppbs.poNo',
                 DB::raw("'single' as trans_type")
             )
             ->whereDate('jam_in', '=', Carbon::now())
@@ -70,10 +74,12 @@ class Cardloading extends Component
                          h.weigh_out_time, h.tare_weight, h.gross_weight, h.net_weight
             ) as multi_data'))
             ->leftJoin('createspms', 'createspms.id', '=', 'multi_data.first_spmID')
+            ->leftJoin('createsppbs', 'createsppbs.id', '=', 'createspms.sppbNo')
             ->leftJoin('jenistruks', 'jenistruks.id', '=', 'createspms.spmJenisTruk')
             ->select(
                 'multi_data.first_spmID as spmID',
                 'createspms.sealNo1',
+                'createspms.sealNo',
                 'multi_data.driver',
                 'multi_data.carID',
                 'createspms.spmNo',
@@ -87,6 +93,8 @@ class Cardloading extends Component
                 'multi_data.tare_weight as timbangin',
                 'multi_data.gross_weight as timbangout',
                 'multi_data.net_weight as netto',
+                'createsppbs.sppbNo',
+                'createsppbs.poNo',
                 DB::raw("'multi' as trans_type")
             );
 
