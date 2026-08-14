@@ -342,7 +342,20 @@ class MultiProductKoreksiB10 extends Component
                     $detail->update(['is_in_range' => $avgInRange]);
                 }
 
-                session()->flash('warning', "Koreksi B10 berhasil disimpan ({$uploadedCount} foto bukti terupload), namun masih out of range. Silakan koreksi lagi atau submit untuk approval.");
+                // Jika tidak ada perubahan qty tapi ada foto bukti + alasan -> submit untuk approval
+                if (!$hasQtyChanges) {
+                    $this->selectedHeader->update([
+                        'status' => 'PENDING_APPROVAL',
+                        'correction_submitted' => true,
+                        'need_approval' => true,
+                        'remarks' => ($this->selectedHeader->remarks ? $this->selectedHeader->remarks . "\n\n" : '') .
+                            "[" . now()->format('Y-m-d H:i:s') . "] Submitted for approval tanpa perubahan qty (foto bukti + alasan): " . $this->correctionReason,
+                    ]);
+
+                    session()->flash('success', "Trans No: {$this->selectedHeader->trans_no} telah disubmit untuk approval dengan {$uploadedCount} foto bukti. Tidak ada perubahan qty karung, menunggu keputusan approval.");
+                } else {
+                    session()->flash('warning', "Koreksi B10 berhasil disimpan ({$uploadedCount} foto bukti terupload), namun masih out of range. Silakan koreksi lagi atau submit untuk approval.");
+                }
             }
 
             DB::commit();

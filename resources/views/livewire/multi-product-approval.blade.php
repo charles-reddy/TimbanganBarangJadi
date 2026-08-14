@@ -120,6 +120,16 @@
                                     <td class="text-center align-middle">
                                         @if ($trans->status === 'PENDING_APPROVAL')
                                             <span class="badge bg-warning text-dark">⏳ Pending Approval</span>
+                                            @php
+                                                $correctionCount = $trans->details->max('b10_correction_count') ?? 0;
+                                            @endphp
+                                            @if ($correctionCount == 0 && $trans->correction_submitted)
+                                                <br><small class="badge bg-info mt-1">📸 Submitted dgn foto
+                                                    bukti</small>
+                                            @elseif ($correctionCount > 0)
+                                                <br><small class="badge bg-secondary mt-1">{{ $correctionCount }}x
+                                                    koreksi</small>
+                                            @endif
                                         @elseif ($trans->status === 'PENDING_B10_CORRECTION')
                                             <span class="badge bg-info text-dark">🔧 Pending B10 Correction</span>
                                             @php
@@ -277,6 +287,30 @@
                         <!-- Product Details Table -->
                         <h6 class="text-primary">Detail Produk:</h6>
 
+                        {{-- Show submission remarks if status is PENDING_APPROVAL with correction_submitted --}}
+                        @if ($selectedTransaction->status === 'PENDING_APPROVAL' && $selectedTransaction->correction_submitted)
+                            <div class="alert alert-warning mb-3">
+                                <i class="bi bi-file-earmark-text"></i> <strong>Alasan Submit:</strong><br>
+                                @if ($selectedTransaction->remarks)
+                                    {!! nl2br(e($selectedTransaction->remarks)) !!}
+                                @else
+                                    <em class="text-muted">Tidak ada catatan</em>
+                                @endif
+                                @php
+                                    $hasCorrectionCount = $selectedTransaction->details->some(function ($detail) {
+                                        return $detail->b10_correction_count >= 1;
+                                    });
+                                @endphp
+                                @if (!$hasCorrectionCount)
+                                    <hr class="my-2">
+                                    <small class="text-info">
+                                        <i class="bi bi-info-circle"></i> Transaksi ini disubmit dengan foto bukti
+                                        tanpa perubahan qty karung
+                                    </small>
+                                @endif
+                            </div>
+                        @endif
+
                         {{-- Show B10 Correction Info if status is PENDING_B10_CORRECTION --}}
                         @if ($selectedTransaction->status === 'PENDING_B10_CORRECTION')
                             @php
@@ -301,6 +335,7 @@
                                         <th rowspan="2" class="text-center">Qty Karung<br><small>(B10
                                                 Input)</small></th>
                                         <th rowspan="2" class="text-center" style="width: 80px;">Koreksi</th>
+                                        <th rowspan="2" class="text-center" style="width: 100px;">Bukti Foto</th>
                                         <th rowspan="2" class="text-end">Theoretical</th>
                                         <th rowspan="2" class="text-end">Actual</th>
                                         <th rowspan="2" class="text-end">Avg/Karung</th>
@@ -350,6 +385,41 @@
                                                     <span class="text-muted">-</span>
                                                 @endif
                                             </td>
+                                            <td class="text-center">
+                                                @php
+                                                    $hasFotoBukti =
+                                                        $detail->buktiKoreksi1 ||
+                                                        $detail->buktiKoreksi2 ||
+                                                        $detail->buktiKoreksi3;
+                                                @endphp
+                                                @if ($hasFotoBukti)
+                                                    <div class="d-flex gap-1 justify-content-center">
+                                                        @if ($detail->buktiKoreksi1)
+                                                            <a href="{{ asset('storage/' . $detail->buktiKoreksi1) }}"
+                                                                target="_blank" class="btn btn-sm btn-outline-primary"
+                                                                title="Bukti Foto 1">
+                                                                <i class="bi bi-image"></i> 1
+                                                            </a>
+                                                        @endif
+                                                        @if ($detail->buktiKoreksi2)
+                                                            <a href="{{ asset('storage/' . $detail->buktiKoreksi2) }}"
+                                                                target="_blank" class="btn btn-sm btn-outline-primary"
+                                                                title="Bukti Foto 2">
+                                                                <i class="bi bi-image"></i> 2
+                                                            </a>
+                                                        @endif
+                                                        @if ($detail->buktiKoreksi3)
+                                                            <a href="{{ asset('storage/' . $detail->buktiKoreksi3) }}"
+                                                                target="_blank" class="btn btn-sm btn-outline-primary"
+                                                                title="Bukti Foto 3">
+                                                                <i class="bi bi-image"></i> 3
+                                                            </a>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
+                                            </td>
                                             <td class="text-end">{{ number_format($detail->theoretical_weight, 2) }}
                                             </td>
                                             <td class="text-end">{{ number_format($detail->actual_weight, 2) }}</td>
@@ -367,7 +437,7 @@
                                         </tr>
                                     @endforeach
                                     <tr class="table-primary fw-bold">
-                                        <td colspan="7" class="text-end">TOTAL RANGE NETTO:</td>
+                                        <td colspan="8" class="text-end">TOTAL RANGE NETTO:</td>
                                         <td class="text-end bg-success text-white">
                                             {{ number_format($totalRangeMinCalc, 2) }}</td>
                                         <td class="text-end bg-success text-white">

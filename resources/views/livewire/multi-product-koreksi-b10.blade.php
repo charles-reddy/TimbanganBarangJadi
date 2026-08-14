@@ -343,7 +343,8 @@
                                                         {{-- Foto Bukti 2 --}}
                                                         <div class="mb-2">
                                                             <label class="form-label small mb-1">Foto Bukti 2
-                                                                (Opsional)</label>
+                                                                (Opsional)
+                                                            </label>
                                                             <input type="file"
                                                                 class="form-control form-control-sm @error('buktiFiles.' . $detail->id . '.1') is-invalid @enderror"
                                                                 wire:model="buktiFiles.{{ $detail->id }}.1"
@@ -460,12 +461,15 @@
                                                     <h5 class="text-success mb-0">
                                                         <i class="bi bi-check-circle"></i> DALAM RANGE!
                                                     </h5>
-                                                    <small>Setelah koreksi, transaksi akan otomatis COMPLETED</small>
+                                                    <small>Setelah koreksi, transaksi akan otomatis siap timbang out
+                                                        ulang</small>
                                                 @else
                                                     <h5 class="text-warning mb-0">
                                                         <i class="bi bi-exclamation-triangle"></i> MASIH OUT OF RANGE
                                                     </h5>
-                                                    <small>Anda bisa koreksi lagi atau submit untuk approval</small>
+                                                    <small>Anda bisa koreksi lagi atau klik simpan untuk submit
+                                                        approval<br>(tanpa ubah qty pun bisa, asal ada foto bukti +
+                                                        alasan)</small>
                                                 @endif
                                             </div>
                                         </div>
@@ -492,6 +496,8 @@
                                     • Foto Bukti 2 dan 3 bersifat opsional (bisa diupload jika perlu)<br>
                                     • Jika setelah koreksi masih out of range, Anda bisa koreksi lagi atau submit untuk
                                     approval<br>
+                                    • <strong>Bisa submit ke approval tanpa ubah qty</strong> (cukup upload foto bukti +
+                                    isi alasan)<br>
                                     • Semua history koreksi akan tersimpan untuk audit
                                 </div>
                             </form>

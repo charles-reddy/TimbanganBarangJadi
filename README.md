@@ -1,3 +1,103 @@
+# Logistic Application - Multi Product Weighing System
+
+Aplikasi Logistik untuk manajemen penimbangan multi produk dengan fitur approval, koreksi B10, dan reporting.
+
+---
+
+## 📚 Dokumentasi Proyek
+
+### Dokumentasi Utama
+
+- **[LOGIC_MULTI_PRODUCT_WEIGHING.md](LOGIC_MULTI_PRODUCT_WEIGHING.md)** - Logika dan algoritma penimbangan multi produk
+- **[DEPLOYMENT_MANUAL_MULTI_PRODUCT.md](DEPLOYMENT_MANUAL_MULTI_PRODUCT.md)** - Panduan deployment
+- **[DEPLOYMENT_GUIDE_INPUT_B10_MULTI_PRODUCT.md](DEPLOYMENT_GUIDE_INPUT_B10_MULTI_PRODUCT.md)** - Panduan deployment fitur input B10
+
+### Update & Enhancement Log
+
+- **[UPDATE_B10_CORRECTION_APPROVAL_WITHOUT_QTY_CHANGE.md](UPDATE_B10_CORRECTION_APPROVAL_WITHOUT_QTY_CHANGE.md)** ⭐ **NEW** - Fitur submit approval tanpa ubah qty (14 Aug 2026)
+- **[UPDATE_GANTITGLTM_QUOTA_SHIFT.md](UPDATE_GANTITGLTM_QUOTA_SHIFT.md)** - Update quota shift management
+
+### Saran Implementasi
+
+- **[SARAN_IMPLEMENTASI_MULTI_PRODUCT.md](SARAN_IMPLEMENTASI_MULTI_PRODUCT.md)** - Saran implementasi multi produk
+- **[SARAN_IMPLEMENTASI_OPSI_B_INPUT_B10_MULTI_PRODUCT.md](SARAN_IMPLEMENTASI_OPSI_B_INPUT_B10_MULTI_PRODUCT.md)** - Saran implementasi input B10
+
+---
+
+## 🚀 Fitur Utama
+
+- ✅ **Multi Product Weighing** - Timbang multiple produk dalam satu transaksi
+- ✅ **B10 Input & Correction** - Input dan koreksi qty karung B10
+- ✅ **Approval Workflow** - Sistem approval untuk transaksi out of range
+- ✅ **Photo Evidence** - Upload foto bukti untuk koreksi
+- ✅ **Audit Trail** - History lengkap semua transaksi dan koreksi
+- ✅ **Real-time Preview** - Preview perhitungan sebelum save
+- ⭐ **NEW: Approval tanpa ubah qty** - Submit ke approval dengan foto bukti tanpa koreksi qty
+
+---
+
+## 📋 Tech Stack
+
+- **Framework**: Laravel 10.x
+- **Frontend**: Livewire, Bootstrap 5, Bootstrap Icons
+- **Database**: MySQL
+- **File Storage**: Laravel Storage (public disk)
+
+---
+
+## 🔧 Installation
+
+```bash
+# Clone repository
+git clone [repository-url]
+
+# Install dependencies
+composer install
+npm install
+
+# Setup environment
+cp .env.example .env
+php artisan key:generate
+
+# Run migrations
+php artisan migrate
+
+# Link storage
+php artisan storage:link
+
+# Compile assets
+npm run build
+
+# Start server
+php artisan serve
+```
+
+---
+
+## 📖 Quick Start
+
+### 1. Workflow Penimbangan
+
+```
+Weigh In → Input B10 → Weigh Out → [Out of Range?]
+                                          ↓
+                                    Yes → Koreksi B10
+                                          ↓
+                                    [Ubah Qty atau Submit ke Approval]
+```
+
+### 2. Role & Permission
+
+- **Operator**: Input weigh in/out, input B10
+- **Supervisor B10**: Koreksi B10, upload foto bukti
+- **Manager**: Approval/reject transaksi out of range
+
+### 3. Dokumentasi Lengkap
+
+Lihat [UPDATE_B10_CORRECTION_APPROVAL_WITHOUT_QTY_CHANGE.md](UPDATE_B10_CORRECTION_APPROVAL_WITHOUT_QTY_CHANGE.md) untuk panduan lengkap fitur terbaru.
+
+---
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
