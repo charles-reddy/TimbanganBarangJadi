@@ -52,7 +52,7 @@ class Transsppb extends Component
     public function store()
     {
         $idUsr = Auth::user()->id;
-        $tgl=Carbon::now();
+        $tgl = Carbon::now();
         $this->validate();
         try {
             DB::connection('sqlsrv')->table('createsppbs')->insert([
@@ -70,70 +70,67 @@ class Transsppb extends Component
             ]);
 
             //#### simpan transaksi log
-                        DB::connection('sqlsrv')->table('transLog')->insert([
-                        'created_at' =>  Carbon::now(),
-                        'sppbID' => $this->sppbNo,
-                        'sppbQtyKg' => $this->sppbQtyKg,
-                        'sppbQtyKarung' => $this->sppbQtyKarung,
-                        'openQtyKg' => $this->sppbQtyKg,
-                        'openQtyKarung' => $this->sppbQtyKarung,
-                        'userUpdateID' => $idUsr,
-                        'Modul' => 'createSPPB',
-                        
-                        ]);
+            DB::connection('sqlsrv')->table('transLog')->insert([
+                'created_at' =>  Carbon::now(),
+                'sppbID' => $this->sppbNo,
+                'sppbQtyKg' => $this->sppbQtyKg,
+                'sppbQtyKarung' => $this->sppbQtyKarung,
+                'openQtyKg' => $this->sppbQtyKg,
+                'openQtyKarung' => $this->sppbQtyKarung,
+                'userUpdateID' => $idUsr,
+                'Modul' => 'createSPPB',
+
+            ]);
 
 
             session()->flash('message', 'Data berhasil dimasukkan');
             $this->clear();
-
         } catch (Exception $e) {
             throw $e;
             // session()->flash('error', 'failed to store data');
             return;
         }
-
     }
 
     public function edit($id)
     {
         //  $data = Createsppb::find($id);
-        $data = DB::connection('sqlsrv')->table('createsppbs')->join('customers', 'customers.custID', 'createsppbs.custID')->join('products', 'products.itemCode', 'createsppbs.itemCode')->where('id',$id)->first();
+        $data = DB::connection('sqlsrv')->table('createsppbs')->join('customers', 'customers.custID', 'createsppbs.custID')->join('products', 'products.itemCode', 'createsppbs.itemCode')->where('id', $id)->first();
         //  dd($data);
         $this->sppbNo = $data->sppbNo;
-         $this->kontrakNo = $data->kontrakNo;
-         $this->itemName = $data->itemName;
-         $this->itemType = $data->type;
-         
-         if($data->type == 'FG-L') {
+        $this->kontrakNo = $data->kontrakNo;
+        $this->itemName = $data->itemName;
+        $this->itemType = $data->type;
+
+        if ($data->type == 'FG-L') {
             $this->sppbQtyKarung = 1;
-            
-         } else {
+        } else {
             $this->sppbQtyKarung = $data->sppbQtyKarung;
-         };
-         
-         $this->custName = $data->custName;
-         $this->updateData = true;
-         $this->sppbQtyKg = $data->sppbQtyKg;
+        };
+
+        $this->custName = $data->custName;
+        $this->updateData = true;
+        $this->sppbQtyKg = $data->sppbQtyKg;
         //  $this->sppbQtyKarung = $data->sppbQtyKarung;
-         $this->transID = $id;
-         $this->poNo = $data->poNo;
-         
+        $this->transID = $id;
+        $this->poNo = $data->poNo;
+
 
         //  dd($this->sppbNo); 
-        
+
     }
 
     public function update()
     {
         $idUsr = Auth::user()->id;
-        $tgl=Carbon::now();
+        $tgl = Carbon::now();
         // $data = Createsppb::find($this->transID);
         // dd($data);
         $this->validate();
 
         try {
             // dd($data->itemCode);
-            DB::connection('sqlsrv')->table('createsppbs')->where('id',$this->transID)->update([
+            DB::connection('sqlsrv')->table('createsppbs')->where('id', $this->transID)->update([
                 'sppbNo' => $this->sppbNo,
                 // 'tglSppb' => $tgl,
                 'itemCode' => $this->itemCode,
@@ -147,20 +144,19 @@ class Transsppb extends Component
             ]);
 
             //#### simpan transaksi log
-                        DB::connection('sqlsrv')->table('transLog')->insert([
-                        'created_at' =>  Carbon::now(),
-                        'sppbNo' => $this->sppbNo,
-                        'sppbQtyKg' => $this->sppbQtyKg,
-                        'sppbQtyKarung' => $this->sppbQtyKarung,
-                        'openQtyKg' => $this->sppbQtyKg,
-                        'openQtyKarung' => $this->sppbQtyKarung,
-                        'userUpdateID' => $idUsr,
-                        'Modul' => 'EditSPPB',
-                        
-                        ]);
+            DB::connection('sqlsrv')->table('transLog')->insert([
+                'created_at' =>  Carbon::now(),
+                'sppbNo' => $this->sppbNo,
+                'sppbQtyKg' => $this->sppbQtyKg,
+                'sppbQtyKarung' => $this->sppbQtyKarung,
+                'openQtyKg' => $this->sppbQtyKg,
+                'openQtyKarung' => $this->sppbQtyKarung,
+                'userUpdateID' => $idUsr,
+                'Modul' => 'EditSPPB',
+
+            ]);
             session()->flash('message', 'Data berhasil dimasukkan');
             $this->clear();
-
         } catch (Exception $e) {
             // throw $e;
             session()->flash('error', 'failed to store data');
@@ -171,7 +167,7 @@ class Transsppb extends Component
     public function clear()
     {
         $this->sppbNo = '';
-        
+
         $this->kontrakNo = '';
         $this->itemCode = '';
         $this->custID = '';
@@ -184,32 +180,33 @@ class Transsppb extends Component
     public function sort($columnName)
     {
         $this->sortColumn = $columnName;
-        $this->sortDirection = $this->sortDirection == 'asc'?'desc' : 'asc';
-
+        $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
     }
 
     #[Computed()]
     public function cekliquid()
-    { 
-        
-        $data = DB::connection('sqlsrv')->table('products')->where('itemCode',$this->itemCode)->first();
-       if($data->type == 'FG-L') {
+    {
+
+        $data = DB::connection('sqlsrv')->table('products')->where('itemCode', $this->itemCode)->first();
+        if ($data->type == 'FG-L') {
             $this->sppbQtyKarung = 1;
             $this->itemType = $data->type;
-       } else {
+        } else {
             $this->itemType = $data->type;
             $this->sppbQtyKarung = '';
-       }
-           
+        }
     }
 
-    
+
     public function render()
     {
-        if ($this->katakunci !=null) {
-            $data = DB::connection('sqlsrv')->table('createsppbs')->join('customers', 'customers.custID', 'createsppbs.custID')->join('products', 'products.itemCode', 'createsppbs.itemCode')->where('sppbNo','like','%' . $this->katakunci . '%')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+        if ($this->katakunci != null) {
+            $data = DB::connection('sqlsrv')->table('createsppbs')->join('customers', 'customers.custID', 'createsppbs.custID')->join('products', 'products.itemCode', 'createsppbs.itemCode')->where(function ($query) {
+                $query->where('sppbNo', 'like', '%' . $this->katakunci . '%')
+                    ->orWhere('customers.custName', 'like', '%' . $this->katakunci . '%');
+            })->orderby($this->sortColumn, $this->sortDirection)->paginate(20);
         } else {
-            $data = DB::connection('sqlsrv')->table('createsppbs')->join('customers', 'customers.custID', 'createsppbs.custID')->join('products', 'products.itemCode', 'createsppbs.itemCode')->orderby($this->sortColumn ,$this->sortDirection)->paginate(5);
+            $data = DB::connection('sqlsrv')->table('createsppbs')->join('customers', 'customers.custID', 'createsppbs.custID')->join('products', 'products.itemCode', 'createsppbs.itemCode')->orderby($this->sortColumn, $this->sortDirection)->paginate(20);
         }
         // dd($data);
 
@@ -224,16 +221,15 @@ class Transsppb extends Component
         //  dd($data1, $tglawal,$tglakhir);
 
         //####### hitung kuota kg agar tidak over
-            if ($this->itemCode !=null)
-            {
-                $this->cekliquid();
-            }
+        if ($this->itemCode != null) {
+            $this->cekliquid();
+        }
 
         $angkutan = Transporter::all();
-        $barang = Product::where('itemName','like','%gkr%')->orwhere('itemName','like','%gkp%')->orwhere('itemName','like','%mola%')->get();
+        $barang = Product::where('itemName', 'like', '%gkr%')->orwhere('itemName', 'like', '%gkp%')->orwhere('itemName', 'like', '%mola%')->get();
         $pelanggan = Customer::all();
-       
-        
-        return view('livewire.transsppb', [ 'datasppb' => $data, 'customer' => $pelanggan, 'transporter' => $angkutan,'product' => $barang]); 
+
+
+        return view('livewire.transsppb', ['datasppb' => $data, 'customer' => $pelanggan, 'transporter' => $angkutan, 'product' => $barang]);
     }
 }
