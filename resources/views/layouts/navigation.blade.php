@@ -297,6 +297,9 @@
                             <x-dropdown-link :href="route('customerlist')" active="request()->routeIs('customerlist')">
                                 {{ __('Customer List') }}
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('resettiketmuat')" active="request()->routeIs('resettiketmuat')">
+                                {{ __('Reset Tiket Muat') }}
+                            </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
                 </div>
@@ -619,6 +622,9 @@
                     </x-dropdown-link>
                     <x-dropdown-link :href="route('customerlist')" active="request()->routeIs('customerlist')">
                         {{ __('Customer List') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('resettiketmuat')" active="request()->routeIs('resettiketmuat')">
+                        {{ __('Reset Tiket Muat') }}
                     </x-dropdown-link>
 
                 </x-slot>

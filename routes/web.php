@@ -67,6 +67,10 @@ Route::get('/createsppb', function () {
     return view('createsppb');
 })->middleware(['auth', 'verified', 'verified', 'role:administrator|marketing'])->name('createsppb');
 
+Route::get('/resettiketmuat', function () {
+    return view('resettiketmuat');
+})->middleware(['auth', 'verified', 'verified', 'role:administrator|marketing'])->name('resettiketmuat');
+
 Route::get('/quotaharian', function () {
     return view('quotaharian');
 })->middleware(['auth', 'verified', 'verified', 'role:administrator|marketing'])->name('quotaharian');
