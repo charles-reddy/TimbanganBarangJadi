@@ -312,6 +312,7 @@ class MultiProductWeighingIn extends Component
             ->whereDoesntHave('trscaleDetails') // SPM yang belum ada di multi-product weighing
             ->orderBy('id', 'desc')
             ->paginate(15);
+            // dd($spms);
 
         // Get selected SPM details
         $selectedSpmDetails = Createspm::with(['product', 'customer'])

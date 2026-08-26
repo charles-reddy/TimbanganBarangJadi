@@ -26,11 +26,15 @@ class Laptiketmuatapproved extends Component
 
     public function store()
     {
-
+        // Validate transID before processing
+        if (!is_numeric($this->transID) || empty($this->transID)) {
+            session()->flash('error', 'Invalid transaction ID');
+            return;
+        }
 
         try {
 
-            DB::connection('sqlsrv')->table('create_t_m_s')->where('id', $this->transID)->update([
+            DB::connection('sqlsrv')->table('create_t_m_s')->where('id', (int) $this->transID)->update([
                 'isMktApp' => null,
 
 
@@ -49,6 +53,14 @@ class Laptiketmuatapproved extends Component
 
     public function edit($id)
     {
+        // Ensure $id is a valid integer
+        if (!is_numeric($id) || empty($id)) {
+            session()->flash('error', 'Invalid ID parameter');
+            return;
+        }
+
+        $id = (int) $id;
+
         $this->ip = substr(request()->ip(), 0, 2);
         $data = DB::connection('sqlsrv')->table('create_t_m_s')->where('id', $id)->first();
         // dd($data->simKtp);
@@ -93,6 +105,14 @@ class Laptiketmuatapproved extends Component
 
     public function cancel($id)
     {
+        // Ensure $id is a valid integer
+        if (!is_numeric($id) || empty($id)) {
+            session()->flash('error', 'Invalid ID parameter');
+            return;
+        }
+
+        $id = (int) $id;
+
         $data = DB::connection('sqlsrv')->table('create_t_m_s')->where('id', $id)->first();
         // dd($data->simKtp);
         $this->tiketMuat = $data->pendfNo;
@@ -106,12 +126,25 @@ class Laptiketmuatapproved extends Component
 
     public function render()
     {
-        // Build the base query
+        // Build the base query with proper type handling
+        // Note: tmSppbID is nvarchar(255), custID is int, but join keys are bigint
         $query = DB::connection('sqlsrv')->table('create_t_m_s')
-            ->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')
-            ->join('customers', 'customers.custID', 'create_t_m_s.custID')
-            ->join('products', 'products.itemCode', 'create_t_m_s.itemCode')
-            ->where('isMktApp', '1');
+            ->join('createsppbs', function ($join) {
+                // Strip whitespace and cast tmSppbID (nvarchar) to bigint
+                $join->on('createsppbs.id', '=', DB::raw('TRY_CAST(LTRIM(RTRIM(create_t_m_s.tmSppbID)) AS BIGINT)'));
+            })
+            ->join('customers', function ($join) {
+                // Cast custID (int) to bigint for join
+                $join->on('customers.custID', '=', DB::raw('CAST(create_t_m_s.custID AS BIGINT)'));
+            })
+            ->join('products', 'products.itemCode', '=', 'create_t_m_s.itemCode')
+            ->where('isMktApp', '1')
+            ->whereNotNull('create_t_m_s.tmSppbID')
+            ->where('create_t_m_s.tmSppbID', '!=', '')
+            ->whereNotNull('create_t_m_s.custID')
+            ->where('create_t_m_s.custID', '!=', '')
+            // Filter out records with invalid tmSppbID (like the one with newline)
+            ->whereRaw('ISNUMERIC(LTRIM(RTRIM(create_t_m_s.tmSppbID))) = 1');
 
         // Apply filters conditionally
         if ($this->katakunci) {

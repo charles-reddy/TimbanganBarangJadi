@@ -279,7 +279,7 @@ class Segeltruk extends Component
     public function render()
     {
         // Filter data 2 minggu terakhir hanya jika tidak ada pencarian
-        $twoWeeksAgo = Carbon::now()->subDays(14);
+        $twoWeeksAgo = Carbon::now()->subDays(2);
         $isSearching = !empty($this->katakunci);
         
         // ========== DATAGULA: Truk gula yang sudah jam_out tapi belum ada seal ==========
