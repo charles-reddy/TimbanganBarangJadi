@@ -181,12 +181,16 @@ class Resettiketmuat extends Component
 
                 foreach ($this->selectedItems as $itemId) {
                     $tiketMuat = DB::connection('sqlsrv')->table('create_t_m_s')
-                        ->where('id', $itemId)
+                        ->join('products', 'products.itemCode', '=', 'create_t_m_s.itemCode')
+                        ->where('create_t_m_s.id', $itemId)
+                        ->select('create_t_m_s.*', 'products.type as productType')
                         ->first();
 
                     if ($tiketMuat) {
                         $beratKg = $tiketMuat->tmQtyKg;
+                        $beratKarung = $tiketMuat->tmQtyKarung;
                         $sppbId = $tiketMuat->tmSppbID;
+                        $productType = $tiketMuat->productType;
 
                         // Update create_t_m_s: set tmQtyKg to 0 and reset approval
                         DB::connection('sqlsrv')->table('create_t_m_s')
@@ -198,10 +202,21 @@ class Resettiketmuat extends Component
                                 'isAppDate' => null,
                             ]);
 
-                        // Update createsppbs: increment openQtyKarung by the original tmQtyKg
-                        DB::connection('sqlsrv')->table('createsppbs')
-                            ->where('id', $sppbId)
-                            ->increment('openQtyKg', $beratKg);
+                        // Update createsppbs based on product type
+                        if ($productType == 'FG-L') {
+                            // For FG-L type: only reset openQtyKg
+                            DB::connection('sqlsrv')->table('createsppbs')
+                                ->where('id', $sppbId)
+                                ->increment('openQtyKg', $beratKg);
+                        } else {
+                            // For other types: reset both openQtyKg and openQtyKarung
+                            DB::connection('sqlsrv')->table('createsppbs')
+                                ->where('id', $sppbId)
+                                ->update([
+                                    'openQtyKg' => DB::raw('openQtyKg + ' . $beratKg),
+                                    'openQtyKarung' => DB::raw('openQtyKarung + ' . $beratKarung)
+                                ]);
+                        }
 
                         $totalBerat += $beratKg;
                         $processedCount++;
@@ -225,9 +240,11 @@ class Resettiketmuat extends Component
                     return;
                 }
 
-                // Get the current record to retrieve tmQtyKg and tmSppbID
+                // Get the current record to retrieve tmQtyKg, tmQtyKarung, tmSppbID, and product type
                 $tiketMuat = DB::connection('sqlsrv')->table('create_t_m_s')
-                    ->where('id', $targetId)
+                    ->join('products', 'products.itemCode', '=', 'create_t_m_s.itemCode')
+                    ->where('create_t_m_s.id', $targetId)
+                    ->select('create_t_m_s.*', 'products.type as productType')
                     ->first();
 
                 if (!$tiketMuat) {
@@ -236,7 +253,9 @@ class Resettiketmuat extends Component
                 }
 
                 $beratKg = $tiketMuat->tmQtyKg;
+                $beratKarung = $tiketMuat->tmQtyKarung;
                 $sppbId = $tiketMuat->tmSppbID;
+                $productType = $tiketMuat->productType;
 
                 // Update create_t_m_s: set tmQtyKg to 0 and reset approval
                 DB::connection('sqlsrv')->table('create_t_m_s')
@@ -248,10 +267,21 @@ class Resettiketmuat extends Component
                         'isAppDate' => null,
                     ]);
 
-                // Update createsppbs: increment openQtyKarung by the original tmQtyKg
-                DB::connection('sqlsrv')->table('createsppbs')
-                    ->where('id', $sppbId)
-                    ->increment('openQtyKg', $beratKg);
+                // Update createsppbs based on product type
+                if ($productType == 'FG-L') {
+                    // For FG-L type: only reset openQtyKg
+                    DB::connection('sqlsrv')->table('createsppbs')
+                        ->where('id', $sppbId)
+                        ->increment('openQtyKg', $beratKg);
+                } else {
+                    // For other types: reset both openQtyKg and openQtyKarung
+                    DB::connection('sqlsrv')->table('createsppbs')
+                        ->where('id', $sppbId)
+                        ->update([
+                            'openQtyKg' => DB::raw('openQtyKg + ' . $beratKg),
+                            'openQtyKarung' => DB::raw('openQtyKarung + ' . $beratKarung)
+                        ]);
+                }
 
                 DB::connection('sqlsrv')->commit();
 
@@ -275,11 +305,11 @@ class Resettiketmuat extends Component
             ->join('customers', 'customers.custID', 'create_t_m_s.custID')
             ->join('products', 'products.itemCode', 'create_t_m_s.itemCode')
             ->whereNull('isSecCek')
-            ->where('tmQtyKg', '>', 0)
-            ->where(function ($query) {
-                $query->where('products.itemCode', 'S8B000390D')
-                    ->orWhere('products.itemCode', 'S8A000390D');
-            });
+            ->where('tmQtyKg', '>', 0);
+        // ->where(function ($query) {
+        //     $query->where('products.itemCode', 'S8B000390D')
+        //         ->orWhere('products.itemCode', 'S8A000390D');
+        // });
 
         // Apply filters conditionally
         if ($this->katakunci) {

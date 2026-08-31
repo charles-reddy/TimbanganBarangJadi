@@ -337,9 +337,9 @@ class TimbanganKeluar extends Component
                         $combineid = '/cetakout/' . $id;
                         $data->update($validated);
 
-                        DB::connection('sqlsrv')->table('createsppbs')->where('id', $this->sppbID)->update([
-                            'openQtyKg' => $this->hasilOpenQtyKg,
-                        ]);
+                        // DB::connection('sqlsrv')->table('createsppbs')->where('id', $this->sppbID)->update([
+                        //     'openQtyKg' => $this->hasilOpenQtyKg,
+                        // ]);
 
                         session()->flash('message', 'Data berhasil diperbaharui');
                         redirect($combineid);
