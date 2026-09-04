@@ -22,7 +22,10 @@ class Laporantimbanganmaterial extends Component
     public $sortColumn = 'jam_in';
     public $sortDirection = 'desc';
     public $trscaleSelectedID = [];
-    public $tglin;
+    public $tglinFrom;
+    public $tglinTo;
+    public $tgloutFrom;
+    public $tgloutTo;
     public $productFilter;
 
     // Reset pagination when filters change
@@ -31,7 +34,22 @@ class Laporantimbanganmaterial extends Component
         $this->resetPage();
     }
 
-    public function updatedTglin()
+    public function updatedTglinFrom()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedTglinTo()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedTgloutFrom()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedTgloutTo()
     {
         $this->resetPage();
     }
@@ -43,8 +61,16 @@ class Laporantimbanganmaterial extends Component
 
     public function export_out()
     {
-
-        return Excel::download(new ExportTimbangOutmaterial($this->tglin, $this->katakunciout, $this->sortColumn, $this->sortDirection, $this->productFilter), "timbanganmaterialexport.xlsx");
+        return Excel::download(new ExportTimbangOutmaterial(
+            $this->tglinFrom,
+            $this->tglinTo,
+            $this->tgloutFrom,
+            $this->tgloutTo,
+            $this->katakunciout,
+            $this->sortColumn,
+            $this->sortDirection,
+            $this->productFilter
+        ), "timbanganmaterialexport.xlsx");
     }
 
     public function sort($columnName)
@@ -56,27 +82,42 @@ class Laporantimbanganmaterial extends Component
     public function clear()
     {
         $this->katakunciout = '';
-        $this->tglin = '';
+        $this->tglinFrom = '';
+        $this->tglinTo = '';
+        $this->tgloutFrom = '';
+        $this->tgloutTo = '';
         $this->productFilter = '';
         $this->resetPage();
     }
 
-
     public function render()
     {
-        $tglawal = date('m-d-Y', strtotime(Carbon::now()->subDay(4)));
+        if (empty($this->tglinFrom) && empty($this->tglinTo) && empty($this->tgloutFrom) && empty($this->tgloutTo)) {
+            $latestIn = DB::connection('sqlsrv')->table('trscaleb19s')
+                ->whereNotNull('netto')
+                ->max('jam_in');
 
-        // Set default date if not set
-        if (empty($this->tglin)) {
-            $this->tglin = $tglawal;
+            $latestDate = $latestIn ? Carbon::parse($latestIn) : Carbon::now();
+            $this->tglinFrom = $latestDate->copy()->subDays(4)->format('Y-m-d');
+            $this->tglinTo = $latestDate->format('Y-m-d');
         }
 
-        // Build query with conditional filters
         $sdhout = DB::connection('sqlsrv')->table('trscaleb19s')
             ->join('suppliers', 'suppliers.suppID', 'trscaleb19s.suppID')
             ->join('products', 'products.itemCode', 'trscaleb19s.itemCode')
             ->whereNotNull('netto')
-            ->wheredate('jam_in', '>=', $this->tglin)
+            ->when($this->tglinFrom, function ($query) {
+                $query->whereDate('jam_in', '>=', $this->tglinFrom);
+            })
+            ->when($this->tglinTo, function ($query) {
+                $query->whereDate('jam_in', '<=', $this->tglinTo);
+            })
+            ->when($this->tgloutFrom, function ($query) {
+                $query->whereDate('jam_out', '>=', $this->tgloutFrom);
+            })
+            ->when($this->tgloutTo, function ($query) {
+                $query->whereDate('jam_out', '<=', $this->tgloutTo);
+            })
             ->when($this->katakunciout, function ($query) {
                 $query->where(function ($q) {
                     $q->where('driver', 'like', '%' . $this->katakunciout . '%')
@@ -87,7 +128,7 @@ class Laporantimbanganmaterial extends Component
                 $query->where('products.itemName', 'like', '%' . $this->productFilter . '%');
             })
             ->orderby($this->sortColumn, $this->sortDirection)
-            ->paginate(5);
+            ->paginate(50);
 
 
         $timbangan = JembatanTimbang::all();

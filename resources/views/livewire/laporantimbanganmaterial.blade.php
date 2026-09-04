@@ -3,19 +3,14 @@
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h1>Data Timbang (Material) </h1>
         <div class="row">
-            <div class="col-sm-4">
-                <label for="">Search</label>
-                <input type="text" id="katakunciout" class="form-control mr-1 mb-3 w-50"
+            <div class="col-md-3">
+                <label for="katakunciout">Search</label>
+                <input type="text" id="katakunciout" class="form-control mb-3"
                     placeholder="Type Driver or Car ID" wire:model.live="katakunciout">
-
             </div>
-            <div class="col-sm-4 ms-2">
-                <label for="">Filter by Date IN</label>
-                <input type="date" id="tglin" class="form-control  mb-3 w-50" wire:model.change="tglin">
-            </div>
-            <div class="col-sm-4 ms-2">
-                <label for="">Filter by Product</label>
-                <input type="text" id="productFilter" class="form-control mb-3 w-50"
+            <div class="col-md-3">
+                <label for="productFilter">Filter by Product</label>
+                <input type="text" id="productFilter" class="form-control mb-3"
                     placeholder="Type product name..." wire:model.live="productFilter" list="productList">
                 <datalist id="productList">
                     @foreach ($product as $item)
@@ -23,10 +18,28 @@
                     @endforeach
                 </datalist>
             </div>
-            <div>
-                <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
-                <button type="button" class="btn btn-primary" wire:click="export_out()">Export</button>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <label for="tglinFrom">Date IN Dari</label>
+                <input type="date" id="tglinFrom" class="form-control mb-3" wire:model.change="tglinFrom">
             </div>
+            <div class="col-md-3">
+                <label for="tglinTo">Date IN Sampai</label>
+                <input type="date" id="tglinTo" class="form-control mb-3" wire:model.change="tglinTo">
+            </div>
+            <div class="col-md-3">
+                <label for="tgloutFrom">Date Out Dari</label>
+                <input type="date" id="tgloutFrom" class="form-control mb-3" wire:model.change="tgloutFrom">
+            </div>
+            <div class="col-md-3">
+                <label for="tgloutTo">Date Out Sampai</label>
+                <input type="date" id="tgloutTo" class="form-control mb-3" wire:model.change="tgloutTo">
+            </div>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" wire:click="clear()">Clear </button>
+            <button type="button" class="btn btn-primary" wire:click="export_out()">Export</button>
         </div>
 
         <!-- Loading Indicator -->
@@ -102,6 +115,7 @@
                                 }
 
                             @endphp
+                        </td>
                         <td>
                             {{-- <a wire:click="edit({{ $value->id }})" class="btn btn-primary btn-sm">Timbang Keluar</a> --}}
                             {{-- <a wire:click="deleteConfirmation({{ $value->id }})" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Del</a> --}}

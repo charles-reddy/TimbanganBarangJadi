@@ -28,11 +28,11 @@ Route::get('/dashboard', function () {
 
 Route::get('/timmasuk', function () {
     return view('timmasuk');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('timmasuk');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit'])->name('timmasuk');
 
 Route::get('/timkeluar', function () {
     return view('timkeluar');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('timkeluar');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit'])->name('timkeluar');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -60,41 +60,41 @@ Route::get('/laporantimbanganmaterial', function () {
 
 Route::get('/createspm', function () {
     return view('createspm');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi'])->name('createspm');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi|audit'])->name('createspm');
 
 
 Route::get('/createsppb', function () {
     return view('createsppb');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|marketing'])->name('createsppb');
+})->middleware(['auth', 'verified', 'role:administrator|marketing|audit'])->name('createsppb');
 
 Route::get('/resettiketmuat', function () {
     return view('resettiketmuat');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|marketing'])->name('resettiketmuat');
+})->middleware(['auth', 'verified', 'role:administrator|marketing'])->name('resettiketmuat');
 
 Route::get('/quotaharian', function () {
     return view('quotaharian');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|marketing'])->name('quotaharian');
+})->middleware(['auth', 'verified', 'role:administrator|marketing|audit'])->name('quotaharian');
 
 Route::get('/inputkarung', function () {
     return view('inputkarung');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('inputkarung');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('inputkarung');
 
 Route::get('/createpembatasanharian', function () {
     return view('createpembatasanharian');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('createpembatasanharian');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('createpembatasanharian');
 
 Route::get('/appavgkarung', function () {
     return view('appavgkarung');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|manager-logistik|supervisor-b10'])->name('appavgkarung');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-b10|audit'])->name('appavgkarung');
 
 
 Route::get('/uploadappkarung', function () {
     return view('uploadappkarung');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('uploadappkarung');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('uploadappkarung');
 
 Route::get('/uplappvkarung', function () {
     return view('uplappvkarung');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('uplappvkarung');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('uplappvkarung');
 
 
 Route::get('/lapsj', function () {
@@ -108,7 +108,7 @@ Route::get('/lappemuatanfg', function () {
 
 Route::get('/sjeksesmolases', function () {
     return view('sjeksesmolases');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|operator-registrasi|supervisor-timbangan-registrasi'])->name('sjeksesmolases');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|operator-registrasi|supervisor-timbangan-registrasi|audit'])->name('sjeksesmolases');
 
 route::get('/cetaksj/{id}', [ScaleController::class, 'cetaksj'])->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|audit']);
 route::get('/cetaksjeksesmol/{id}', [ScaleController::class, 'cetaksjeksesmol'])->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|operator-registrasi|supervisor-timbangan-registrasi|audit']);
@@ -129,27 +129,27 @@ route::get('/masterproduct', function () {
 
 Route::get('/timbanganmasukb19', function () {
     return view('timbanganmasukb19');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('timbanganmasukb19');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit'])->name('timbanganmasukb19');
 
 Route::get('/timbanginmaterial', function () {
     return view('timbanginmaterial');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('timbanginmaterial');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit'])->name('timbanginmaterial');
 
 Route::get('/registrasimaterial', function () {
     return view('registrasimaterial');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi'])->name('registrasimaterial');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi|audit'])->name('registrasimaterial');
 
 route::get('/mastersupplier', function () {
     return view('mastersupplier');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|operator-registrasi'])->name('mastersupplier');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|operator-registrasi|audit'])->name('mastersupplier');
 
 route::get('/gantitgltm', function () {
     return view('gantitgltm');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|exim'])->name('gantitgltm');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|exim|audit'])->name('gantitgltm');
 
 Route::get('/timbangoutmaterial', function () {
     return view('timbangoutmaterial');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('timbangoutmaterial');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit'])->name('timbangoutmaterial');
 
 Route::get('/fgdashboard', function () {
     return view('fgdashboard');
@@ -198,7 +198,7 @@ Route::get('/cardregistered', function () {
 
 Route::get('/createpgi', function () {
     return view('createpgi');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|operator-registrasi|supervisor-timbangan-registrasi|operator-b10|supervisor-b10|kpi-factory'])->name('createpgi');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|operator-registrasi|supervisor-timbangan-registrasi|operator-b10|supervisor-b10|kpi-factory|audit'])->name('createpgi');
 
 Route::get('/ttdstruktimbangmgr', function () {
     return view('ttdstruktimbangmgr');
@@ -219,63 +219,63 @@ Route::get('/truktransaction', function () {
 
 Route::get('/listtmpersppb', function () {
     return view('listtmpersppb');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi|marketing'])->name('listtmpersppb');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-registrasi|supervisor-timbangan-registrasi|marketing|audit'])->name('listtmpersppb');
 
 
 
 
 Route::get('/approvaltiketmuat', function () {
     return view('approvaltiketmuat');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|marketing'])->name('approvaltiketmuat');
+})->middleware(['auth', 'verified',  'role:administrator|marketing|audit'])->name('approvaltiketmuat');
 
 Route::get('/customerlist', function () {
     return view('customerlist');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|marketing'])->name('customerlist');
+})->middleware(['auth', 'verified', 'role:administrator|marketing|audit'])->name('customerlist');
 
 // Multi-Product Weighing Routes
 Route::get('/multi-product-weighing-in', function () {
     return view('multi-product-weighing-in');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('multi-product-weighing-in');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit'])->name('multi-product-weighing-in');
 
 Route::get('/multi-product-weighing-out', function () {
     return view('multi-product-weighing-out');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi'])->name('multi-product-weighing-out');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|supervisor-timbangan-registrasi|audit'])->name('multi-product-weighing-out');
 
 Route::get('/multi-product-approval', function () {
     return view('multi-product-approval');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-b10'])->name('multi-product-approval');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-b10|audit'])->name('multi-product-approval');
 
 // Multi-Product B10 Routes
 Route::get('/multi-product-input-b10', function () {
     return view('multi-product-input-b10');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('multi-product-input-b10');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('multi-product-input-b10');
 
 Route::get('/multi-product-koreksi-b10', function () {
     return view('multi-product-koreksi-b10');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('multi-product-koreksi-b10');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('multi-product-koreksi-b10');
 
 Route::get('/weighing-report-dashboard', function () {
     return view('weighing-report-dashboard');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|marketing|supervisor-b10'])->name('weighing-report-dashboard');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|marketing|supervisor-b10|audit'])->name('weighing-report-dashboard');
 
 Route::get('/laptiketmuatapproved', function () {
     return view('laptiketmuatapproved');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|manager-logistik|supervisor-b10|marketing'])->name('laptiketmuatapproved');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-b10|marketing|audit'])->name('laptiketmuatapproved');
 
 
 Route::get('/appsecurity', function () {
     return view('appsecurity');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|manager-logistik|security'])->name('appsecurity');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|security|audit'])->name('appsecurity');
 
 
 Route::get('/startloading', function () {
     return view('startloading');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10'])->name('startloading');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('startloading');
 
 
 Route::get('/segeltruk', function () {
     return view('segeltruk');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10'])->name('segeltruk');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|audit'])->name('segeltruk');
 
 route::get('/cetaktiket/{id}', [scalecontroller::class, 'cetaktiket'])->name('cetaktiket');
 
@@ -284,7 +284,7 @@ route::post('/ttdstore', [scalecontroller::class, 'ttdstore'])->name('ttdstore')
 
 Route::get('/testingimport', function () {
     return view('testingimportmenu');
-})->middleware(['auth', 'verified', 'verified', 'role:administrator'])->name('testingimportmenu');
+})->middleware(['auth', 'verified', 'role:administrator|audit'])->name('testingimportmenu');
 route::post('/test_import', [ScaleController::class, 'test_import'])->middleware(['auth', 'verified', 'role:administrator']);
 
 
