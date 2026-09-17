@@ -256,7 +256,7 @@ Route::get('/multi-product-koreksi-b10', function () {
 
 Route::get('/weighing-report-dashboard', function () {
     return view('weighing-report-dashboard');
-})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|marketing|supervisor-b10|audit'])->name('weighing-report-dashboard');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-timbangan-registrasi|marketing|supervisor-b10|audit|operator-b10'])->name('weighing-report-dashboard');
 
 Route::get('/laptiketmuatapproved', function () {
     return view('laptiketmuatapproved');
@@ -284,7 +284,7 @@ route::post('/ttdstore', [scalecontroller::class, 'ttdstore'])->name('ttdstore')
 
 Route::get('/testingimport', function () {
     return view('testingimportmenu');
-})->middleware(['auth', 'verified', 'role:administrator|audit'])->name('testingimportmenu');
+})->middleware(['auth', 'verified', 'role:administrator|audittim'])->name('testingimportmenu');
 route::post('/test_import', [ScaleController::class, 'test_import'])->middleware(['auth', 'verified', 'role:administrator']);
 
 

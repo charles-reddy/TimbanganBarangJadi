@@ -11,9 +11,23 @@ class Fgdashboard extends Component
 {
     public $transac;
     public $jmltruk;
+    public $selectedDate;
 
     public function mount()
     {
+        $this->selectedDate = Carbon::now()->format('Y-m-d');
+        $this->loadTransactionChart();
+    }
+
+    public function updatedSelectedDate()
+    {
+        $this->loadTransactionChart();
+    }
+
+    private function loadTransactionChart()
+    {
+        $selectedDate = Carbon::parse($this->selectedDate);
+
         // Query untuk 7 hari terakhir - gabungkan single dan multi product
         // Single product dari trscale
         $singleProduct = DB::connection('sqlsrv')->table('trscale')
@@ -21,7 +35,8 @@ class Fgdashboard extends Component
             ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
             ->whereNotNull('netto')
             ->where('create_t_m_s.tmQtyKg', '>', 0)
-            ->whereDate('jam_out', '>=', Carbon::now()->subDays(7))
+            ->whereDate('jam_out', '>=', $selectedDate->copy()->subDays(7))
+            ->whereDate('jam_out', '<=', $selectedDate)
             ->selectRaw('CAST(jam_out as DATE) as tgl, COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
             ->groupBy(DB::raw('CAST(jam_out as DATE)'))
             ->get();
@@ -30,7 +45,8 @@ class Fgdashboard extends Component
         $multiProduct = DB::connection('sqlsrv')->table('trscale_headers')
             ->whereNotNull('net_weight')
             ->whereIn('status', ['COMPLETED', 'APPROVED'])
-            ->whereDate('weigh_out_time', '>=', Carbon::now()->subDays(7))
+            ->whereDate('weigh_out_time', '>=', $selectedDate->copy()->subDays(7))
+            ->whereDate('weigh_out_time', '<=', $selectedDate)
             ->selectRaw('CAST(weigh_out_time as DATE) as tgl, COUNT(id) as totalTruk, ISNULL(SUM(net_weight), 0) as totalNetto')
             ->groupBy(DB::raw('CAST(weigh_out_time as DATE)'))
             ->get();
@@ -76,27 +92,30 @@ class Fgdashboard extends Component
 
     public function render()
     {
+        $selectedDate = Carbon::parse($this->selectedDate);
+        $previousDate = $selectedDate->copy()->subDay();
+
         // Initialize quota variables
         $sisaQuotaHariIni = null;
         $sisaQuotaBesok = null;
-        
+
         // dd(date('d-m-Y',strtotime(Carbon::now()->addDays(-1))));
-        $antrianskr = DB::connection('sqlsrv')->table('vwTiketMuat')->whereDate('tgl', '=', Carbon::now())->orderBy('tgl', 'desc')->select('antrian')->first();
-        $antrianbsk = DB::connection('sqlsrv')->table('vwTiketMuat')->whereDate('tgl', '=', Carbon::now()->addDays(+1))->orderBy('tgl', 'desc')->select('antrian')->first();
+        $antrianskr = DB::connection('sqlsrv')->table('vwTiketMuat')->whereDate('tgl', '=', $selectedDate)->orderBy('tgl', 'desc')->select('antrian')->first();
+        $antrianbsk = DB::connection('sqlsrv')->table('vwTiketMuat')->whereDate('tgl', '=', $selectedDate->copy()->addDay())->orderBy('tgl', 'desc')->select('antrian')->first();
         // dd($antrianskr, $antrianbsk);
         // $registrasi = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now() )->where('isIN','=',0)->count('id');
         // $registrasi = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm','=', Carbon::now() )->count('id');
-        $registrasi = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat', '=', date('Y-m-d', strtotime(Carbon::now())))->wherenotnull('isSecCek')->whereNotNull('isSPM')->count('id');
+        $registrasi = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat', '=', $selectedDate)->wherenotnull('isSecCek')->whereNotNull('isSPM')->count('id');
         // dd($registrasi);
-        $registrasikmrblmmasuk = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm', '=', Carbon::now()->addDays(-1))->where('isIN', '=', 0)->count('id');
-        $timbanginkmrblmkeluar = DB::connection('sqlsrv')->table('trscale')->whereDate('created_at', '=', Carbon::now()->addDays(-1))->wherenull('timbangout')->count('id');
-        $tidakdatang = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat', '=', date('Y-m-d', strtotime(Carbon::now()->addDays(-1))))->wherenull('isSecCek')->count('id');
-        $tmsdhmasuk = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat', '=', date('Y-m-d', strtotime(Carbon::now())))->wherenotnull('isSecCek')->count('id');
+        $registrasikmrblmmasuk = DB::connection('sqlsrv')->table('createspms')->whereDate('tglSpm', '=', $previousDate)->where('isIN', '=', 0)->count('id');
+        $timbanginkmrblmkeluar = DB::connection('sqlsrv')->table('trscale')->whereDate('created_at', '=', $previousDate)->wherenull('timbangout')->count('id');
+        $tidakdatang = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat', '=', $previousDate)->wherenull('isSecCek')->count('id');
+        $tmsdhmasuk = DB::connection('sqlsrv')->table('create_t_m_s')->whereDate('tglMuat', '=', $selectedDate)->wherenotnull('isSecCek')->count('id');
         $pendingkmr = $timbanginkmrblmkeluar + $registrasikmrblmmasuk + $tidakdatang;
         // dd($tmsdhmasuk);
-        $data = DB::connection('sqlsrv')->table('vwSummaryTruckFG')->whereDate('tgl', '=', Carbon::now()->format('Y-m-d'))->orderBy('tgl', 'desc')->first();
-        $datamulti = DB::connection('sqlsrv')->table('vwSummaryTruckFGMulti')->whereDate('tgl', '=', Carbon::now()->format('Y-m-d'))->orderBy('tgl', 'desc')->first();
-        
+        $data = DB::connection('sqlsrv')->table('vwSummaryTruckFG')->whereDate('tgl', '=', $selectedDate)->orderBy('tgl', 'desc')->first();
+        $datamulti = DB::connection('sqlsrv')->table('vwSummaryTruckFGMulti')->whereDate('tgl', '=', $selectedDate)->orderBy('tgl', 'desc')->first();
+
         // Set default values jika data tidak ditemukan
         if (!$data) {
             $data = (object)[
@@ -106,7 +125,7 @@ class Fgdashboard extends Component
                 'appavg' => 0,
                 'pgi' => 0,
                 'belum' => 0,
-                'tgl' => Carbon::now()->format('Y-m-d'),
+                'tgl' => $selectedDate->format('Y-m-d'),
                 'trukGKP65' => 0,
                 'netGKP65' => 0,
                 'trukGKP500g' => 0,
@@ -127,7 +146,7 @@ class Fgdashboard extends Component
                 'netGKRMol' => 0,
             ];
         }
-        
+
         if (!$datamulti) {
             $datamulti = (object)[
                 'timIn' => 0,
@@ -136,11 +155,11 @@ class Fgdashboard extends Component
                 'appavg' => 0,
                 'pgi' => 0,
                 'belum' => 0,
-                'tgl' => Carbon::now()->format('Y-m-d'),
+                'tgl' => $selectedDate->format('Y-m-d'),
             ];
         }
         // dd($data, $datamulti);
-        $data7hari = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')->whereBetween('tglMuat', [Carbon::now(), Carbon::now()->addDays(+7)])->where('create_t_m_s.tmQtyKg', '>', 0)->orderBy('tglMuat', 'asc')->paginate(10);
+        $data7hari = DB::connection('sqlsrv')->table('create_t_m_s')->join('customers', 'customers.custID', 'create_t_m_s.custID')->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')->join('products', 'products.itemCode', 'create_t_m_s.itemCode')->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')->whereBetween('tglMuat', [$selectedDate, $selectedDate->copy()->addDays(7)])->where('create_t_m_s.tmQtyKg', '>', 0)->orderBy('tglMuat', 'asc')->paginate(10);
         // dd($data7hari);
 
         // Query data per shift hari ini
@@ -153,7 +172,7 @@ class Fgdashboard extends Component
             ->whereNotNull('netto')
             ->where('create_t_m_s.tmQtyKg', '>', 0)
             ->where('products.type', '<>', 'FG-L')
-            ->whereDate('jam_out', Carbon::now())
+            ->whereDate('jam_out', $selectedDate)
             ->whereTime('jam_out', '>=', '08:00:00')
             ->whereTime('jam_out', '<', '12:00:00')
             ->selectRaw('COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
@@ -162,7 +181,7 @@ class Fgdashboard extends Component
         $shift1Multi = DB::connection('sqlsrv')->table('trscale_headers')
             ->whereNotNull('net_weight')
             ->whereIn('status', ['COMPLETED', 'APPROVED'])
-            ->whereDate('weigh_out_time', Carbon::now())
+            ->whereDate('weigh_out_time', $selectedDate)
             ->whereTime('weigh_out_time', '>=', '08:00:00')
             ->whereTime('weigh_out_time', '<', '12:00:00')
             ->whereNotExists(function ($query) {
@@ -188,7 +207,7 @@ class Fgdashboard extends Component
             ->whereNotNull('netto')
             ->where('create_t_m_s.tmQtyKg', '>', 0)
             ->where('products.type', '<>', 'FG-L')
-            ->whereDate('jam_out', Carbon::now())
+            ->whereDate('jam_out', $selectedDate)
             ->whereTime('jam_out', '>=', '12:00:00')
             ->whereTime('jam_out', '<', '16:00:00')
             ->selectRaw('COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
@@ -197,7 +216,7 @@ class Fgdashboard extends Component
         $shift2Multi = DB::connection('sqlsrv')->table('trscale_headers')
             ->whereNotNull('net_weight')
             ->whereIn('status', ['COMPLETED', 'APPROVED'])
-            ->whereDate('weigh_out_time', Carbon::now())
+            ->whereDate('weigh_out_time', $selectedDate)
             ->whereTime('weigh_out_time', '>=', '12:00:00')
             ->whereTime('weigh_out_time', '<', '16:00:00')
             ->whereNotExists(function ($query) {
@@ -223,7 +242,7 @@ class Fgdashboard extends Component
             ->whereNotNull('netto')
             ->where('create_t_m_s.tmQtyKg', '>', 0)
             ->where('products.type', '<>', 'FG-L')
-            ->whereDate('jam_out', Carbon::now())
+            ->whereDate('jam_out', $selectedDate)
             ->whereTime('jam_out', '>=', '16:00:00')
             ->whereTime('jam_out', '<', '20:00:00')
             ->selectRaw('COUNT(trscale.id) as totalTruk, ISNULL(SUM(netto), 0) as totalNetto')
@@ -232,7 +251,7 @@ class Fgdashboard extends Component
         $shift3Multi = DB::connection('sqlsrv')->table('trscale_headers')
             ->whereNotNull('net_weight')
             ->whereIn('status', ['COMPLETED', 'APPROVED'])
-            ->whereDate('weigh_out_time', Carbon::now())
+            ->whereDate('weigh_out_time', $selectedDate)
             ->whereTime('weigh_out_time', '>=', '16:00:00')
             ->whereTime('weigh_out_time', '<', '20:00:00')
             ->whereNotExists(function ($query) {
@@ -258,7 +277,7 @@ class Fgdashboard extends Component
             ->whereNotNull('netto')
             ->where('create_t_m_s.tmQtyKg', '>', 0)
             ->where('products.type', '<>', 'FG-L')
-            ->whereDate('jam_out', Carbon::now())
+            ->whereDate('jam_out', $selectedDate)
             ->where(function ($query) {
                 $query->whereTime('jam_out', '<', '08:00:00')
                     ->orWhereTime('jam_out', '>=', '20:00:00');
@@ -269,7 +288,7 @@ class Fgdashboard extends Component
         $shiftOutsideMulti = DB::connection('sqlsrv')->table('trscale_headers')
             ->whereNotNull('net_weight')
             ->whereIn('status', ['COMPLETED', 'APPROVED'])
-            ->whereDate('weigh_out_time', Carbon::now())
+            ->whereDate('weigh_out_time', $selectedDate)
             ->where(function ($query) {
                 $query->whereTime('weigh_out_time', '<', '08:00:00')
                     ->orWhereTime('weigh_out_time', '>=', '20:00:00');
@@ -291,7 +310,7 @@ class Fgdashboard extends Component
 
         // Get quota hari ini
         $quotaToday = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
-            ->whereDate('quotaTglDatang', Carbon::now())
+            ->whereDate('quotaTglDatang', $selectedDate)
             ->where('isApprove', true)
             ->orderBy('id', 'desc')
             ->first();
@@ -308,21 +327,21 @@ class Fgdashboard extends Component
         // Calculate remaining quota for today (non-FG-L only)
         $usageToday = DB::connection('sqlsrv')->table('create_t_m_s')
             ->join('products', 'products.itemCode', 'create_t_m_s.itemCode')
-            ->whereDate('create_t_m_s.tglMuat', Carbon::now())
+            ->whereDate('create_t_m_s.tglMuat', $selectedDate)
             ->where('products.type', '<>', 'FG-L')
             ->sum('create_t_m_s.tmQtyKg');
 
         $sisaQuotaHariIni = null;
         if ($quotaToday) {
-            $totalQuotaToday = ($quotaToday->quota1 ?? 0) + 
-                               ($quotaToday->quota2 ?? 0) + 
-                               ($quotaToday->quota3 ?? 0);
+            $totalQuotaToday = ($quotaToday->quota1 ?? 0) +
+                ($quotaToday->quota2 ?? 0) +
+                ($quotaToday->quota3 ?? 0);
             $sisaQuotaHariIni = max(0, $totalQuotaToday - ($usageToday ?? 0));
         }
 
         // Query 7 hari kerja terakhir (exclude Minggu) untuk chart shift performance
         $last7WorkingDays = [];
-        $currentDate = Carbon::now();
+        $currentDate = $selectedDate->copy();
         $daysAdded = 0;
         $dayOffset = 0;
 
@@ -411,7 +430,7 @@ class Fgdashboard extends Component
             ->join('create_t_m_s', 'create_t_m_s.id', 'createspms.tiketID')
             ->whereNotNull('netto')
             ->where('create_t_m_s.tmQtyKg', '>', 0)
-            ->whereDate('jam_out', Carbon::now())
+            ->whereDate('jam_out', $selectedDate)
             ->selectRaw(
                 "trscale.*, customers.custName, products.itemName, createspms.driver, createspms.carID, createspms.spmNo, create_t_m_s.pendfNo, 
                 CASE 
@@ -426,8 +445,8 @@ class Fgdashboard extends Component
         // dd($dataout);
 
         // Calculate remaining quota for tomorrow (non-FG-L only)
-        $tomorrow = Carbon::now()->addDays(1);
-        
+        $tomorrow = $selectedDate->copy()->addDay();
+
         // Get quota loading for tomorrow
         $quotaTomorrow = DB::connection('sqlsrv')->table('tbl_QuotaLoading')
             ->whereDate('quotaTglDatang', $tomorrow)
@@ -454,14 +473,14 @@ class Fgdashboard extends Component
         // Calculate remaining quota
         $sisaQuotaBesok = null;
         if ($quotaTomorrow) {
-            $totalQuotaTomorrow = ($quotaTomorrow->quota1 ?? 0) + 
-                                  ($quotaTomorrow->quota2 ?? 0) + 
-                                  ($quotaTomorrow->quota3 ?? 0);
+            $totalQuotaTomorrow = ($quotaTomorrow->quota1 ?? 0) +
+                ($quotaTomorrow->quota2 ?? 0) +
+                ($quotaTomorrow->quota3 ?? 0);
             $sisaQuotaBesok = max(0, $totalQuotaTomorrow - ($usageTomorrow ?? 0));
         }
 
         // Calculate Monday's queue and quota (for Friday/Saturday/Sunday display)
-        $currentDayOfWeek = Carbon::now()->dayOfWeek; // 0=Sunday, 5=Friday, 6=Saturday
+        $currentDayOfWeek = $selectedDate->dayOfWeek; // 0=Sunday, 5=Friday, 6=Saturday
         $showMondayCard = in_array($currentDayOfWeek, [0, 5, 6]); // Friday, Saturday, Sunday
         $antrianSenin = null;
         $sisaQuotaSenin = null;
@@ -469,7 +488,7 @@ class Fgdashboard extends Component
 
         if ($showMondayCard) {
             // Calculate next Monday
-            $nextMonday = Carbon::now();
+            $nextMonday = $selectedDate->copy();
             if ($currentDayOfWeek == 5) { // Friday
                 $nextMonday->addDays(3);
             } elseif ($currentDayOfWeek == 6) { // Saturday
@@ -510,12 +529,19 @@ class Fgdashboard extends Component
 
             // Calculate remaining quota for Monday
             if ($quotaMonday) {
-                $totalQuotaMonday = ($quotaMonday->quota1 ?? 0) + 
-                                    ($quotaMonday->quota2 ?? 0) + 
-                                    ($quotaMonday->quota3 ?? 0);
+                $totalQuotaMonday = ($quotaMonday->quota1 ?? 0) +
+                    ($quotaMonday->quota2 ?? 0) +
+                    ($quotaMonday->quota3 ?? 0);
                 $sisaQuotaSenin = max(0, $totalQuotaMonday - ($usageMonday ?? 0));
             }
         }
+
+        $this->dispatch(
+            'dashboard-charts-updated',
+            delivery: $this->transac,
+            trucks: $this->jmltruk,
+            shifts: $shiftChartData
+        );
 
         return view('livewire.fgdashboard', [
             'datafgtruk' => $data,

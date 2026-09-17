@@ -1,5 +1,28 @@
 <div>
+    <style>
+        @keyframes shift3Progress {
+            from {
+                width: 0;
+            }
+        }
+
+        .shift3-progress-bar {
+            animation: shift3Progress 1s ease-out both;
+        }
+    </style>
+
     <div class="container-fluid px-3 px-md-4">
+
+        <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+            <div>
+                <label for="dashboard-date" class="form-label mb-1">Pilih Tanggal </label>
+                <input id="dashboard-date" type="date" class="form-control" wire:model.live="selectedDate">
+            </div>
+            <button type="button" class="btn btn-outline-secondary"
+                wire:click="$set('selectedDate', '{{ now()->format('Y-m-d') }}')">
+                Hari Ini
+            </button>
+        </div>
 
         <!-- Cards Section -->
         <div class="row g-3 mb-4">
@@ -188,7 +211,7 @@
         <!-- Shift Performance Cards -->
         <div class="row g-3 mb-4">
             <div class="col-12">
-                <h5 class="mb-0">Shift Performance - {{ now()->format('d M Y') }}</h5>
+                <h5 class="mb-0">Shift Performance - {{ \Carbon\Carbon::parse($selectedDate)->format('d M Y') }}</h5>
             </div>
 
             <!-- Shift 1 -->
@@ -288,23 +311,33 @@
                                 <small class="text-muted">MT</small>
                             </div>
                         </div>
-                        @if ($quotaToday && $quotaToday->quota3)
-                            <hr class="my-2">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <small class="text-muted">Target: {{ number_format($quotaToday->quota3 / 1000, 2) }}
-                                    MT</small>
-                                <small class="fw-bold text-warning">
-                                    {{ number_format((($shift3->totalNetto ?? 0) / $quotaToday->quota3) * 100, 1) }}%
-                                </small>
-                            </div>
-                            <div class="progress" style="height: 20px;">
-                                <div class="progress-bar bg-warning"
-                                    style="width: {{ min((($shift3->totalNetto ?? 0) / $quotaToday->quota3) * 100, 100) }}%">
-                                    {{ number_format(($shift3->totalNetto ?? 0) / 1000, 2) }}/{{ number_format($quotaToday->quota3 / 1000, 2) }}
+                        @php
+                            $shift3Quota = (float) ($quotaToday->quota3 ?? 0);
+                            $shift3Progress =
+                                $shift3Quota > 0 ? min((($shift3->totalNetto ?? 0) / $shift3Quota) * 100, 100) : 0;
+                        @endphp
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="text-muted">
+                                @if ($shift3Quota > 0)
+                                    Target: {{ number_format($shift3Quota / 1000, 2) }} MT
+                                @else
+                                    Target belum tersedia
+                                @endif
+                            </small>
+                            <small class="fw-bold text-warning">{{ number_format($shift3Progress, 1) }}%</small>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-warning shift3-progress-bar"
+                                style="width: {{ $shift3Progress }}%">
+                                @if ($shift3Quota > 0)
+                                    {{ number_format(($shift3->totalNetto ?? 0) / 1000, 2) }}/{{ number_format($shift3Quota / 1000, 2) }}
                                     MT
-                                </div>
+                                @else
+                                    0 MT
+                                @endif
                             </div>
-                        @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -461,7 +494,8 @@
             <div class="col-12 col-lg-6">
                 <div class="card">
                     <div class="card-header bg-primary text-white text-center py-3">
-                        <h4 class="mb-0">Delivery Details (Today)</h4>
+                        <h4 class="mb-0">Delivery Details
+                            ({{ \Carbon\Carbon::parse($selectedDate)->format('d M Y') }})</h4>
                     </div>
                     <div class="card-body p-2">
                         {{ $datatrukout->links() }}
@@ -572,194 +606,211 @@
     </div>
 
     <!-- Chart Scripts -->
+    <div id="dashboard-chart-data" class="d-none" data-delivery="{{ base64_encode($transac) }}"
+        data-trucks="{{ base64_encode($jmltruk) }}" data-shifts="{{ base64_encode($shiftChartData) }}"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"
         integrity="sha512-zjlf0U0eJmSo1Le4/zcZI51ks5SjuQXkU0yOdsOBubjSmio9iCUp8XPLkEAADZNBdR9crRy3cniZ65LF2w8sRA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        // Delivery Chart
-        var chartData = JSON.parse(`<?php echo $transac; ?>`);
-        const ctx = document.getElementById('myChart');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: chartData.label,
-                datasets: [{
-                    label: '7 DAYS DELIVERY GRAPHIC ( KG )',
-                    data: chartData.data,
-                    borderWidth: 1,
-                    backgroundColor: ['lightgreen'],
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+        function renderDashboardCharts(chartPayload = null) {
+            Chart.getChart('myChart')?.destroy();
+            Chart.getChart('myChart1')?.destroy();
+            Chart.getChart('shiftPerformanceChart')?.destroy();
+            const chartDataElement = document.getElementById('dashboard-chart-data');
+            const deliveryData = chartPayload?.delivery ?? atob(chartDataElement.dataset.delivery);
+            const trucksData = chartPayload?.trucks ?? atob(chartDataElement.dataset.trucks);
+            const shiftsData = chartPayload?.shifts ?? atob(chartDataElement.dataset.shifts);
+
+            // Delivery Chart
+            var chartData = JSON.parse(deliveryData);
+            const ctx = document.getElementById('myChart');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.label,
+                    datasets: [{
+                        label: '7 DAYS DELIVERY GRAPHIC ( KG )',
+                        data: chartData.data,
+                        borderWidth: 1,
+                        backgroundColor: ['lightgreen'],
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        labels: {
-                            font: {
-                                family: 'Arial',
-                                size: 14,
-                                style: 'normal',
-                                weight: 'bold',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    family: 'Arial',
+                                    size: 14,
+                                    style: 'normal',
+                                    weight: 'bold',
+                                },
                             },
                         },
                     },
-                },
-            }
-        });
+                }
+            });
 
-        // Truck Chart
-        var chartDatajmltruk = JSON.parse(`<?php echo $jmltruk; ?>`);
-        const ctxjmltruk = document.getElementById('myChart1');
-        new Chart(ctxjmltruk, {
-            type: 'line',
-            data: {
-                labels: chartDatajmltruk.label,
-                datasets: [{
-                    label: '7 DAYS DELIVERY GRAPHIC ( TRUCKS )',
-                    data: chartDatajmltruk.data,
-                    borderWidth: 3,
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: ['blue', 'yellow', 'green', 'pink', 'orange', 'black', 'magenta'],
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+            // Truck Chart
+            var chartDatajmltruk = JSON.parse(trucksData);
+            const ctxjmltruk = document.getElementById('myChart1');
+            new Chart(ctxjmltruk, {
+                type: 'line',
+                data: {
+                    labels: chartDatajmltruk.label,
+                    datasets: [{
+                        label: '7 DAYS DELIVERY GRAPHIC ( TRUCKS )',
+                        data: chartDatajmltruk.data,
+                        borderWidth: 3,
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: ['blue', 'yellow', 'green', 'pink', 'orange', 'black', 'magenta'],
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        labels: {
-                            font: {
-                                family: 'Arial',
-                                size: 14,
-                                style: 'normal',
-                                weight: 'bold',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    family: 'Arial',
+                                    size: 14,
+                                    style: 'normal',
+                                    weight: 'bold',
+                                },
                             },
                         },
                     },
-                },
-            }
-        });
+                }
+            });
 
-        // Shift Performance Chart (Stacked Bar)
-        var shiftData = JSON.parse(`<?php echo $shiftChartData; ?>`);
-        const ctxShift = document.getElementById('shiftPerformanceChart');
-        new Chart(ctxShift, {
-            type: 'bar',
-            data: {
-                labels: shiftData.labels,
-                datasets: [{
-                        label: 'Shift 1 (08:00-12:00)',
-                        data: shiftData.shift1,
-                        backgroundColor: 'rgba(13, 110, 253, 0.8)',
-                        borderColor: 'rgba(13, 110, 253, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Shift 2 (12:00-16:00)',
-                        data: shiftData.shift2,
-                        backgroundColor: 'rgba(25, 135, 84, 0.8)',
-                        borderColor: 'rgba(25, 135, 84, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Shift 3 (16:00-20:00)',
-                        data: shiftData.shift3,
-                        backgroundColor: 'rgba(255, 193, 7, 0.8)',
-                        borderColor: 'rgba(255, 193, 7, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Luar Jam Shift',
-                        data: shiftData.outsideShift,
-                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
-                        borderColor: 'rgba(220, 53, 69, 1)',
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    x: {
-                        stacked: true,
-                        title: {
-                            display: true,
-                            text: 'Hari (Senin - Sabtu)',
-                            font: {
-                                size: 12,
-                                weight: 'bold'
+            // Shift Performance Chart (Stacked Bar)
+            var shiftData = JSON.parse(shiftsData);
+            const ctxShift = document.getElementById('shiftPerformanceChart');
+            new Chart(ctxShift, {
+                type: 'bar',
+                data: {
+                    labels: shiftData.labels,
+                    datasets: [{
+                            label: 'Shift 1 (08:00-12:00)',
+                            data: shiftData.shift1,
+                            backgroundColor: 'rgba(13, 110, 253, 0.8)',
+                            borderColor: 'rgba(13, 110, 253, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Shift 2 (12:00-16:00)',
+                            data: shiftData.shift2,
+                            backgroundColor: 'rgba(25, 135, 84, 0.8)',
+                            borderColor: 'rgba(25, 135, 84, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Shift 3 (16:00-20:00)',
+                            data: shiftData.shift3,
+                            backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                            borderColor: 'rgba(255, 193, 7, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Luar Jam Shift',
+                            data: shiftData.outsideShift,
+                            backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Hari (Senin - Sabtu)',
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Jumlah Truk',
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                stepSize: 5
                             }
                         }
                     },
-                    y: {
-                        stacked: true,
-                        beginAtZero: true,
-                        title: {
+                    plugins: {
+                        legend: {
                             display: true,
-                            text: 'Jumlah Truk',
-                            font: {
-                                size: 12,
-                                weight: 'bold'
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    family: 'Arial',
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                padding: 15,
+                                usePointStyle: true
                             }
                         },
-                        ticks: {
-                            stepSize: 5
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
+                        title: {
+                            display: true,
+                            text: '7 Hari Kerja - Performance Per Shift',
                             font: {
-                                family: 'Arial',
-                                size: 12,
+                                size: 14,
                                 weight: 'bold'
                             },
-                            padding: 15,
-                            usePointStyle: true
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: '7 Hari Kerja - Performance Per Shift',
-                        font: {
-                            size: 14,
-                            weight: 'bold'
+                            padding: {
+                                top: 5,
+                                bottom: 10
+                            }
                         },
-                        padding: {
-                            top: 5,
-                            bottom: 10
-                        }
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            footer: function(tooltipItems) {
-                                let total = 0;
-                                tooltipItems.forEach(item => {
-                                    total += item.parsed.y;
-                                });
-                                return 'Total: ' + total + ' truk';
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                footer: function(tooltipItems) {
+                                    let total = 0;
+                                    tooltipItems.forEach(item => {
+                                        total += item.parsed.y;
+                                    });
+                                    return 'Total: ' + total + ' truk';
+                                }
                             }
                         }
                     }
                 }
-            }
+            });
+        }
+
+        renderDashboardCharts();
+        window.addEventListener('dashboard-charts-updated', (event) => {
+            renderDashboardCharts(event.detail);
         });
     </script>
 </div>
