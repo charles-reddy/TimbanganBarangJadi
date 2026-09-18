@@ -12,6 +12,9 @@ class Cardloading extends Component
 {
     use WithPagination;
     public $katakunci;
+    public $katacust;
+    public $katasppb;
+    public $kataproduct = [];
     #[Url]
     public $tanggal;
 
@@ -108,6 +111,23 @@ class Cardloading extends Component
             $singleQuery->where('trscale.carID', 'like', '%' . $this->katakunci . '%');
             $multiQuery->where('multi_data.carID', 'like', '%' . $this->katakunci . '%');
         }
+        if ($this->katacust) {
+            $singleQuery->where('customers.custName', 'like', '%' . $this->katacust . '%');
+            $multiQuery->where('multi_data.custName', 'like', '%' . $this->katacust . '%');
+        }
+        if ($this->katasppb) {
+            $singleQuery->where('createsppbs.sppbNo', 'like', '%' . $this->katasppb . '%');
+            $multiQuery->where('createsppbs.sppbNo', 'like', '%' . $this->katasppb . '%');
+        }
+        if (!empty($this->kataproduct)) {
+            $singleQuery->whereIn('products.itemCode', $this->kataproduct);
+            $multiQuery->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('trscale_details as filter_details')
+                    ->whereColumn('filter_details.header_id', 'multi_data.id')
+                    ->whereIn('filter_details.itemCode', $this->kataproduct);
+            });
+        }
 
         // Union and paginate
         $dataloading = $singleQuery
@@ -115,6 +135,8 @@ class Cardloading extends Component
             ->orderBy('jam_in', 'desc')
             ->paginate(10);
 
-        return view('livewire.cardloading', ['dataloading' => $dataloading]);
+        $products = DB::connection('sqlsrv')->table('products')->select('itemCode', 'itemName')->where('type', '!=', 'NFG')->orderBy('itemName')->get();
+
+        return view('livewire.cardloading', ['dataloading' => $dataloading, 'products' => $products]);
     }
 }

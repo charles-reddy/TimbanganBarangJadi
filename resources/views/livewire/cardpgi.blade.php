@@ -23,17 +23,12 @@
 
         </div>
         <h1> Truk Sudah PGI</h1>
-        <div class="col-sm-4">
-            <label for=""></label>
-            <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Plat no"
-                wire:model.live="katakunci" hidden>
-        </div>
+        @include('livewire.partials.dashboard-card-filters', [
+            'dateId' => 'tglout',
+            'dateLabel' => 'Tgl Timbang Keluar',
+            'dateModel' => 'tglout',
+        ])
         <div class="row">
-
-            <div class="col-sm-2 ms-2">
-                <label for="">Filter by Date Out</label>
-                <input type="date" id="tglout" class="form-control  mb-3 w-50" wire:model.live="tglout">
-            </div>
             <div class="col-sm-2">
                 <label for="">Filter by Shift WB IN</label>
                 <select class="form-control mb-3 w-75" wire:model.live="shift">

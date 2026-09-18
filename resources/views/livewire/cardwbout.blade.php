@@ -3,18 +3,11 @@
     <!-- START data out-->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h1> Truk Sudah Keluar</h1>
-        <div class="row">
-            <div class="col-sm-4">
-                <label for=""></label>
-                <input type="text" class="form-control mb-3 w-25" placeholder="Searching ... Plat no"
-                    wire:model.live="katakunci">
-            </div>
-            <div class="col-sm-2 ms-2">
-                <label for="">Filter by Date Out</label>
-                <input type="date" id="tglout" class="form-control  mb-3 w-50" wire:model.live="tglout">
-            </div>
-
-        </div>
+        @include('livewire.partials.dashboard-card-filters', [
+            'dateId' => 'tglout',
+            'dateLabel' => 'Tgl Timbang Keluar',
+            'dateModel' => 'tglout',
+        ])
         <div class="card-body table-responsive p-0">
             {{ $dataout->links() }}
             <table class="table table-striped table-sortable">

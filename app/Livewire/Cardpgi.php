@@ -14,6 +14,9 @@ class Cardpgi extends Component
 {
     use WithPagination;
     public $katakunci;
+    public $katacust;
+    public $katasppb;
+    public $kataproduct = [];
     #[Url]
     public $tglout;
     public $spmNo;
@@ -170,7 +173,22 @@ class Cardpgi extends Component
         // Apply filter tglout (date filter)
         if ($this->tglout != null) {
             $singleQuery = $singleQuery->whereDate('jam_out', '=', $this->tglout);
-            // $multiQuery = $multiQuery->whereDate('trscale_headers.weigh_out_time', '=', $this->tglout);
+            $multiQuery = $multiQuery->whereDate('trscale_headers.weigh_out_time', '=', $this->tglout);
+        }
+
+        if ($this->katacust) {
+            $singleQuery->where('customers.custName', 'like', '%' . $this->katacust . '%');
+            $multiQuery->where('trscale_headers.custName', 'like', '%' . $this->katacust . '%');
+        }
+
+        if ($this->katasppb) {
+            $singleQuery->where('createsppbs.sppbNo', 'like', '%' . $this->katasppb . '%');
+            $multiQuery->where('createsppbs.sppbNo', 'like', '%' . $this->katasppb . '%');
+        }
+
+        if (!empty($this->kataproduct)) {
+            $singleQuery->whereIn('products.itemCode', $this->kataproduct);
+            $multiQuery->whereIn('trscale_details.itemCode', $this->kataproduct);
         }
 
         // Apply filter shift
@@ -184,6 +202,8 @@ class Cardpgi extends Component
             ->orderBy('spmID', 'desc')
             ->paginate(10);
 
-        return view('livewire.cardpgi', ['datapgi' => $datapgi]);
+        $products = DB::connection('sqlsrv')->table('products')->select('itemCode', 'itemName')->where('type', '!=', 'NFG')->orderBy('itemName')->get();
+
+        return view('livewire.cardpgi', ['datapgi' => $datapgi, 'products' => $products]);
     }
 }

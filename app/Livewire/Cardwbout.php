@@ -12,6 +12,9 @@ class Cardwbout extends Component
 {
     use WithPagination;
     public $katakunci;
+    public $katacust;
+    public $katasppb;
+    public $kataproduct = [];
     #[Url]
     public $tglout;
 
@@ -102,13 +105,27 @@ class Cardwbout extends Component
         if ($this->katakunci != null) {
             $singleQuery->where('trscale.carID', 'like', '%' . $this->katakunci . '%');
             $multiQuery->where('trscale_headers.carID', 'like', '%' . $this->katakunci . '%');
-        } elseif ($this->tglout != null) {
+        }
+
+        if ($this->tglout != null) {
             $singleQuery->whereDate('jam_out', '=', $this->tglout);
-            // $multiQuery->whereDate('trscale_headers.weigh_out_time', '=', $this->tglout);
+            $multiQuery->whereDate('trscale_headers.weigh_out_time', '=', $this->tglout);
         } else {
             $this->tglout = $tglout->jam_out;
             $singleQuery->whereDate('jam_out', '=', $this->tglout);
-            // $multiQuery->whereDate('trscale_headers.weigh_out_time', '=', $this->tglout);
+            $multiQuery->whereDate('trscale_headers.weigh_out_time', '=', $this->tglout);
+        }
+        if ($this->katacust) {
+            $singleQuery->where('customers.custName', 'like', '%' . $this->katacust . '%');
+            $multiQuery->where('trscale_headers.custName', 'like', '%' . $this->katacust . '%');
+        }
+        if ($this->katasppb) {
+            $singleQuery->where('createsppbs.sppbNo', 'like', '%' . $this->katasppb . '%');
+            $multiQuery->where('createsppbs.sppbNo', 'like', '%' . $this->katasppb . '%');
+        }
+        if (!empty($this->kataproduct)) {
+            $singleQuery->whereIn('products.itemCode', $this->kataproduct);
+            $multiQuery->whereIn('trscale_details.itemCode', $this->kataproduct);
         }
 
         // Combine queries
@@ -119,6 +136,8 @@ class Cardwbout extends Component
 
         // dd($dataout);
 
-        return view('livewire.cardwbout', ['dataout' => $dataout]);
+        $products = DB::connection('sqlsrv')->table('products')->select('itemCode', 'itemName')->where('type', '!=', 'NFG')->orderBy('itemName')->get();
+
+        return view('livewire.cardwbout', ['dataout' => $dataout, 'products' => $products]);
     }
 }

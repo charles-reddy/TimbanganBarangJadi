@@ -12,6 +12,9 @@ class Cardwbin extends Component
 {
     use WithPagination;
     public $katakunci;
+    public $katacust;
+    public $katasppb;
+    public $kataproduct = [];
     #[Url]
     public $tanggal;
 
@@ -22,6 +25,7 @@ class Cardwbin extends Component
         // Query untuk single product (trscale)
         $singleQuery = DB::connection('sqlsrv')->table('trscale')
             ->join('createspms', 'createspms.id', 'trscale.spmID')
+            ->leftJoin('createsppbs', 'createsppbs.id', 'createspms.sppbNo')
             ->join('products', 'products.itemCode', 'trscale.itemCode')
             ->join('customers', 'customers.custID', 'trscale.custID')
             ->join('jenistruks', 'jenistruks.id', 'createspms.spmJenisTruk')
@@ -31,6 +35,7 @@ class Cardwbin extends Component
                 'createspms.driver',
                 'createspms.carID',
                 'createspms.spmNo',
+                'createsppbs.sppbNo',
                 'products.itemName',
                 'customers.custName',
                 'jenistruks.jenisTruk',
@@ -53,6 +58,7 @@ class Cardwbin extends Component
         $multiQuery = DB::connection('sqlsrv')->table('trscale_headers')
             ->join('trscale_details', 'trscale_details.header_id', 'trscale_headers.id')
             ->leftJoin('createspms', 'createspms.id', '=', 'trscale_details.spm_id')
+            ->leftJoin('createsppbs', 'createsppbs.id', '=', 'trscale_details.sppb_id')
             ->leftJoin('jenistruks', 'jenistruks.id', '=', 'createspms.spmJenisTruk')
             ->select(
                 'trscale_details.spm_id as spmID',
@@ -60,6 +66,7 @@ class Cardwbin extends Component
                 'trscale_headers.driver',
                 'trscale_headers.carID',
                 'createspms.spmNo',
+                'createsppbs.sppbNo',
                 DB::raw("CONCAT('[MULTI] ', trscale_details.itemName) as itemName"),
                 'trscale_headers.custName',
                 'jenistruks.jenisTruk',
@@ -82,6 +89,18 @@ class Cardwbin extends Component
             $singleQuery->where('trscale.carID', 'like', '%' . $this->katakunci . '%');
             $multiQuery->where('trscale_headers.carID', 'like', '%' . $this->katakunci . '%');
         }
+        if ($this->katacust) {
+            $singleQuery->where('customers.custName', 'like', '%' . $this->katacust . '%');
+            $multiQuery->where('trscale_headers.custName', 'like', '%' . $this->katacust . '%');
+        }
+        if ($this->katasppb) {
+            $singleQuery->where('createsppbs.sppbNo', 'like', '%' . $this->katasppb . '%');
+            $multiQuery->where('createsppbs.sppbNo', 'like', '%' . $this->katasppb . '%');
+        }
+        if (!empty($this->kataproduct)) {
+            $singleQuery->whereIn('products.itemCode', $this->kataproduct);
+            $multiQuery->whereIn('trscale_details.itemCode', $this->kataproduct);
+        }
 
         // Combine queries
         $datain = $singleQuery
@@ -89,6 +108,8 @@ class Cardwbin extends Component
             ->orderBy('jam_in', 'desc')
             ->paginate(10);
 
-        return view('livewire.cardwbin', ['datain' => $datain]);
+        $products = DB::connection('sqlsrv')->table('products')->select('itemCode', 'itemName')->where('type', '!=', 'NFG')->orderBy('itemName')->get();
+
+        return view('livewire.cardwbin', ['datain' => $datain, 'products' => $products]);
     }
 }
