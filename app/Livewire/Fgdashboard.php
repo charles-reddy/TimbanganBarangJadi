@@ -485,6 +485,7 @@ class Fgdashboard extends Component
         $antrianSenin = null;
         $sisaQuotaSenin = null;
         $totalQuotaMonday = 0;
+        $nextMonday = null;
 
         if ($showMondayCard) {
             // Calculate next Monday
@@ -551,6 +552,7 @@ class Fgdashboard extends Component
             'antrianskr' => $antrianskr,
             'antrianbsk' => $antrianbsk,
             'antrianSenin' => $antrianSenin,
+            'nextMonday' => $showMondayCard ? $nextMonday->format('Y-m-d') : null,
             'showMondayCard' => $showMondayCard,
             'sisaQuotaHariIni' => $sisaQuotaHariIni,
             'sisaQuotaBesok' => $sisaQuotaBesok,

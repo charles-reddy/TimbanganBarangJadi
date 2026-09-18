@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,6 +12,7 @@ class Cardwbout extends Component
 {
     use WithPagination;
     public $katakunci;
+    #[Url]
     public $tglout;
 
     public function showlistavgkarung($id)
@@ -94,7 +96,7 @@ class Cardwbout extends Component
             ->whereNotNull('trscale_headers.net_weight')
             ->whereNotNull('createspms.sealNo1')
             ->whereNull('createspms.buktiPGI');
-           
+
 
         // Apply filters based on conditions
         if ($this->katakunci != null) {

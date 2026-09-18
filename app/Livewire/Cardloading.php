@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,9 +12,13 @@ class Cardloading extends Component
 {
     use WithPagination;
     public $katakunci;
+    #[Url]
+    public $tanggal;
 
     public function render()
     {
+        $tanggal = $this->tanggal ?: Carbon::now()->format('Y-m-d');
+
         // Query untuk single product (trscale)
         $singleQuery = DB::connection('sqlsrv')->table('trscale')
             ->join('createspms', 'createspms.id', 'trscale.spmID')
@@ -42,7 +47,7 @@ class Cardloading extends Component
                 'createsppbs.poNo',
                 DB::raw("'single' as trans_type")
             )
-            ->whereDate('jam_in', '=', Carbon::now())
+            ->whereDate('jam_in', '=', $tanggal)
             ->whereNotNull('timbangin')
             ->whereNotNull('trscale.isLoading')
             ->whereNull('timbangout')

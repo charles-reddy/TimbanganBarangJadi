@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Exports\ExportAntrianHariIni;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,6 +14,7 @@ class Cardantrianhariini extends Component
 {
     use WithPagination;
     public $katakunci;
+    #[Url]
     public $tglmuat;
     public $tglDaftar;
     public $isAppDate;

@@ -9,19 +9,102 @@
         .shift3-progress-bar {
             animation: shift3Progress 1s ease-out both;
         }
+
+        .date-filter-card {
+            background: #e8f2ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 6px 16px -8px rgba(16, 73, 163, 0.25);
+            color: #1e3a8a;
+        }
+
+        .date-filter-card .filter-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #bfdbfe;
+            color: #1d4ed8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .date-filter-card .filter-icon-wrap i {
+            font-size: 1.25rem;
+        }
+
+        .date-filter-card .filter-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #3b82f6;
+            margin-bottom: 2px;
+        }
+
+        .date-filter-card input[type="date"] {
+            border: 1px solid #bfdbfe;
+            background: #fff;
+            border-radius: 10px;
+            padding: .5rem .75rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            min-width: 170px;
+        }
+
+        .date-filter-card input[type="date"]:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            outline: none;
+            border-color: #0c4285;
+        }
+
+        .btn-today-pill {
+            background: #ffffff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            border-radius: 999px;
+            padding: .5rem 1.1rem;
+            font-weight: 600;
+            font-size: .875rem;
+            transition: background .15s ease, transform .15s ease;
+            white-space: nowrap;
+        }
+
+        .btn-today-pill:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .date-filter-card .selected-date-display {
+            font-size: .8rem;
+            color: #2563eb;
+        }
     </style>
 
     <div class="container-fluid px-3 px-md-4">
 
-        <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
-            <div>
-                <label for="dashboard-date" class="form-label mb-1">Pilih Tanggal </label>
-                <input id="dashboard-date" type="date" class="form-control" wire:model.live="selectedDate">
+        <div class="date-filter-card d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <div class="filter-icon-wrap">
+                    <i class="bi bi-calendar3"></i>
+                </div>
+                <div>
+                    <div class="filter-label">Filter Data</div>
+                    <label for="dashboard-date" class="fw-semibold mb-0 d-block">Pilih Tanggal</label>
+                    <div class="selected-date-display">
+                        {{ \Carbon\Carbon::parse($selectedDate)->translatedFormat('l, d F Y') }}
+                    </div>
+                </div>
             </div>
-            <button type="button" class="btn btn-outline-secondary"
-                wire:click="$set('selectedDate', '{{ now()->format('Y-m-d') }}')">
-                Hari Ini
-            </button>
+            <div class="d-flex align-items-center gap-2">
+                <input id="dashboard-date" type="date" class="form-control" wire:model.live="selectedDate">
+                <button type="button" class="btn btn-today-pill"
+                    wire:click="$set('selectedDate', '{{ now()->format('Y-m-d') }}')">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Hari Ini
+                </button>
+            </div>
         </div>
 
         <!-- Cards Section -->
@@ -35,7 +118,8 @@
                                 {{ $antrianSenin->antrian ?? '0' }}
                             </h2>
                             <h6 class="card-text mb-0">
-                                <a href="/cardantriansenin" class="text-white text-decoration-none">
+                                <a href="/cardantriansenin?tglmuat={{ $nextMonday }}"
+                                    class="text-white text-decoration-none">
                                     Antrian Senin
                                 </a>
                             </h6>
@@ -59,7 +143,8 @@
                             {{ $antrianbsk->antrian ?? '0' }}
                         </h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardantrianbesok" class="text-white text-decoration-none">
+                            <a href="/cardantrianbesok?tglmuat={{ \Carbon\Carbon::parse($selectedDate)->addDay()->format('Y-m-d') }}"
+                                class="text-white text-decoration-none">
                                 Antrian Besok
                             </a>
                         </h6>
@@ -81,14 +166,16 @@
                             {{ $antrianskr->antrian ?? '0' }}
                         </h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardantrianhariini" class="text-white text-decoration-none">
+                            <a href="/cardantrianhariini?tglmuat={{ $selectedDate }}"
+                                class="text-white text-decoration-none">
                                 Antrian Hari Ini
                             </a>
                         </h6>
                         @if ($sisaQuotaHariIni !== null)
                             <small class="text-white d-block mt-1" style="font-size: 0.65rem; line-height: 1.2;">
                                 <strong>Sisa Kuota:</strong><br>
-                                {{ number_format($sisaQuotaHariIni, 0) }} / {{ number_format($totalQuotaToday, 0) }} Kg
+                                {{ number_format($sisaQuotaHariIni, 0) }} / {{ number_format($totalQuotaToday, 0) }}
+                                Kg
                             </small>
                         @endif
                     </div>
@@ -101,7 +188,8 @@
                     <div class="card-body text-center p-3">
                         <h2 class="card-title mb-1">{{ $tmsdhmasuk }}</h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardtmsdhmasuk" class="text-white text-decoration-none">
+                            <a href="/cardtmsdhmasuk?tanggal={{ $selectedDate }}"
+                                class="text-white text-decoration-none">
                                 Sdh Masuk
                             </a>
                         </h6>
@@ -115,7 +203,8 @@
                     <div class="card-body text-center p-3">
                         <h2 class="card-title mb-1">{{ $registered }}</h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardregistered" class="text-white text-decoration-none">
+                            <a href="/cardregistered?tanggal={{ $selectedDate }}"
+                                class="text-white text-decoration-none">
                                 Registrasi
                             </a>
                         </h6>
@@ -129,7 +218,7 @@
                     <div class="card-body text-center p-3">
                         <h2 class="card-title mb-1">{{ $datafgtruk->timIn + $datamultifgtruk->timIn }}</h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardwbin" class="text-white text-decoration-none">
+                            <a href="/cardwbin?tanggal={{ $selectedDate }}" class="text-white text-decoration-none">
                                 Timb. Masuk
                             </a>
                         </h6>
@@ -143,7 +232,7 @@
                     <div class="card-body text-center p-3">
                         <h2 class="card-title mb-1">{{ $datafgtruk->loading + $datamultifgtruk->loading }}</h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardloading" class="text-white text-decoration-none">
+                            <a href="/cardloading?tanggal={{ $selectedDate }}" class="text-white text-decoration-none">
                                 Sedang Muat
                             </a>
                         </h6>
@@ -157,7 +246,7 @@
                     <div class="card-body text-center p-3">
                         <h2 class="card-title mb-1">{{ $datafgtruk->appavg + $datamultifgtruk->appavg }}</h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardabnormal" class="text-white text-decoration-none">
+                            <a href="/cardabnormal?tglout={{ $selectedDate }}" class="text-white text-decoration-none">
                                 Avg Abnormal
                             </a>
                         </h6>
@@ -171,7 +260,7 @@
                     <div class="card-body text-center p-3">
                         <h2 class="card-title mb-1">{{ $datafgtruk->timout + $datamultifgtruk->timout }}</h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardwbout" class="text-white text-decoration-none">
+                            <a href="/cardwbout?tglout={{ $selectedDate }}" class="text-white text-decoration-none">
                                 Timb. Keluar
                             </a>
                         </h6>
@@ -185,7 +274,7 @@
                     <div class="card-body text-center p-3">
                         <h2 class="card-title mb-1">{{ $datafgtruk->pgi + $datamultifgtruk->pgi }}</h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardpgi" class="text-white text-decoration-none">
+                            <a href="/cardpgi?tglout={{ $selectedDate }}" class="text-white text-decoration-none">
                                 Sudah PGI
                             </a>
                         </h6>
@@ -199,7 +288,8 @@
                     <div class="card-body text-center p-3">
                         <h2 class="card-title mb-1">{{ $pendingkmr }}</h2>
                         <h6 class="card-text mb-0">
-                            <a href="/cardpending" class="text-white text-decoration-none">
+                            <a href="/cardpending?tanggal={{ \Carbon\Carbon::parse($selectedDate)->subDay()->format('Y-m-d') }}"
+                                class="text-white text-decoration-none">
                                 Tunda Kemarin
                             </a>
                         </h6>

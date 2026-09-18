@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Exports\exportCardPgi;
 use App\Exports\ExportTimbangOut;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,6 +14,7 @@ class Cardpgi extends Component
 {
     use WithPagination;
     public $katakunci;
+    #[Url]
     public $tglout;
     public $spmNo;
     public $buktiPGI;
@@ -157,7 +159,7 @@ class Cardpgi extends Component
             )
             ->whereNotNull('trscale_headers.net_weight')
             ->whereNotNull('createspms.sealNo1');
-            
+
 
         // Apply filter katakunci (car ID search)
         if ($this->katakunci != null) {

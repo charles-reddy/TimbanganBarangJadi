@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Exports\ExportAntrianBesok;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,6 +14,7 @@ class Cardantrianbesok extends Component
 {
     use WithPagination;
     public $katakunci;
+    #[Url]
     public $tglmuat;
     public $tglDaftar;
     public $isAppDate;
@@ -41,7 +43,7 @@ class Cardantrianbesok extends Component
             ->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')
             ->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')
             ->where('create_t_m_s.tmQtyKg', '>', 0);
-        
+
 
         // Apply date filter
         if ($this->tglmuat) {

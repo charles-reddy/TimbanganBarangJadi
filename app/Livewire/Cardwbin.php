@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,9 +12,13 @@ class Cardwbin extends Component
 {
     use WithPagination;
     public $katakunci;
-    
+    #[Url]
+    public $tanggal;
+
     public function render()
     {
+        $tanggal = $this->tanggal ?: Carbon::now()->format('Y-m-d');
+
         // Query untuk single product (trscale)
         $singleQuery = DB::connection('sqlsrv')->table('trscale')
             ->join('createspms', 'createspms.id', 'trscale.spmID')
@@ -39,7 +44,7 @@ class Cardwbin extends Component
                 DB::raw("'single' as trans_type"),
                 DB::raw("NULL as header_id")
             )
-            ->whereDate('jam_in', '=', Carbon::now())
+            ->whereDate('jam_in', '=', $tanggal)
             ->whereNotNull('timbangin')
             ->whereNull('trscale.isLoading');
 
@@ -68,7 +73,7 @@ class Cardwbin extends Component
                 DB::raw("'multi' as trans_type"),
                 'trscale_headers.id as header_id'
             )
-            ->whereDate('trscale_headers.weigh_in_time', '=', Carbon::now())
+            ->whereDate('trscale_headers.weigh_in_time', '=', $tanggal)
             ->whereNotNull('trscale_headers.tare_weight')
             ->whereNull('trscale_details.isLoading');
 

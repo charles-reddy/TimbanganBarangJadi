@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Exports\ExportAntrianSenin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,6 +14,7 @@ class Cardantriansenin extends Component
 {
     use WithPagination;
     public $katakunci;
+    #[Url]
     public $tglmuat;
     public $tglDaftar;
     public $isAppDate;
@@ -40,11 +42,11 @@ class Cardantriansenin extends Component
             ->join('jenistruks', 'jenistruks.id', 'create_t_m_s.jenisTruk')
             ->join('createsppbs', 'createsppbs.id', 'create_t_m_s.tmSppbID')
             ->where('create_t_m_s.tmQtyKg', '>', 0);
-        
+
         // Calculate next Monday date
         $currentDayOfWeek = Carbon::now()->dayOfWeek;
         $nextMonday = Carbon::now();
-        
+
         if ($currentDayOfWeek == 5) { // Friday
             $nextMonday->addDays(3);
         } elseif ($currentDayOfWeek == 6) { // Saturday
