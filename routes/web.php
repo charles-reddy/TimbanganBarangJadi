@@ -88,6 +88,10 @@ Route::get('/appavgkarung', function () {
 })->middleware(['auth', 'verified', 'role:administrator|manager-logistik|supervisor-b10|audit'])->name('appavgkarung');
 
 
+Route::get('/revisiuploadappkarung', function () {
+    return view('revisiuploadappkarung');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('revisiuploadappkarung');
+
 Route::get('/uploadappkarung', function () {
     return view('uploadappkarung');
 })->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('uploadappkarung');
@@ -272,6 +276,10 @@ Route::get('/startloading', function () {
     return view('startloading');
 })->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-b10|supervisor-b10|audit'])->name('startloading');
 
+
+Route::get('/revisisegeltruk', function () {
+    return view('revisisegeltruk');
+})->middleware(['auth', 'verified', 'role:administrator|manager-logistik|operator-timbangan|operator-b10|supervisor-b10|audit'])->name('revisisegeltruk');
 
 Route::get('/segeltruk', function () {
     return view('segeltruk');
